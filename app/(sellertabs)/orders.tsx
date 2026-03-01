@@ -306,7 +306,7 @@ const AcceptedOrdersScreen = () => {
       const token = await AsyncStorage.getItem('sellerToken');
       if (!token) return;
 
-      const res = await axios.get(API_BASE_URL, {
+      const res = await axios.get(`${API_BASE_URL}/accepted`, {
         headers: { Authorization: `Bearer ${token}` }
       });
 

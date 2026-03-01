@@ -34,6 +34,7 @@ const SellerDashboard = () => {
   const [isAcceptingOrders, setIsAcceptingOrders] = useState(true);
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
   const [pendingOrders, setPendingOrders] = useState<any[]>([]);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [imageModalVisible, setImageModalVisible] = useState(false);
@@ -129,44 +130,88 @@ const SellerDashboard = () => {
     }
   };
 
-  const fetchPendingOrders = async () => {
-    try {
-      setLoading(true);
-      const token = await AsyncStorage.getItem('sellerToken');
-      if (!token) return;
+  // const fetchPendingOrders = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const token = await AsyncStorage.getItem('sellerToken');
+  //     if (!token) return;
 
-      const res = await axios.get(API_BASE_URL, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+  //     const res = await axios.get(API_BASE_URL, {
+  //       headers: { Authorization: `Bearer ${token}` }
+  //     });
 
-      const allOrders = res.data || [];
-      const pending = allOrders.filter((order: any) => order.status === 'pending');
+  //     const allOrders = res.data || [];
+  //     const pending = allOrders.filter((order: any) => order.status === 'pending');
       
-      // Check for new orders
-      if (
-        pending.length > previousOrderCountRef.current &&
-        previousOrderCountRef.current > 0
-      ) {
-        Vibration.vibrate([0, 400, 200, 400]);
-        playNotificationSound();   // 🔊 ADD THIS
-        Alert.alert("🔔 New Order Alert!", "You have new orders!");
-      }
+  //     // Check for new orders
+  //     if (
+  //       pending.length > previousOrderCountRef.current &&
+  //       previousOrderCountRef.current > 0
+  //     ) {
+  //       Vibration.vibrate([0, 400, 200, 400]);
+  //       playNotificationSound();   // 🔊 ADD THIS
+  //       Alert.alert("🔔 New Order Alert!", "You have new orders!");
+  //     }
 
-      previousOrderCountRef.current = pending.length;
+  //     previousOrderCountRef.current = pending.length;
 
-      const withExpiry = pending.map((o: any) => ({
-        ...o,
-        expiry: Date.now() + ORDER_TIMEOUT,
-      }));
+  //     const withExpiry = pending.map((o: any) => ({
+  //       ...o,
+  //       expiry: Date.now() + ORDER_TIMEOUT,
+  //     }));
 
-      setPendingOrders(withExpiry);
-    } catch (err) {
-      console.error('❌ Error fetching orders:', err);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
+  //     setPendingOrders(withExpiry);
+  //   } catch (err) {
+  //     console.error('❌ Error fetching orders:', err);
+  //   } finally {
+  //     setLoading(false);
+  //     setRefreshing(false);
+  //   }
+  // };
+
+  const fetchPendingOrders = async (showLoader = false) => {
+  try {
+    if (showLoader) setLoading(true);
+
+    const token = await AsyncStorage.getItem("sellerToken");
+    if (!token) return;
+
+    const res = await axios.get(API_BASE_URL, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const pending = (res.data || []).filter((o: any) => o.status === "pending");
+
+    // 🔔 New order detection
+    if (
+      pending.length > previousOrderCountRef.current &&
+      previousOrderCountRef.current > 0
+    ) {
+      Vibration.vibrate([0, 400, 200, 400]);
+      playNotificationSound();
     }
-  };
+
+    previousOrderCountRef.current = pending.length;
+
+    setPendingOrders(prev => {
+      // preserve existing expiry timers if order already exists
+      const prevMap = new Map(prev.map(o => [o._id, o]));
+
+      return pending.map((o: any) => ({
+        ...o,
+        expiry:
+          prevMap.get(o._id)?.expiry || Date.now() + ORDER_TIMEOUT,
+      }));
+    });
+
+  } catch (err) {
+    console.log(err);
+  } finally {
+    setInitialLoading(false);
+    setLoading(false);
+    setRefreshing(false);
+  }
+};
 
   const handleRefresh = () => {
     setRefreshing(true);
@@ -174,8 +219,12 @@ const SellerDashboard = () => {
   };
 
   useEffect(() => {
-    fetchPendingOrders();
-    const interval = setInterval(fetchPendingOrders, 30000);
+    fetchPendingOrders(true); // show loader only first time
+
+    const interval = setInterval(() => {
+      fetchPendingOrders(false); // silent refresh
+    }, 5000); // ✅ 5–10 sec is realistic
+
     return () => clearInterval(interval);
   }, []);
 
@@ -248,11 +297,11 @@ const SellerDashboard = () => {
 
       {isAcceptingOrders && (
         <View style={styles.ordersContainer}>
-          {loading ? (
-            <ActivityIndicator size="large" color="#3B82F6" />
-          ) : pendingOrders.length === 0 ? (
-            <Text>No Pending Orders</Text>
-          ) : (
+            {initialLoading ? (
+              <ActivityIndicator size="large" color="#3B82F6" />
+            ) : pendingOrders.length === 0 ? (
+              <Text>No Pending Orders</Text>
+            ) : (
             pendingOrders.map((order) => {
               const isExpanded = expandedOrderId === order._id;
               const prescriptionImageUrl = getPrescriptionImageUrl(order);
