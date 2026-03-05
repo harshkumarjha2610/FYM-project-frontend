@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   View,
   Text,
@@ -21,6 +21,7 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { Audio } from "expo-av";
+import { io as socketIO, Socket } from "socket.io-client";
 
 const API_URL = process.env.EXPO_PUBLIC_BACKEND_API;
 const API_BASE_URL = `${API_URL}/api/orders`;
@@ -29,6 +30,7 @@ const ORDER_TIMEOUT = 10 * 60 * 1000;
 if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
+
 
 const SellerDashboard = () => {
   const [isAcceptingOrders, setIsAcceptingOrders] = useState(true);
@@ -222,10 +224,74 @@ const SellerDashboard = () => {
     fetchPendingOrders(true); // show loader only first time
 
     const interval = setInterval(() => {
-      fetchPendingOrders(false); // silent refresh
-    }, 5000); // ✅ 5–10 sec is realistic
+      fetchPendingOrders(false); // silent refresh (now returns filtered results)
+    }, 5000);
 
     return () => clearInterval(interval);
+  }, []);
+
+  // ✅ Socket.IO: real-time newOrder notifications
+  useEffect(() => {
+    let socket: Socket | null = null;
+
+    const connectSocket = async () => {
+      try {
+        const token = await AsyncStorage.getItem("sellerToken");
+        if (!token || !API_URL) return;
+
+        // Decode seller ID from JWT (payload is the second base64 segment)
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        const sellerId = payload.sellerId || payload.id;
+        if (!sellerId) {
+          console.log("⚠️ Could not extract sellerId from token");
+          return;
+        }
+
+        socket = socketIO(API_URL, {
+          transports: ["websocket"],
+          reconnection: true,
+          reconnectionAttempts: 10,
+          reconnectionDelay: 3000,
+        });
+
+        socket.on("connect", () => {
+          console.log("⚡ Socket connected:", socket?.id);
+          socket?.emit("joinSeller", sellerId);
+        });
+
+        socket.on("newOrder", (order: any) => {
+          console.log("🔔 New order via Socket.IO:", order._id);
+          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+
+          setPendingOrders((prev) => {
+            // Avoid duplicates
+            if (prev.some((o) => o._id === order._id)) return prev;
+            return [
+              { ...order, expiry: Date.now() + ORDER_TIMEOUT },
+              ...prev,
+            ];
+          });
+
+          Vibration.vibrate([0, 400, 200, 400]);
+          playNotificationSound();
+        });
+
+        socket.on("disconnect", (reason) => {
+          console.log("❌ Socket disconnected:", reason);
+        });
+      } catch (err) {
+        console.log("⚠️ Socket.IO connection error:", err);
+      }
+    };
+
+    connectSocket();
+
+    return () => {
+      if (socket) {
+        socket.disconnect();
+        console.log("🔌 Socket.IO cleanup: disconnected");
+      }
+    };
   }, []);
 
   useEffect(() => {
