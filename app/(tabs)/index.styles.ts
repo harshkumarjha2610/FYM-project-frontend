@@ -145,7 +145,6 @@ export const styles = StyleSheet.create({
     opacity: 0.7,
   },
   medicineList: {
-    maxHeight: 300,
   },
   medicineItem: {
     flexDirection: 'row',
@@ -682,23 +681,23 @@ export const styles = StyleSheet.create({
 
   // Add these new styles to your existing styles object:
 
-noSellersContainer: {
-  flex: 1,
-  justifyContent: 'center',
-  alignItems: 'center',
-  padding: 32,
-},
-noSellersText: {
-  fontSize: 18,
-  fontWeight: 'bold',
-  color: '#FFFFFF',
-  marginTop: 16,
-},
-noSellersSubText: {
-  fontSize: 14,
-  color: '#CCCCCC',
-  marginTop: 4,
-  textAlign: 'center',
-},
+  noSellersContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
+  noSellersText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginTop: 16,
+  },
+  noSellersSubText: {
+    fontSize: 14,
+    color: '#CCCCCC',
+    marginTop: 4,
+    textAlign: 'center',
+  },
 
 });

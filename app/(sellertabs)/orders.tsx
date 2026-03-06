@@ -374,7 +374,7 @@ const AcceptedOrdersScreen = () => {
                 onPress={() => toggleExpand(order._id)}
               >
                 <View style={styles.rowBetween}>
-                  <View>
+                  <View style={{ flex: 1 }}>
                     <Text style={styles.customerName}>
                       {order.buyer?.name || "Customer"}
                     </Text>

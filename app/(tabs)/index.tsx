@@ -2064,10 +2064,8 @@ const HomeScreen: React.FC = () => {
                 <Text style={styles.noResultsText}>Loading medicines...</Text>
               </View>
             ) : (
-              <ScrollView
+              <View
                 style={styles.medicineList}
-                showsVerticalScrollIndicator={false}
-                nestedScrollEnabled={true}
               >
                 {filteredMedicines.map((medicine) => (
                   <View key={medicine._id} style={styles.medicineItem}>
@@ -2117,7 +2115,7 @@ const HomeScreen: React.FC = () => {
                     <Text style={styles.noResultsSubText}>Try searching with different keywords</Text>
                   </View>
                 )}
-              </ScrollView>
+              </View>
             )}
           </View>
         )}

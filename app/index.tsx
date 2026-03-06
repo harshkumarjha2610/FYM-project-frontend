@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ImageBackground,
   Dimensions,
+  ScrollView,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
@@ -26,106 +27,111 @@ export default function WelcomeScreen() {
         colors={['rgba(20,184,166,0.9)', 'rgba(59,130,246,0.9)']}
         style={styles.overlay}
       >
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <Animatable.View animation="fadeInDown" duration={1000} style={styles.logoContainer}>
-              <Heart color="#FFFFFF" size={36} strokeWidth={2.5} />
-              <View style={styles.logoGlow} />
-            </Animatable.View>
-            <Text style={styles.title}>FYM</Text>
-            <Text style={styles.subtitle}>Your health, delivered with care</Text>
+        <ScrollView 
+          contentContainerStyle={{ flexGrow: 1 }}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.container}>
+            <View style={styles.header}>
+              <Animatable.View animation="fadeInDown" duration={1000} style={styles.logoContainer}>
+                <Heart color="#FFFFFF" size={36} strokeWidth={2.5} />
+                <View style={styles.logoGlow} />
+              </Animatable.View>
+              <Text style={styles.title}>FYM</Text>
+              <Text style={styles.subtitle}>Your health, delivered with care</Text>
 
-            <View style={styles.trustIndicators}>
-              <View style={styles.trustItem}>
-                <Shield color="rgba(255, 255, 255, 0.9)" size={16} strokeWidth={2} />
-                <Text style={styles.trustText}>Verified</Text>
-              </View>
-              <View style={styles.trustItem}>
-                <Zap color="rgba(255, 255, 255, 0.9)" size={16} strokeWidth={2} />
-                <Text style={styles.trustText}>Fast Delivery</Text>
+              <View style={styles.trustIndicators}>
+                <View style={styles.trustItem}>
+                  <Shield color="rgba(255, 255, 255, 0.9)" size={16} strokeWidth={2} />
+                  <Text style={styles.trustText}>Verified</Text>
+                </View>
+                <View style={styles.trustItem}>
+                  <Zap color="rgba(255, 255, 255, 0.9)" size={16} strokeWidth={2} />
+                  <Text style={styles.trustText}>Fast Delivery</Text>
+                </View>
               </View>
             </View>
-          </View>
 
-          <View style={styles.roleContainer}>
-            <Text style={styles.roleTitle}>Choose your role</Text>
+            <View style={styles.roleContainer}>
+              <Text style={styles.roleTitle}>Choose your role</Text>
 
-            <Animatable.View animation="fadeInUp" delay={200}>
-              <TouchableOpacity
-                style={styles.roleCard}
-                onPress={() => router.push('/(auth)/buyer-choice')}
-                activeOpacity={0.9}
-              >
-                <View style={[styles.cardBackground, styles.buyerCard]}>
-                  <View style={styles.cardContent}>
-                    <View style={[styles.iconContainer, styles.buyerIconContainer]}>
-                      <ShoppingBag color="#14B8A6" size={24} strokeWidth={2.5} />
-                    </View>
-                    <View style={styles.cardText}>
-                      <Text style={styles.cardTitle}>I'm a Buyer</Text>
-                      <Text style={styles.cardDescription}>
-                        Order medicines and healthcare products with ease
-                      </Text>
-                      <View style={styles.cardFeatures}>
-                        <Text style={styles.featureText}>• Quick ordering</Text>
-                        <Text style={styles.featureText}>• Prescription upload</Text>
+              <Animatable.View animation="fadeInUp" delay={200}>
+                <TouchableOpacity
+                  style={styles.roleCard}
+                  onPress={() => router.push('/(auth)/buyer-choice')}
+                  activeOpacity={0.9}
+                >
+                  <View style={[styles.cardBackground, styles.buyerCard]}>
+                    <View style={styles.cardContent}>
+                      <View style={[styles.iconContainer, styles.buyerIconContainer]}>
+                        <ShoppingBag color="#14B8A6" size={24} strokeWidth={2.5} />
+                      </View>
+                      <View style={styles.cardText}>
+                        <Text style={styles.cardTitle}>I'm a Buyer</Text>
+                        <Text style={styles.cardDescription}>
+                          Order medicines and healthcare products with ease
+                        </Text>
+                        <View style={styles.cardFeatures}>
+                          <Text style={styles.featureText}>• Quick ordering</Text>
+                          <Text style={styles.featureText}>• Prescription upload</Text>
+                        </View>
+                      </View>
+                      <View style={styles.arrowContainer}>
+                        <ArrowRight color="#14B8A6" size={20} strokeWidth={2.5} />
                       </View>
                     </View>
-                    <View style={styles.arrowContainer}>
-                      <ArrowRight color="#14B8A6" size={20} strokeWidth={2.5} />
-                    </View>
                   </View>
-                </View>
-              </TouchableOpacity>
-            </Animatable.View>
+                </TouchableOpacity>
+              </Animatable.View>
 
-            <Animatable.View animation="fadeInUp" delay={400}>
-              <TouchableOpacity
-                style={styles.roleCard}
-                onPress={() => router.push('/(auth)/seller-choice')}
-                activeOpacity={0.9}
-              >
-                <View style={[styles.cardBackground, styles.sellerCard]}>
-                  <View style={styles.cardContent}>
-                    <View style={[styles.iconContainer, styles.sellerIconContainer]}>
-                      <Store color="#3B82F6" size={24} strokeWidth={2.5} />
-                    </View>
-                    <View style={styles.cardText}>
-                      <Text style={styles.cardTitle}>I'm a Seller</Text>
-                      <Text style={styles.cardDescription}>
-                        Sell medicines and manage your pharmacy inventory
-                      </Text>
-                      <View style={styles.cardFeatures}>
-                        <Text style={styles.featureText}>• Inventory management</Text>
-                        <Text style={styles.featureText}>• Order tracking</Text>
+              <Animatable.View animation="fadeInUp" delay={400}>
+                <TouchableOpacity
+                  style={styles.roleCard}
+                  onPress={() => router.push('/(auth)/seller-choice')}
+                  activeOpacity={0.9}
+                >
+                  <View style={[styles.cardBackground, styles.sellerCard]}>
+                    <View style={styles.cardContent}>
+                      <View style={[styles.iconContainer, styles.sellerIconContainer]}>
+                        <Store color="#3B82F6" size={24} strokeWidth={2.5} />
+                      </View>
+                      <View style={styles.cardText}>
+                        <Text style={styles.cardTitle}>I'm a Seller</Text>
+                        <Text style={styles.cardDescription}>
+                          Sell medicines and manage your pharmacy inventory
+                        </Text>
+                        <View style={styles.cardFeatures}>
+                          <Text style={styles.featureText}>• Inventory management</Text>
+                          <Text style={styles.featureText}>• Order tracking</Text>
+                        </View>
+                      </View>
+                      <View style={styles.arrowContainer}>
+                        <ArrowRight color="#3B82F6" size={20} strokeWidth={2.5} />
                       </View>
                     </View>
-                    <View style={styles.arrowContainer}>
-                      <ArrowRight color="#3B82F6" size={20} strokeWidth={2.5} />
-                    </View>
                   </View>
-                </View>
-              </TouchableOpacity>
-            </Animatable.View>
-          </View>
-
-          <View style={styles.footer}>
-            <View style={styles.statsContainer}>
-              <View style={styles.statItem}>
-                <Text style={styles.statNumber}>10,000+</Text>
-                <Text style={styles.statLabel}>Happy Customers</Text>
-              </View>
-              <View style={styles.statDivider} />
-              <View style={styles.statItem}>
-                <Text style={styles.statNumber}>500+</Text>
-                <Text style={styles.statLabel}>Partner Pharmacies</Text>
-              </View>
+                </TouchableOpacity>
+              </Animatable.View>
             </View>
-            <Text style={styles.footerText}>
-              Trusted healthcare marketplace in your pocket
-            </Text>
+
+            <View style={styles.footer}>
+              <View style={styles.statsContainer}>
+                <View style={styles.statItem}>
+                  <Text style={styles.statNumber}>10,000+</Text>
+                  <Text style={styles.statLabel}>Happy Customers</Text>
+                </View>
+                <View style={styles.statDivider} />
+                <View style={styles.statItem}>
+                  <Text style={styles.statNumber}>500+</Text>
+                  <Text style={styles.statLabel}>Partner Pharmacies</Text>
+                </View>
+              </View>
+              <Text style={styles.footerText}>
+                Trusted healthcare marketplace in your pocket
+              </Text>
+            </View>
           </View>
-        </View>
+        </ScrollView>
       </LinearGradient>
     </ImageBackground>
   );
