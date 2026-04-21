@@ -16,10 +16,11 @@ import {
   Image,
   Modal,
   Dimensions,
+  BackHandler,
 } from "react-native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { Audio } from "expo-av";
 import { io as socketIO, Socket } from "socket.io-client";
 
@@ -42,6 +43,35 @@ const SellerDashboard = () => {
   const [imageModalVisible, setImageModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [imageLoadError, setImageLoadError] = useState<{[key: string]: boolean}>({});
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        Alert.alert(
+          'Logout',
+          'Are you sure you want to logout?',
+          [
+            { text: 'Cancel', style: 'cancel', onPress: () => {} },
+            {
+              text: 'Logout',
+              style: 'destructive',
+              onPress: async () => {
+                console.log('🔄 Clearing stored data and logging out...');
+                await AsyncStorage.multiRemove(['sellerToken', 'sellerInfo']);
+                router.replace('/(auth)/seller-login');
+              },
+            },
+          ],
+          { cancelable: true }
+        );
+        return true;
+      };
+
+      const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () => subscription.remove();
+    }, [])
+  );
   
   const previousOrderCountRef = useRef<number>(0);
   const notificationSound = useRef<Audio.Sound | null>(null);
@@ -382,7 +412,7 @@ const SellerDashboard = () => {
                   <View style={styles.rowBetween}>
                     <View style={{ flex: 1 }}>
                       <Text style={styles.customerName}>
-                        {order.buyer?.name || "Customer"}
+                        {order.buyerId?.name || "Customer"}
                       </Text>
                       <Text style={styles.productName}>
                         {order.items?.map((i: any) => i.name).join(", ")}
@@ -397,6 +427,19 @@ const SellerDashboard = () => {
 
                   {isExpanded && (
                     <View style={styles.expandedSection}>
+                      <View style={styles.detailBox}>
+                        <Text style={styles.detailText}>
+                          <Text style={styles.detailLabel}>📍 Delivery Address: </Text>
+                          {order.deliveryAddress || "N/A"}
+                        </Text>
+                        {order.buyerId?.mobile && (
+                          <Text style={styles.detailText}>
+                            <Text style={styles.detailLabel}>📞 Contact: </Text>
+                            {order.buyerId.mobile}
+                          </Text>
+                        )}
+                      </View>
+
                       {/* ✅ PRESCRIPTION IMAGE DISPLAY */}
                       {prescriptionImageUrl && !hasImageError ? (
                         <View style={styles.prescriptionContainer}>
@@ -458,35 +501,199 @@ const SellerDashboard = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F9FAFB" },
-  header: { padding: 20, backgroundColor: '#FFFFFF' },
-  headerTitle: { fontSize: 24, fontWeight: 'bold' },
-  headerSubtitle: { fontSize: 12, color: '#22C55E' },
-  orderToggleContainer: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 20, backgroundColor: "#FFFFFF" },
-  orderToggleLabel: { fontSize: 16, fontWeight: "600" },
-  ordersContainer: { padding: 20 },
-  orderCard: { backgroundColor: "#FFFFFF", borderRadius: 18, padding: 16, marginBottom: 16, elevation: 4 },
-  rowBetween: { flexDirection: "row", justifyContent: "space-between" },
-  customerName: { fontSize: 16, fontWeight: "bold" },
-  productName: { fontSize: 14, color: "#4B5563" },
-  rightMeta: { alignItems: "flex-end" },
-  amount: { fontSize: 18, fontWeight: "700" },
-  timerBarBackground: { height: 20, backgroundColor: "#F3F4F6", borderRadius: 12, marginTop: 12, flexDirection: "row" },
-  timerBarFill: { backgroundColor: "#3B82F6", height: "100%" },
-  timerText: { position: "absolute", alignSelf: "center", width: "100%", textAlign: "center" },
-  expandedSection: { marginTop: 14, borderTopWidth: 1, borderTopColor: "#E5E7EB", paddingTop: 12 },
-  detailLabel: { fontWeight: "600" },
-  actionsRow: { flexDirection: "row", justifyContent: "space-between", marginTop: 14 },
-  actionButton: { flex: 1, paddingVertical: 14, borderRadius: 12, alignItems: "center", marginHorizontal: 6 },
-  acceptButton: { backgroundColor: "#22C55E" },
-  rejectButton: { backgroundColor: "#EF4444" },
-  actionText: { color: "#FFFFFF", fontSize: 15, fontWeight: "700" },
-  prescriptionContainer: { marginTop: 12 },
-  prescriptionThumbnail: { width: '100%', height: 200, borderRadius: 12 },
-  errorText: { color: '#EF4444', marginTop: 8 },
-  modalContainer: { flex: 1, backgroundColor: 'rgba(0,0,0,0.9)', justifyContent: 'center' },
-  modalCloseButton: { position: 'absolute', top: 50, right: 20, backgroundColor: '#fff', padding: 10, borderRadius: 20 },
-  fullSizeImage: { width: Dimensions.get('window').width, height: Dimensions.get('window').height * 0.8 },
+  container: { 
+    flex: 1, 
+    backgroundColor: "#F8FAFC" // Slate 50
+  },
+  header: { 
+    paddingHorizontal: 20, 
+    paddingTop: Platform.OS === 'ios' ? 60 : 40,
+    paddingBottom: 20,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
+  },
+  headerTitle: { 
+    fontSize: 28, 
+    fontWeight: 'bold',
+    color: '#0F172A',
+  },
+  headerSubtitle: { 
+    fontSize: 14, 
+    color: '#14B8A6', // Primary Teal
+    marginTop: 4,
+    fontWeight: '600',
+  },
+  orderToggleContainer: { 
+    flexDirection: "row", 
+    alignItems: "center", 
+    justifyContent: "space-between", 
+    padding: 20, 
+    backgroundColor: "#FFFFFF",
+    marginHorizontal: 16,
+    marginTop: 16,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  orderToggleLabel: { 
+    fontSize: 16, 
+    fontWeight: "700",
+    color: '#1E293B',
+  },
+  ordersContainer: { 
+    padding: 16 
+  },
+  orderCard: { 
+    backgroundColor: "#FFFFFF", 
+    borderRadius: 20, 
+    padding: 16, 
+    marginBottom: 16, 
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    elevation: 3,
+  },
+  rowBetween: { 
+    flexDirection: "row", 
+    justifyContent: "space-between" 
+  },
+  customerName: { 
+    fontSize: 17, 
+    fontWeight: "bold",
+    color: '#0F172A',
+  },
+  productName: { 
+    fontSize: 14, 
+    color: "#64748B",
+    marginTop: 4,
+  },
+  rightMeta: { 
+    alignItems: "flex-end" 
+  },
+  amount: { 
+    fontSize: 18, 
+    fontWeight: "800",
+    color: '#14B8A6',
+  },
+  timerBarBackground: { 
+    height: 24, 
+    backgroundColor: "#F1F5F9", 
+    borderRadius: 12, 
+    marginTop: 16, 
+    flexDirection: "row",
+    overflow: 'hidden',
+  },
+  timerBarFill: { 
+    backgroundColor: "#14B8A6", 
+    height: "100%" 
+  },
+  timerText: { 
+    position: "absolute", 
+    alignSelf: "center", 
+    width: "100%", 
+    textAlign: "center",
+    fontSize: 11,
+    fontWeight: 'bold',
+    color: '#1E293B',
+  },
+  expandedSection: { 
+    marginTop: 16, 
+    borderTopWidth: 1, 
+    borderTopColor: "#F1F5F9", 
+    paddingTop: 16 
+  },
+  detailLabel: { 
+    fontWeight: "700", 
+    color: "#0F172A" 
+  },
+  detailBox: { 
+    backgroundColor: "#F8FAFC", 
+    padding: 14, 
+    borderRadius: 16, 
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#F1F5F9',
+  },
+  detailText: { 
+    fontSize: 14, 
+    color: "#475569", 
+    marginBottom: 6 
+  },
+  actionsRow: { 
+    flexDirection: "row", 
+    justifyContent: "space-between", 
+    marginTop: 16,
+    gap: 12,
+  },
+  actionButton: { 
+    flex: 1, 
+    paddingVertical: 14, 
+    borderRadius: 12, 
+    alignItems: "center", 
+  },
+  acceptButton: { 
+    backgroundColor: "#14B8A6",
+    shadowColor: '#14B8A6',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  rejectButton: { 
+    backgroundColor: "#EF4444",
+    shadowColor: '#EF4444',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  actionText: { 
+    color: "#FFFFFF", 
+    fontSize: 15, 
+    fontWeight: "700" 
+  },
+  prescriptionContainer: { 
+    marginTop: 12 
+  },
+  prescriptionThumbnail: { 
+    width: '100%', 
+    height: 200, 
+    borderRadius: 12,
+    backgroundColor: '#F1F5F9',
+  },
+  errorText: { 
+    color: '#EF4444', 
+    marginTop: 8,
+    textAlign: 'center',
+    fontWeight: '600',
+  },
+  modalContainer: { 
+    flex: 1, 
+    backgroundColor: 'rgba(0,0,0,0.95)', 
+    justifyContent: 'center' 
+  },
+  modalCloseButton: { 
+    position: 'absolute', 
+    top: 50, 
+    right: 20, 
+    backgroundColor: '#fff', 
+    padding: 12, 
+    borderRadius: 24,
+    zIndex: 10,
+  },
+  fullSizeImage: { 
+    width: Dimensions.get('window').width, 
+    height: Dimensions.get('window').height * 0.8 
+  },
 });
 
 export default SellerDashboard;

@@ -284,6 +284,7 @@ import {
   Image,
   Modal,
   Dimensions,
+  Platform,
 } from "react-native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -376,7 +377,7 @@ const AcceptedOrdersScreen = () => {
                 <View style={styles.rowBetween}>
                   <View style={{ flex: 1 }}>
                     <Text style={styles.customerName}>
-                      {order.buyer?.name || "Customer"}
+                      {order.buyerId?.name || "Customer"}
                     </Text>
                     <Text style={styles.productName}>
                       {order.items?.map((i: any) => i.name).join(", ")}
@@ -390,7 +391,18 @@ const AcceptedOrdersScreen = () => {
 
                 {isExpanded && (
                   <View style={styles.expandedSection}>
-                    <Text>Address: {order.deliveryAddress || 'N/A'}</Text>
+                    <View style={styles.detailBox}>
+                      <Text style={styles.detailText}>
+                        <Text style={styles.detailLabel}>📍 Delivery Address: </Text>
+                        {order.deliveryAddress || "N/A"}
+                      </Text>
+                      {order.buyerId?.mobile && (
+                        <Text style={styles.detailText}>
+                          <Text style={styles.detailLabel}>📞 Contact: </Text>
+                          {order.buyerId.mobile}
+                        </Text>
+                      )}
+                    </View>
                     
                     {/* ✅ Show prescription image in accepted orders too */}
                     {imageUrl && (
@@ -428,24 +440,129 @@ const AcceptedOrdersScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F9FAFB" },
-  header: { padding: 20, backgroundColor: '#FFFFFF' },
-  headerTitle: { fontSize: 24, fontWeight: 'bold' },
-  ordersContainer: { padding: 20 },
-  orderCard: { backgroundColor: "#FFFFFF", borderRadius: 18, padding: 16, marginBottom: 16, borderLeftWidth: 4, borderLeftColor: '#22C55E' },
-  rowBetween: { flexDirection: "row", justifyContent: "space-between" },
-  customerName: { fontSize: 16, fontWeight: "bold" },
-  productName: { fontSize: 14, color: "#4B5563" },
-  rightMeta: { alignItems: "flex-end" },
-  amount: { fontSize: 18, fontWeight: "700" },
-  statusBadge: { marginTop: 6, fontSize: 11, fontWeight: "700", backgroundColor: "#22C55E", color: "#FFFFFF", paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12 },
-  expandedSection: { marginTop: 14, borderTopWidth: 1, borderTopColor: "#E5E7EB", paddingTop: 12 },
-  imageContainer: { marginTop: 12 },
-  label: { fontWeight: "600", marginBottom: 8 },
-  thumbnail: { width: '100%', height: 200, borderRadius: 12 },
-  modalContainer: { flex: 1, backgroundColor: 'rgba(0,0,0,0.9)', justifyContent: 'center' },
-  closeButton: { position: 'absolute', top: 50, right: 20, backgroundColor: '#fff', padding: 10, borderRadius: 20 },
-  fullImage: { width: Dimensions.get('window').width, height: Dimensions.get('window').height * 0.8 },
+  container: { 
+    flex: 1, 
+    backgroundColor: "#F8FAFC" 
+  },
+  header: { 
+    paddingHorizontal: 20, 
+    paddingTop: Platform.OS === 'ios' ? 60 : 40,
+    paddingBottom: 20,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
+  },
+  headerTitle: { 
+    fontSize: 28, 
+    fontWeight: 'bold',
+    color: '#0F172A',
+  },
+  ordersContainer: { 
+    padding: 16 
+  },
+  orderCard: { 
+    backgroundColor: "#FFFFFF", 
+    borderRadius: 20, 
+    padding: 16, 
+    marginBottom: 16, 
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    elevation: 3,
+    borderLeftWidth: 6, 
+    borderLeftColor: '#14B8A6' 
+  },
+  rowBetween: { 
+    flexDirection: "row", 
+    justifyContent: "space-between" 
+  },
+  customerName: { 
+    fontSize: 17, 
+    fontWeight: "bold",
+    color: '#0F172A',
+  },
+  productName: { 
+    fontSize: 14, 
+    color: "#64748B",
+    marginTop: 4,
+  },
+  rightMeta: { 
+    alignItems: "flex-end" 
+  },
+  amount: { 
+    fontSize: 18, 
+    fontWeight: "800",
+    color: '#14B8A6',
+  },
+  statusBadge: { 
+    marginTop: 8, 
+    fontSize: 11, 
+    fontWeight: "800", 
+    backgroundColor: "#14B8A6", 
+    color: "#FFFFFF", 
+    paddingHorizontal: 12, 
+    paddingVertical: 4, 
+    borderRadius: 12,
+    letterSpacing: 0.5,
+  },
+  expandedSection: { 
+    marginTop: 16, 
+    borderTopWidth: 1, 
+    borderTopColor: "#F1F5F9", 
+    paddingTop: 16 
+  },
+  detailLabel: { 
+    fontWeight: "700", 
+    color: "#0F172A" 
+  },
+  detailBox: { 
+    backgroundColor: "#F8FAFC", 
+    padding: 14, 
+    borderRadius: 16, 
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#F1F5F9',
+  },
+  detailText: { 
+    fontSize: 14, 
+    color: "#475569", 
+    marginBottom: 6 
+  },
+  imageContainer: { 
+    marginTop: 12 
+  },
+  label: { 
+    fontWeight: "700", 
+    color: '#0F172A',
+    marginBottom: 10 
+  },
+  thumbnail: { 
+    width: '100%', 
+    height: 200, 
+    borderRadius: 12,
+    backgroundColor: '#F1F5F9',
+  },
+  modalContainer: { 
+    flex: 1, 
+    backgroundColor: 'rgba(0,0,0,0.95)', 
+    justifyContent: 'center' 
+  },
+  closeButton: { 
+    position: 'absolute', 
+    top: 50, 
+    right: 20, 
+    backgroundColor: '#fff', 
+    padding: 12, 
+    borderRadius: 24,
+    zIndex: 10,
+  },
+  fullImage: { 
+    width: Dimensions.get('window').width, 
+    height: Dimensions.get('window').height * 0.8 
+  },
 });
 
 export default AcceptedOrdersScreen;

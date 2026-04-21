@@ -14,18 +14,23 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#2EC4B6',
-        tabBarInactiveTintColor: '#666666',
+        tabBarActiveTintColor: '#14B8A6',
+        tabBarInactiveTintColor: '#94A3B8',
         headerShown: false,
         tabBarButton: HapticTab,
         tabBarStyle: {
           position: 'absolute',
-          backgroundColor: 'rgba(0, 0, 0, 0.85)',
-          borderTopWidth: 0,
-          elevation: 0,
-          height: Platform.OS === 'ios' ? 85 : 60,
-          paddingBottom: Platform.OS === 'ios' ? 25 : 10,
-          paddingTop: 10,
+          backgroundColor: '#FFFFFF',
+          borderTopWidth: 1,
+          borderTopColor: '#F1F5F9',
+          elevation: 10,
+          height: Platform.OS === 'ios' ? 88 : 64,
+          paddingBottom: Platform.OS === 'ios' ? 28 : 12,
+          paddingTop: 12,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: -4 },
+          shadowOpacity: 0.05,
+          shadowRadius: 8,
         },
         tabBarLabelStyle: {
           fontSize: 11,

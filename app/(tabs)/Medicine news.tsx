@@ -189,14 +189,14 @@ export default function MedicineNewsScreen() {
               onPress={() => setSelectedCategory(category.id)}
             >
               <Ionicons 
-                name={category.icon} 
+                name={category.icon as any} 
                 size={18} 
-                color={selectedCategory === category.id ? '#000000' : '#FFFFFF'} 
+                color={selectedCategory === category.id ? '#FFFFFF' : '#475569'} 
               />
               <Text
                 style={[
                   styles.categoryText,
-                  selectedCategory === category.id && styles.categoryTextActive,
+                  selectedCategory === category.id && { color: '#FFFFFF' },
                 ]}
               >
                 {category.name}
@@ -321,7 +321,7 @@ export default function MedicineNewsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
+    backgroundColor: '#F8FAFC',
   },
   header: {
     flexDirection: 'row',
@@ -330,40 +330,41 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: Platform.OS === 'ios' ? 60 : 40,
     paddingBottom: 16,
+    backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
-    borderBottomColor: '#2EC4B6',
+    borderBottomColor: '#F1F5F9',
   },
   headerTitle: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: '#0F172A',
   },
   headerSubtitle: {
     fontSize: 14,
-    color: '#CCCCCC',
+    color: '#64748B',
     marginTop: 4,
   },
   notificationButton: {
     width: 44,
     height: 44,
-    backgroundColor: '#1A1A1A',
+    backgroundColor: '#F1F5F9',
     borderRadius: 22,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#2EC4B6',
     position: 'relative',
   },
   notificationBadge: {
     position: 'absolute',
     top: -5,
     right: -5,
-    backgroundColor: '#FF6B6B',
+    backgroundColor: '#EF4444',
     borderRadius: 10,
     width: 20,
     height: 20,
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
   },
   notificationBadgeText: {
     color: '#FFFFFF',
@@ -383,18 +384,23 @@ const styles = StyleSheet.create({
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1A1A1A',
-    borderRadius: 12,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
     paddingHorizontal: 12,
-    paddingVertical: 10,
+    paddingVertical: 12,
     borderWidth: 1,
-    borderColor: '#2EC4B6',
+    borderColor: '#E2E8F0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
   },
   searchInput: {
     flex: 1,
     marginLeft: 8,
     fontSize: 16,
-    color: '#FFFFFF',
+    color: '#1E293B',
   },
   categoriesContainer: {
     paddingLeft: 16,
@@ -406,25 +412,31 @@ const styles = StyleSheet.create({
   categoryButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1A1A1A',
+    backgroundColor: '#FFFFFF',
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 20,
     marginRight: 8,
     borderWidth: 1,
-    borderColor: '#2EC4B6',
+    borderColor: '#E2E8F0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
   categoryButtonActive: {
-    backgroundColor: '#2EC4B6',
+    backgroundColor: '#14B8A6',
+    borderColor: '#14B8A6',
   },
   categoryText: {
-    color: '#FFFFFF',
+    color: '#475569',
     fontSize: 14,
     fontWeight: '600',
     marginLeft: 6,
   },
   categoryTextActive: {
-    color: '#000000',
+    color: '#FFFFFF',
   },
   section: {
     paddingHorizontal: 16,
@@ -439,16 +451,16 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: '#0F172A',
   },
   seeAllText: {
     fontSize: 14,
-    color: '#2EC4B6',
+    color: '#14B8A6',
     fontWeight: '600',
   },
   resultCount: {
     fontSize: 14,
-    color: '#CCCCCC',
+    color: '#64748B',
     marginBottom: 16,
   },
   trendingContainer: {
@@ -456,28 +468,33 @@ const styles = StyleSheet.create({
   },
   trendingCard: {
     width: 280,
-    backgroundColor: '#1A1A1A',
-    borderRadius: 12,
-    marginRight: 12,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    marginRight: 16,
     borderWidth: 1,
-    borderColor: '#2EC4B6',
+    borderColor: '#E2E8F0',
     overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    elevation: 3,
   },
   trendingImagePlaceholder: {
     height: 140,
-    backgroundColor: '#2EC4B620',
+    backgroundColor: '#F0FDFA',
     justifyContent: 'center',
     alignItems: 'center',
   },
   trendingContent: {
-    padding: 12,
+    padding: 16,
   },
   trendingCategory: {
     alignSelf: 'flex-start',
     paddingHorizontal: 8,
     paddingVertical: 4,
-    borderRadius: 4,
-    marginBottom: 8,
+    borderRadius: 6,
+    marginBottom: 10,
   },
   trendingCategoryText: {
     fontSize: 10,
@@ -487,8 +504,8 @@ const styles = StyleSheet.create({
   trendingTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#FFFFFF',
-    marginBottom: 8,
+    color: '#1E293B',
+    marginBottom: 10,
     lineHeight: 22,
   },
   trendingMeta: {
@@ -497,16 +514,21 @@ const styles = StyleSheet.create({
   },
   trendingTime: {
     fontSize: 12,
-    color: '#CCCCCC',
+    color: '#64748B',
   },
   newsCard: {
     flexDirection: 'row',
-    backgroundColor: '#1A1A1A',
-    borderRadius: 12,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: '#2EC4B6',
+    borderColor: '#E2E8F0',
     overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
   },
   newsImageContainer: {
     width: 120,
@@ -515,7 +537,7 @@ const styles = StyleSheet.create({
   newsImagePlaceholder: {
     width: '100%',
     height: '100%',
-    backgroundColor: '#2EC4B620',
+    backgroundColor: '#F0FDFA',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -525,7 +547,7 @@ const styles = StyleSheet.create({
     left: 8,
     paddingHorizontal: 8,
     paddingVertical: 4,
-    borderRadius: 4,
+    borderRadius: 6,
   },
   newsCategoryBadgeText: {
     fontSize: 10,
@@ -535,32 +557,34 @@ const styles = StyleSheet.create({
   },
   newsContent: {
     flex: 1,
-    padding: 12,
+    padding: 16,
   },
   newsTitle: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: 'bold',
-    color: '#FFFFFF',
-    marginBottom: 6,
-    lineHeight: 20,
+    color: '#1E293B',
+    marginBottom: 8,
+    lineHeight: 22,
   },
   newsSummary: {
     fontSize: 13,
-    color: '#CCCCCC',
-    marginBottom: 8,
+    color: '#475569',
+    marginBottom: 12,
     lineHeight: 18,
   },
   newsFooter: {
-    marginBottom: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
   },
   newsSource: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 4,
   },
   newsSourceText: {
     fontSize: 12,
-    color: '#2EC4B6',
+    color: '#14B8A6',
     marginLeft: 4,
     fontWeight: '600',
   },
@@ -570,24 +594,28 @@ const styles = StyleSheet.create({
   },
   newsTime: {
     fontSize: 11,
-    color: '#999999',
+    color: '#94A3B8',
   },
   newsReadTime: {
     fontSize: 11,
-    color: '#999999',
+    color: '#94A3B8',
     marginLeft: 4,
   },
   newsActions: {
     flexDirection: 'row',
-    gap: 8,
+    gap: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#F1F5F9',
+    paddingTop: 12,
   },
   newsActionButton: {
-    width: 32,
-    height: 32,
-    backgroundColor: '#2EC4B620',
-    borderRadius: 16,
-    justifyContent: 'center',
+    flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: '#F1F5F9',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+    gap: 6,
   },
   emptyState: {
     alignItems: 'center',
@@ -597,12 +625,12 @@ const styles = StyleSheet.create({
   emptyStateText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: '#1E293B',
     marginTop: 16,
   },
   emptyStateSubText: {
     fontSize: 14,
-    color: '#CCCCCC',
+    color: '#64748B',
     marginTop: 4,
   },
 });

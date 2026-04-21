@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { ChartBar as BarChart3, Package, ShoppingCart, User } from 'lucide-react-native';
+import { ChartBar as BarChart3, Package, ShoppingCart, User, Calendar } from 'lucide-react-native';
 
 export default function SellerTabLayout() {
   return (
@@ -9,16 +9,21 @@ export default function SellerTabLayout() {
         tabBarStyle: {
           backgroundColor: '#FFFFFF',
           borderTopWidth: 1,
-          borderTopColor: '#E5E7EB',
-          paddingBottom: 8,
-          paddingTop: 8,
-          height: 80,
+          borderTopColor: '#F1F5F9',
+          paddingBottom: 25,
+          paddingTop: 10,
+          height: 85,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: -4 },
+          shadowOpacity: 0.05,
+          shadowRadius: 8,
+          elevation: 10,
         },
-        tabBarActiveTintColor: '#3B82F6',
-        tabBarInactiveTintColor: '#6B7280',
+        tabBarActiveTintColor: '#14B8A6',
+        tabBarInactiveTintColor: '#94A3B8',
         tabBarLabelStyle: {
           fontSize: 12,
-          fontWeight: '500',
+          fontWeight: '600',
           marginTop: 4,
         },
       }}
@@ -38,6 +43,15 @@ export default function SellerTabLayout() {
           title: 'Orders',
           tabBarIcon: ({ size, color }) => (
             <ShoppingCart size={size} color={color} strokeWidth={2} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="scheduled-orders"
+        options={{
+          title: 'Scheduled',
+          tabBarIcon: ({ size, color }) => (
+            <Calendar size={size} color={color} strokeWidth={2} />
           ),
         }}
       />

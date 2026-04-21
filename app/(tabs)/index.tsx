@@ -1101,7 +1101,8 @@
 // export default HomeScreen;
 
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useFocusEffect, router } from 'expo-router';
 import {
   View,
   Text,
@@ -1115,6 +1116,7 @@ import {
   Platform,
   StyleSheet,
   Linking,
+  BackHandler,
 } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
@@ -1187,6 +1189,35 @@ const HomeScreen: React.FC = () => {
   const [nearestSellers, setNearestSellers] = useState<Seller[]>([]);
   const [showNearestSellers, setShowNearestSellers] = useState<boolean>(false);
   const [fullAddress, setFullAddress] = useState<string>('');
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        Alert.alert(
+          'Logout',
+          'Are you sure you want to logout?',
+          [
+            { text: 'Cancel', style: 'cancel', onPress: () => {} },
+            {
+              text: 'Logout',
+              style: 'destructive',
+              onPress: async () => {
+                console.log('🔄 Clearing stored data and logging out...');
+                await AsyncStorage.multiRemove(['token', 'refreshToken', 'user', 'buyerId']);
+                router.replace('/(auth)/buyer-login');
+              },
+            },
+          ],
+          { cancelable: true }
+        );
+        return true;
+      };
+
+      const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () => subscription.remove();
+    }, [])
+  );
 
   useEffect(() => {
     (async () => {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -7,8 +7,17 @@ import {
   StyleSheet,
   Platform,
   Alert,
+  ActivityIndicator,
+  RefreshControl,
+  Image,
+  Modal,
+  Dimensions,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useFocusEffect, router } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { io as socketIO, Socket } from 'socket.io-client';
 
 interface OrderItem {
   name: string;
@@ -16,113 +25,150 @@ interface OrderItem {
   price: number;
 }
 
+interface SellerInfo {
+  _id: string;
+  pharmacyName: string;
+  address: string;
+  phone?: string;
+  ownerContact?: string;
+  number?: string;
+  email?: string;
+}
+
 interface Order {
-  id: string;
-  orderId: string;
-  status: 'pending' | 'confirmed' | 'preparing' | 'shipped' | 'delivered' | 'cancelled';
+  _id: string;
+  buyerId: string;
+  status: 'pending' | 'accepted' | 'confirmed' | 'preparing' | 'shipped' | 'delivered' | 'cancelled' | 'rejected' | 'scheduled';
   items: OrderItem[];
   totalAmount: number;
-  orderDate: string;
-  deliveryDate?: string;
-  seller: string;
-  address: string;
-  paymentMethod: string;
+  prescriptionImage: string | null;
+  deliveryAddress: string;
+  createdAt: string;
+  updatedAt: string;
+  seller?: SellerInfo;
 }
+
+const API_URL = process.env.EXPO_PUBLIC_BACKEND_API;
 
 export default function OrdersScreen() {
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+
+  const fetchOrders = async (showLoading = true) => {
+    try {
+      if (showLoading) setLoading(true);
+      const buyerId = await AsyncStorage.getItem('buyerId');
+      const token = await AsyncStorage.getItem('token');
+
+      if (!buyerId || !token) {
+        console.log('⚠️ Authentication data missing');
+        setLoading(false);
+        setRefreshing(false);
+        return;
+      }
+
+      console.log(`📥 Fetching orders for ${buyerId}...`);
+      const response = await axios.get(`${API_URL}/api/orders/buyer/${buyerId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (Array.isArray(response.data)) {
+        setOrders(response.data);
+      }
+    } catch (error: any) {
+      console.error('❌ Error fetching orders:', error.message);
+      Alert.alert('Error', 'Failed to fetch orders. Please try again.');
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchOrders();
+    }, [])
+  );
+
+  // Socket setup for real-time updates
+  useEffect(() => {
+    let socket: Socket | null = null;
+
+    const setupSocket = async () => {
+      try {
+        const buyerId = await AsyncStorage.getItem('buyerId');
+        const token = await AsyncStorage.getItem('token');
+        if (!buyerId || !token || !API_URL) return;
+
+        socket = socketIO(API_URL, {
+          transports: ['websocket'],
+          reconnection: true,
+        });
+
+        socket.on('connect', () => {
+          console.log('⚡ Buyer socket connected:', socket?.id);
+          socket?.emit('joinBuyer', buyerId);
+        });
+
+        socket.on('orderResponse', (data: any) => {
+          console.log('🔔 Order response received:', data);
+          fetchOrders(false);
+        });
+
+        socket.on('order-unaccepted', (data: any) => {
+          console.log('⚠️ Order unaccepted alert:', data);
+          Alert.alert(
+            'No Sellers Found',
+            'We couldn\'t find a seller for your order immediately. Would you like to schedule it for later?',
+            [
+              { text: 'No', style: 'cancel' },
+              { text: 'Schedule', onPress: () => handleScheduleOrder(data.orderId) }
+            ]
+          );
+          fetchOrders(false);
+        });
+
+      } catch (err) {
+        console.error('⚠️ Socket setup error:', err);
+      }
+    };
+
+    setupSocket();
+
+    return () => {
+      if (socket) socket.disconnect();
+    };
+  }, []);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchOrders(false);
+  };
 
   const statusFilters = [
     { id: 'all', label: 'All', icon: 'grid-outline' },
     { id: 'pending', label: 'Pending', icon: 'time-outline' },
-    { id: 'confirmed', label: 'Confirmed', icon: 'checkmark-circle-outline' },
+    { id: 'scheduled', label: 'Scheduled', icon: 'calendar-outline' },
+    { id: 'accepted', label: 'Accepted', icon: 'checkmark-circle-outline' },
     { id: 'shipped', label: 'Shipped', icon: 'rocket-outline' },
     { id: 'delivered', label: 'Delivered', icon: 'checkmark-done-outline' },
     { id: 'cancelled', label: 'Cancelled', icon: 'close-circle-outline' },
   ];
 
-  const orders: Order[] = [
-    {
-      id: '1',
-      orderId: 'ORD-2025-001',
-      status: 'shipped',
-      items: [
-        { name: 'Paracetamol 500mg', quantity: 2, price: 45 },
-        { name: 'Cough Syrup', quantity: 1, price: 120 },
-      ],
-      totalAmount: 210,
-      orderDate: '2 Dec 2025, 10:30 AM',
-      deliveryDate: '4 Dec 2025',
-      seller: 'MediCare Pharmacy',
-      address: 'Sector 15, Noida, Delhi NCR',
-      paymentMethod: 'UPI',
-    },
-    {
-      id: '2',
-      orderId: 'ORD-2025-002',
-      status: 'delivered',
-      items: [
-        { name: 'Vitamin D3', quantity: 1, price: 250 },
-        { name: 'Multivitamin Tablets', quantity: 1, price: 180 },
-      ],
-      totalAmount: 430,
-      orderDate: '28 Nov 2025, 3:45 PM',
-      deliveryDate: '30 Nov 2025',
-      seller: 'Health Plus Store',
-      address: 'Sector 15, Noida, Delhi NCR',
-      paymentMethod: 'Cash on Delivery',
-    },
-    {
-      id: '3',
-      orderId: 'ORD-2025-003',
-      status: 'confirmed',
-      items: [
-        { name: 'Antibiotics Pack', quantity: 1, price: 350 },
-      ],
-      totalAmount: 350,
-      orderDate: '3 Dec 2025, 9:15 AM',
-      deliveryDate: '5 Dec 2025',
-      seller: 'Apollo Pharmacy',
-      address: 'Sector 15, Noida, Delhi NCR',
-      paymentMethod: 'Card',
-    },
-    {
-      id: '4',
-      orderId: 'ORD-2025-004',
-      status: 'pending',
-      items: [
-        { name: 'Blood Pressure Monitor', quantity: 1, price: 1200 },
-        { name: 'Thermometer', quantity: 1, price: 450 },
-      ],
-      totalAmount: 1650,
-      orderDate: '4 Dec 2025, 1:20 PM',
-      seller: 'Medical Equipment Hub',
-      address: 'Sector 15, Noida, Delhi NCR',
-      paymentMethod: 'UPI',
-    },
-    {
-      id: '5',
-      orderId: 'ORD-2025-005',
-      status: 'cancelled',
-      items: [
-        { name: 'Pain Relief Gel', quantity: 2, price: 180 },
-      ],
-      totalAmount: 360,
-      orderDate: '1 Dec 2025, 5:00 PM',
-      seller: 'City Pharmacy',
-      address: 'Sector 15, Noida, Delhi NCR',
-      paymentMethod: 'UPI',
-    },
-  ];
-
   const getStatusColor = (status: string) => {
     const colors: { [key: string]: string } = {
       pending: '#FFB800',
+      accepted: '#5AC8FA',
       confirmed: '#5AC8FA',
       preparing: '#FF9500',
       shipped: '#AF52DE',
       delivered: '#32D74B',
       cancelled: '#FF6B6B',
+      rejected: '#FF6B6B',
+      scheduled: '#AF52DE',
     };
     return colors[status] || '#2EC4B6';
   };
@@ -130,8 +176,8 @@ export default function OrdersScreen() {
   const getStatusIcon = (status: string) => {
     const icons: { [key: string]: any } = {
       pending: 'time',
-      confirmed: 'checkmark-circle',
-      preparing: 'construct',
+      scheduled: 'calendar',
+      confirmed: 'checkmark-circle',      preparing: 'construct',
       shipped: 'rocket',
       delivered: 'checkmark-done-circle',
       cancelled: 'close-circle',
@@ -143,16 +189,85 @@ export default function OrdersScreen() {
     ? orders 
     : orders.filter(order => order.status === selectedStatus);
 
+  const handleCancelOrder = async (orderId: string) => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      if (!token) return;
+
+      const response = await axios.patch(`${API_URL}/api/orders/${orderId}/cancel`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (response.data.success) {
+        Alert.alert('Success', 'Order cancelled successfully');
+        fetchOrders(false);
+      }
+    } catch (error: any) {
+      console.error('❌ Error cancelling order:', error.message);
+      Alert.alert('Error', error.response?.data?.message || 'Failed to cancel order');
+    }
+  };
+
+  const handleScheduleOrder = async (orderId: string) => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      if (!token) return;
+
+      const response = await axios.patch(`${API_URL}/api/orders/${orderId}/schedule`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (response.data.success) {
+        Alert.alert('Scheduled! 📅', 'Your order is now scheduled. Sellers can see and accept it anytime.');
+        fetchOrders(false);
+      }
+    } catch (error: any) {
+      console.error('❌ Error scheduling order:', error.message);
+      Alert.alert('Error', error.response?.data?.message || 'Failed to schedule order');
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-IN', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (e) {
+      return dateString;
+    }
+  };
+
+  const getFullImageUrl = (imagePath: string) => {
+    if (!imagePath) return null;
+    if (imagePath.startsWith('http')) return imagePath;
+    return `${API_URL}${imagePath}`;
+  };
+
   const handleOrderAction = (order: Order, action: string) => {
     switch (action) {
       case 'track':
         Alert.alert(
           'Track Order',
-          `Order ID: ${order.orderId}\nStatus: ${order.status}\n\nTracking details will be available soon.`
+          `Order ID: ${order._id}\nStatus: ${order.status}\n\nTracking details will be available soon.`
         );
         break;
       case 'reorder':
-        Alert.alert('Reorder', `Would you like to reorder from ${order.seller}?`);
+        Alert.alert('Reorder', `Would you like to reorder from ${order.seller?.pharmacyName || 'this seller'}?`);
+        break;
+      case 'schedule':
+        Alert.alert(
+          'Schedule Order',
+          'No sellers were found immediately. Would you like to schedule this order for later? It will be visible to all pharmacies.',
+          [
+            { text: 'Cancel', style: 'cancel' },
+            { text: 'Schedule', onPress: () => handleScheduleOrder(order._id) },
+          ]
+        );
         break;
       case 'cancel':
         Alert.alert(
@@ -160,7 +275,7 @@ export default function OrdersScreen() {
           'Are you sure you want to cancel this order?',
           [
             { text: 'No', style: 'cancel' },
-            { text: 'Yes, Cancel', onPress: () => Alert.alert('Order Cancelled') },
+            { text: 'Yes, Cancel', onPress: () => handleCancelOrder(order._id) },
           ]
         );
         break;
@@ -192,6 +307,9 @@ export default function OrdersScreen() {
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#2EC4B6" />
+        }
       >
         {/* Status Filters */}
         <ScrollView 
@@ -210,7 +328,7 @@ export default function OrdersScreen() {
               onPress={() => setSelectedStatus(filter.id)}
             >
               <Ionicons 
-                name={filter.icon} 
+                name={filter.icon as any} 
                 size={18} 
                 color={selectedStatus === filter.id ? '#000000' : '#FFFFFF'} 
               />
@@ -228,23 +346,40 @@ export default function OrdersScreen() {
 
         {/* Orders List */}
         <View style={styles.ordersContainer}>
-          <Text style={styles.ordersCount}>
-            {filteredOrders.length} {filteredOrders.length === 1 ? 'Order' : 'Orders'}
-          </Text>
+          {loading && !refreshing ? (
+            <ActivityIndicator size="large" color="#2EC4B6" style={{ marginTop: 40 }} />
+          ) : (
+            filteredOrders.map((order) => (
+              <View key={order._id} style={styles.orderCard}>
+                {/* Order Header */}
+                <View style={styles.orderHeader}>
+                  <View style={styles.orderHeaderLeft}>
+                    <Text style={styles.orderId}>ID: {order._id.substring(order._id.length - 8).toUpperCase()}</Text>
+                    <Text style={styles.orderDate}>{formatDate(order.createdAt)}</Text>
+                  </View>
+                  <View style={[styles.statusBadge, { backgroundColor: getStatusColor(order.status) }]}>
+                    <Ionicons name={getStatusIcon(order.status) as any} size={14} color="#FFFFFF" />
+                    <Text style={styles.statusText}>{order.status.toUpperCase()}</Text>
+                  </View>
+                </View>
 
-          {filteredOrders.map((order) => (
-            <View key={order.id} style={styles.orderCard}>
-              {/* Order Header */}
-              <View style={styles.orderHeader}>
-                <View style={styles.orderHeaderLeft}>
-                  <Text style={styles.orderId}>{order.orderId}</Text>
-                  <Text style={styles.orderDate}>{order.orderDate}</Text>
-                </View>
-                <View style={[styles.statusBadge, { backgroundColor: getStatusColor(order.status) }]}>
-                  <Ionicons name={getStatusIcon(order.status)} size={14} color="#FFFFFF" />
-                  <Text style={styles.statusText}>{order.status.toUpperCase()}</Text>
-                </View>
-              </View>
+                {/* Prescription Image (Thumbnail) */}
+                {order.prescriptionImage && (
+                  <View style={styles.prescriptionThumbContainer}>
+                    <Text style={styles.prescriptionLabel}>Prescription:</Text>
+                    <TouchableOpacity onPress={() => setPreviewImage(getFullImageUrl(order.prescriptionImage!))}>
+                      <Image 
+                        source={{ uri: getFullImageUrl(order.prescriptionImage) || undefined }} 
+                        style={styles.prescriptionThumbnail}
+                        resizeMode="cover"
+                      />
+                      <View style={styles.previewOverlay}>
+                        <Ionicons name="eye-outline" size={16} color="#FFFFFF" />
+                        <Text style={styles.previewText}>Tap to preview</Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                )}
 
               {/* Order Items */}
               <View style={styles.orderItems}>
@@ -262,27 +397,36 @@ export default function OrdersScreen() {
                 ))}
               </View>
 
-              {/* Order Details */}
-              <View style={styles.orderDetails}>
-                <View style={styles.detailRow}>
-                  <Ionicons name="business" size={16} color="#2EC4B6" />
-                  <Text style={styles.detailText}>{order.seller}</Text>
-                </View>
-                <View style={styles.detailRow}>
-                  <Ionicons name="location" size={16} color="#2EC4B6" />
-                  <Text style={styles.detailText}>{order.address}</Text>
-                </View>
-                <View style={styles.detailRow}>
-                  <Ionicons name="card" size={16} color="#2EC4B6" />
-                  <Text style={styles.detailText}>{order.paymentMethod}</Text>
-                </View>
-                {order.deliveryDate && (
+                {/* Order Details */}
+                <View style={styles.orderDetails}>
+                  {order.seller && (
+                    <View style={styles.sellerInfo}>
+                      <View style={styles.detailRow}>
+                        <Ionicons name="business" size={16} color="#2EC4B6" />
+                        <Text style={[styles.detailText, { fontWeight: 'bold', color: '#FFFFFF' }]}>
+                          {order.seller.pharmacyName}
+                        </Text>
+                      </View>
+                      {order.seller.address && (
+                        <View style={styles.detailRow}>
+                          <Ionicons name="location" size={16} color="#2EC4B6" />
+                          <Text style={styles.detailText}>{order.seller.address}</Text>
+                        </View>
+                      )}
+                      {(order.seller.phone || order.seller.number) && (
+                        <View style={styles.detailRow}>
+                          <Ionicons name="call" size={16} color="#2EC4B6" />
+                          <Text style={styles.detailText}>{order.seller.phone || order.seller.number}</Text>
+                        </View>
+                      )}
+                    </View>
+                  )}
+                  
                   <View style={styles.detailRow}>
-                    <Ionicons name="calendar" size={16} color="#2EC4B6" />
-                    <Text style={styles.detailText}>Expected: {order.deliveryDate}</Text>
+                    <Ionicons name="map" size={16} color="#2EC4B6" />
+                    <Text style={styles.detailText}>{order.deliveryAddress}</Text>
                   </View>
-                )}
-              </View>
+                </View>
 
               {/* Order Footer */}
               <View style={styles.orderFooter}>
@@ -314,28 +458,39 @@ export default function OrdersScreen() {
                   </TouchableOpacity>
                 )}
 
-                {order.status === 'pending' && (
+                  {order.status === 'pending' && (
+                    <TouchableOpacity
+                      style={[styles.actionButton, { backgroundColor: '#AF52DE' }]}
+                      onPress={() => handleOrderAction(order, 'schedule')}
+                    >
+                      <Ionicons name="calendar-outline" size={18} color="#FFFFFF" />
+                      <Text style={styles.actionButtonText}>Schedule</Text>
+                    </TouchableOpacity>
+                  )}
+
+                  {order.status === 'pending' && (
+                    <TouchableOpacity
+                      style={[styles.actionButton, styles.actionButtonDanger]}
+                      onPress={() => handleOrderAction(order, 'cancel')}
+                    >
+                      <Ionicons name="close-outline" size={18} color="#FFFFFF" />
+                      <Text style={styles.actionButtonText}>Cancel</Text>
+                    </TouchableOpacity>
+                  )}
+
                   <TouchableOpacity
-                    style={[styles.actionButton, styles.actionButtonDanger]}
-                    onPress={() => handleOrderAction(order, 'cancel')}
+                    style={styles.actionButton}
+                    onPress={() => handleOrderAction(order, 'help')}
                   >
-                    <Ionicons name="close-outline" size={18} color="#FFFFFF" />
-                    <Text style={styles.actionButtonText}>Cancel</Text>
+                    <Ionicons name="help-circle-outline" size={18} color="#FFFFFF" />
+                    <Text style={styles.actionButtonText}>Help</Text>
                   </TouchableOpacity>
-                )}
-
-                <TouchableOpacity
-                  style={styles.actionButton}
-                  onPress={() => handleOrderAction(order, 'help')}
-                >
-                  <Ionicons name="help-circle-outline" size={18} color="#FFFFFF" />
-                  <Text style={styles.actionButtonText}>Help</Text>
-                </TouchableOpacity>
+                </View>
               </View>
-            </View>
-          ))}
+            ))
+          )}
 
-          {filteredOrders.length === 0 && (
+          {!loading && filteredOrders.length === 0 && (
             <View style={styles.emptyState}>
               <Ionicons name="bag-outline" size={64} color="#666666" />
               <Text style={styles.emptyStateText}>No orders found</Text>
@@ -346,12 +501,31 @@ export default function OrdersScreen() {
               </Text>
               <TouchableOpacity 
                 style={styles.shopNowButton}
-                onPress={() => Alert.alert('Shop Now', 'Navigate to home screen')}
+                onPress={() => router.push('/')}
               >
                 <Text style={styles.shopNowButtonText}>Shop Now</Text>
               </TouchableOpacity>
             </View>
           )}
+
+          {/* Prescription Preview Modal */}
+          <Modal visible={!!previewImage} transparent animationType="fade">
+            <View style={styles.previewContainer}>
+              <TouchableOpacity 
+                style={styles.closeButton}
+                onPress={() => setPreviewImage(null)}
+              >
+                <Ionicons name="close" size={30} color="#FFFFFF" />
+              </TouchableOpacity>
+              {previewImage && (
+                <Image 
+                  source={{ uri: previewImage }} 
+                  style={styles.fullImage} 
+                  resizeMode="contain" 
+                />
+              )}
+            </View>
+          </Modal>
         </View>
       </ScrollView>
     </View>
@@ -361,7 +535,7 @@ export default function OrdersScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
+    backgroundColor: '#F8FAFC', // Slate 50
   },
   header: {
     flexDirection: 'row',
@@ -370,28 +544,27 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: Platform.OS === 'ios' ? 60 : 40,
     paddingBottom: 16,
+    backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
-    borderBottomColor: '#2EC4B6',
+    borderBottomColor: '#F1F5F9',
   },
   headerTitle: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: '#0F172A',
   },
   headerSubtitle: {
     fontSize: 14,
-    color: '#CCCCCC',
+    color: '#64748B',
     marginTop: 4,
   },
   helpButton: {
     width: 44,
     height: 44,
-    backgroundColor: '#1A1A1A',
+    backgroundColor: '#F1F5F9',
     borderRadius: 22,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#2EC4B6',
   },
   scrollView: {
     flex: 1,
@@ -409,25 +582,31 @@ const styles = StyleSheet.create({
   filterButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1A1A1A',
+    backgroundColor: '#FFFFFF',
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 20,
     marginRight: 8,
     borderWidth: 1,
-    borderColor: '#2EC4B6',
+    borderColor: '#E2E8F0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
   filterButtonActive: {
-    backgroundColor: '#2EC4B6',
+    backgroundColor: '#14B8A6',
+    borderColor: '#14B8A6',
   },
   filterText: {
-    color: '#FFFFFF',
+    color: '#475569',
     fontSize: 14,
     fontWeight: '600',
     marginLeft: 6,
   },
   filterTextActive: {
-    color: '#000000',
+    color: '#FFFFFF',
   },
   ordersContainer: {
     paddingHorizontal: 16,
@@ -435,16 +614,21 @@ const styles = StyleSheet.create({
   ordersCount: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: '#1E293B',
     marginBottom: 16,
   },
   orderCard: {
-    backgroundColor: '#1A1A1A',
-    borderRadius: 12,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
     padding: 16,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: '#2EC4B6',
+    borderColor: '#E2E8F0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 12,
+    elevation: 3,
   },
   orderHeader: {
     flexDirection: 'row',
@@ -453,7 +637,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     paddingBottom: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#2EC4B630',
+    borderBottomColor: '#F1F5F9',
   },
   orderHeaderLeft: {
     flex: 1,
@@ -461,12 +645,12 @@ const styles = StyleSheet.create({
   orderId: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: '#0F172A',
     marginBottom: 4,
   },
   orderDate: {
     fontSize: 12,
-    color: '#CCCCCC',
+    color: '#64748B',
   },
   statusBadge: {
     flexDirection: 'row',
@@ -492,7 +676,7 @@ const styles = StyleSheet.create({
   itemIcon: {
     width: 40,
     height: 40,
-    backgroundColor: '#2EC4B620',
+    backgroundColor: '#F0FDFA',
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
@@ -504,23 +688,23 @@ const styles = StyleSheet.create({
   itemName: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#FFFFFF',
+    color: '#1E293B',
     marginBottom: 2,
   },
   itemQuantity: {
     fontSize: 12,
-    color: '#CCCCCC',
+    color: '#64748B',
   },
   itemPrice: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#2EC4B6',
+    color: '#14B8A6',
   },
   orderDetails: {
     marginBottom: 16,
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: '#2EC4B630',
+    borderTopColor: '#F1F5F9',
   },
   detailRow: {
     flexDirection: 'row',
@@ -530,13 +714,13 @@ const styles = StyleSheet.create({
   },
   detailText: {
     fontSize: 13,
-    color: '#CCCCCC',
+    color: '#475569',
     flex: 1,
   },
   orderFooter: {
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: '#2EC4B630',
+    borderTopColor: '#F1F5F9',
     marginBottom: 12,
   },
   totalContainer: {
@@ -546,12 +730,12 @@ const styles = StyleSheet.create({
   },
   totalLabel: {
     fontSize: 14,
-    color: '#CCCCCC',
+    color: '#64748B',
   },
   totalAmount: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#2EC4B6',
+    color: '#14B8A6',
   },
   orderActions: {
     flexDirection: 'row',
@@ -562,18 +746,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#2EC4B6',
-    paddingVertical: 10,
-    borderRadius: 8,
+    backgroundColor: '#14B8A6',
+    paddingVertical: 12,
+    borderRadius: 12,
     gap: 6,
+    shadowColor: '#14B8A6',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 3,
   },
   actionButtonDanger: {
-    backgroundColor: '#FF6B6B',
+    backgroundColor: '#EF4444',
   },
   actionButtonText: {
     fontSize: 13,
     fontWeight: 'bold',
-    color: '#000000',
+    color: '#FFFFFF',
   },
   emptyState: {
     alignItems: 'center',
@@ -583,17 +772,17 @@ const styles = StyleSheet.create({
   emptyStateText: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: '#1E293B',
     marginTop: 16,
   },
   emptyStateSubText: {
     fontSize: 14,
-    color: '#CCCCCC',
+    color: '#64748B',
     marginTop: 8,
     marginBottom: 24,
   },
   shopNowButton: {
-    backgroundColor: '#2EC4B6',
+    backgroundColor: '#14B8A6',
     paddingHorizontal: 32,
     paddingVertical: 12,
     borderRadius: 24,
@@ -601,6 +790,61 @@ const styles = StyleSheet.create({
   shopNowButtonText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#000000',
+    color: '#FFFFFF',
+  },
+  prescriptionThumbContainer: {
+    marginBottom: 16,
+  },
+  prescriptionLabel: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#1E293B',
+    marginBottom: 8,
+  },
+  prescriptionThumbnail: {
+    width: '100%',
+    height: 120,
+    borderRadius: 8,
+    backgroundColor: '#F1F5F9',
+  },
+  previewOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'rgba(20, 184, 166, 0.8)',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 4,
+    borderBottomLeftRadius: 8,
+    borderBottomRightRadius: 8,
+    gap: 4,
+  },
+  previewText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+  },
+  sellerInfo: {
+    marginBottom: 12,
+    backgroundColor: '#F0FDFA',
+    padding: 12,
+    borderRadius: 12,
+  },
+  previewContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 50,
+    right: 20,
+    zIndex: 10,
+  },
+  fullImage: {
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height * 0.8,
   },
 });
