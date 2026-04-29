@@ -347,7 +347,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: '#0F172A', // Slate 900
   },
   scrollView: {
     flex: 1,
@@ -360,7 +360,7 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-    color: '#64748B',
+    color: '#94A3B8', // Slate 400
   },
   errorContainer: {
     flex: 1,
@@ -379,6 +379,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 12,
+    marginBottom: Platform.OS === 'android' ? 20 : 0,
   },
   retryButtonText: {
     color: '#FFFFFF',
@@ -391,9 +392,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingTop: Platform.OS === 'ios' ? 60 : 40,
     paddingBottom: 16,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#1E293B', // Slate 800
     borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
+    borderBottomColor: '#334155', // Slate 700
   },
   headerLeft: {
     flex: 1,
@@ -401,28 +402,28 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#0F172A',
+    color: '#F8FAFC', // Slate 50
   },
   headerSubtitle: {
     fontSize: 14,
-    color: '#64748B',
+    color: '#94A3B8', // Slate 400
     marginTop: 4,
   },
   notificationButton: {
     padding: 8,
-    backgroundColor: '#F1F5F9',
+    backgroundColor: '#334155', // Slate 700
     borderRadius: 12,
   },
   profileCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#1E293B', // Slate 800
     margin: 16,
     borderRadius: 20,
     padding: 24,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: '#334155', // Slate 700
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.1,
     shadowRadius: 12,
     elevation: 3,
   },
@@ -435,7 +436,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: '#F0FDFA',
+    backgroundColor: '#334155', // Slate 700
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 16,
@@ -446,18 +447,18 @@ const styles = StyleSheet.create({
   profileName: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#0F172A',
+    color: '#F8FAFC',
     marginBottom: 4,
   },
   profileEmail: {
     fontSize: 14,
-    color: '#64748B',
+    color: '#94A3B8',
     marginBottom: 8,
   },
   membershipBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F0FDFA',
+    backgroundColor: '#334155', // Slate 700
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 12,
@@ -471,7 +472,7 @@ const styles = StyleSheet.create({
   },
   editButton: {
     padding: 10,
-    backgroundColor: '#F1F5F9',
+    backgroundColor: '#334155', // Slate 700
     borderRadius: 12,
   },
   contactSection: {
@@ -480,7 +481,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#1E293B',
+    color: '#F8FAFC',
     marginBottom: 16,
   },
   contactItem: {
@@ -490,21 +491,21 @@ const styles = StyleSheet.create({
   },
   contactText: {
     fontSize: 14,
-    color: '#475569',
+    color: '#CBD5E1', // Slate 300
     marginLeft: 12,
     flex: 1,
   },
   statsCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#1E293B', // Slate 800
     marginHorizontal: 16,
     marginBottom: 16,
     borderRadius: 20,
     padding: 24,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: '#334155', // Slate 700
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.1,
     shadowRadius: 12,
     elevation: 3,
   },
@@ -518,25 +519,25 @@ const styles = StyleSheet.create({
   statNumber: {
     fontSize: 20,
     fontWeight: '800',
-    color: '#0F172A',
+    color: '#F8FAFC',
     marginTop: 8,
   },
   statLabel: {
     fontSize: 12,
-    color: '#64748B',
+    color: '#94A3B8',
     marginTop: 4,
   },
   actionsCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#1E293B', // Slate 800
     marginHorizontal: 16,
     marginBottom: 16,
     borderRadius: 20,
     padding: 24,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: '#334155', // Slate 700
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.1,
     shadowRadius: 12,
     elevation: 3,
   },
@@ -545,11 +546,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 14,
     borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
+    borderBottomColor: '#334155', // Slate 700
   },
   actionText: {
     fontSize: 16,
-    color: '#334155',
+    color: '#E2E8F0', // Slate 200
     marginLeft: 12,
     flex: 1,
     fontWeight: '500',
@@ -568,6 +569,6 @@ const styles = StyleSheet.create({
   },
   accountInfoText: {
     fontSize: 12,
-    color: '#94A3B8',
+    color: '#64748B', // Slate 500
   },
 });

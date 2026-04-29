@@ -20,16 +20,16 @@ export default function TabLayout() {
         tabBarButton: HapticTab,
         tabBarStyle: {
           position: 'absolute',
-          backgroundColor: '#FFFFFF',
+          backgroundColor: '#1E293B', // Slate 800
           borderTopWidth: 1,
-          borderTopColor: '#F1F5F9',
+          borderTopColor: '#334155', // Slate 700
           elevation: 10,
           height: Platform.OS === 'ios' ? 88 : 64,
-          paddingBottom: Platform.OS === 'ios' ? 28 : 12,
+          paddingBottom: Platform.OS === 'ios' ? 28 : 24,
           paddingTop: 12,
           shadowColor: '#000',
           shadowOffset: { width: 0, height: -4 },
-          shadowOpacity: 0.05,
+          shadowOpacity: 0.2,
           shadowRadius: 8,
         },
         tabBarLabelStyle: {

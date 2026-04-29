@@ -3,7 +3,7 @@ import { StyleSheet, Platform } from 'react-native';
 export const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: '#F8FAFC', // Slate 50
+    backgroundColor: '#0F172A', // Slate 900
   },
   container: {
     flex: 1,
@@ -19,17 +19,17 @@ export const styles = StyleSheet.create({
   locationContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#1E293B', // Slate 800
     borderRadius: 20,
     paddingVertical: 10,
     paddingHorizontal: 14,
     flex: 1,
     marginRight: 12,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: '#334155', // Slate 700
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
   },
@@ -39,19 +39,19 @@ export const styles = StyleSheet.create({
   locationText: {
     flex: 1,
     fontSize: 13,
-    color: '#1E293B', // Slate 800
+    color: '#F8FAFC', // Slate 50
     fontWeight: '500',
   },
   cartButton: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#1E293B', // Slate 800
     borderRadius: 20,
     padding: 10,
     position: 'relative',
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: '#334155', // Slate 700
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
   },
@@ -78,11 +78,11 @@ export const styles = StyleSheet.create({
   welcomeText: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#0F172A', // Slate 900
+    color: '#F8FAFC', // Slate 50
   },
   welcomeSubText: {
     fontSize: 16,
-    color: '#64748B', // Slate 500
+    color: '#94A3B8', // Slate 400
     marginTop: 4,
   },
   searchWrapper: {
@@ -93,15 +93,15 @@ export const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#1E293B', // Slate 800
     borderRadius: 12,
     paddingHorizontal: 12,
     marginRight: 12,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: '#334155', // Slate 700
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
   },
@@ -111,7 +111,7 @@ export const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     height: 40,
-    color: '#1E293B',
+    color: '#F8FAFC', // Slate 50
   },
   clearButton: {
     padding: 4,
@@ -130,15 +130,15 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   medicineResultsContainer: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#1E293B', // Slate 800
     borderRadius: 16,
     padding: 16,
     marginBottom: 24,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: '#334155', // Slate 700
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.2,
     shadowRadius: 10,
     elevation: 4,
   },
@@ -153,10 +153,10 @@ export const styles = StyleSheet.create({
   resultsTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#0F172A',
+    color: '#F8FAFC',
   },
   cutButton: {
-    backgroundColor: '#F1F5F9',
+    backgroundColor: '#334155', // Slate 700
     borderRadius: 20,
     padding: 4,
   },
@@ -171,12 +171,12 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#F8FAFC',
+    backgroundColor: '#334155', // Slate 700
     borderRadius: 12,
     padding: 12,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#F1F5F9',
+    borderColor: '#475569', // Slate 600
   },
   medicineInfo: {
     flex: 1,
@@ -189,7 +189,7 @@ export const styles = StyleSheet.create({
   medicineName: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#1E293B',
+    color: '#F8FAFC',
   },
   stockBadge: {
     backgroundColor: '#DCFCE7',
@@ -210,7 +210,7 @@ export const styles = StyleSheet.create({
   },
   manufacturerText: {
     fontSize: 14,
-    color: '#64748B',
+    color: '#94A3B8', // Slate 400
     marginTop: 2,
   },
   medicineDetails: {
@@ -220,14 +220,14 @@ export const styles = StyleSheet.create({
     marginTop: 8,
   },
   categoryTag: {
-    backgroundColor: '#F1F5F9',
+    backgroundColor: '#475569', // Slate 600
     borderRadius: 4,
     paddingVertical: 2,
     paddingHorizontal: 6,
   },
   categoryText: {
     fontSize: 12,
-    color: '#475569',
+    color: '#CBD5E1', // Slate 300
   },
   priceText: {
     fontSize: 16,
@@ -248,7 +248,7 @@ export const styles = StyleSheet.create({
   noResultsText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1E293B',
+    color: '#F8FAFC',
     marginTop: 16,
   },
   noResultsSubText: {
@@ -262,7 +262,7 @@ export const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#0F172A',
+    color: '#F8FAFC',
     marginBottom: 16,
   },
   cardRow: {
@@ -271,14 +271,14 @@ export const styles = StyleSheet.create({
   },
   bigCard: {
     width: '48%',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#1E293B', // Slate 800
     borderRadius: 20,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: '#334155', // Slate 700
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.1,
     shadowRadius: 12,
     elevation: 3,
   },
@@ -287,19 +287,19 @@ export const styles = StyleSheet.create({
     marginBottom: 12,
   },
   cardIconBg: {
-    backgroundColor: '#F0FDFA',
+    backgroundColor: '#334155', // Slate 700
     borderRadius: 20,
     padding: 12,
   },
   cardTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#1E293B',
+    color: '#F8FAFC',
     marginBottom: 4,
   },
   cardSubText: {
     fontSize: 12,
-    color: '#64748B',
+    color: '#94A3B8', // Slate 400
     marginBottom: 12,
   },
   prescriptionPreview: {
@@ -327,20 +327,20 @@ export const styles = StyleSheet.create({
   },
   quickActionCard: {
     width: '23%',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#1E293B', // Slate 800
     borderRadius: 16,
     padding: 12,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: '#334155', // Slate 700
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 2,
   },
   quickActionIcon: {
-    backgroundColor: '#F0FDFA',
+    backgroundColor: '#334155', // Slate 700
     borderRadius: 20,
     width: 40,
     height: 40,
@@ -350,19 +350,19 @@ export const styles = StyleSheet.create({
   },
   quickActionText: {
     fontSize: 12,
-    color: '#475569',
+    color: '#CBD5E1', // Slate 300
     textAlign: 'center',
   },
   mapContainer: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#0F172A',
   },
   map: {
     flex: 1,
   },
   mapControls: {
     position: 'absolute',
-    bottom: 20,
+    bottom: Platform.OS === 'android' ? 40 : 20,
     left: 20,
     right: 20,
     flexDirection: 'row',
@@ -371,21 +371,21 @@ export const styles = StyleSheet.create({
   mapButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#1E293B', // Slate 800
     borderRadius: 12,
     paddingVertical: 12,
     paddingHorizontal: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.2,
     shadowRadius: 10,
     elevation: 5,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: '#334155', // Slate 700
   },
   mapButtonText: {
     marginLeft: 8,
-    color: '#1E293B',
+    color: '#F8FAFC',
     fontWeight: 'bold',
   },
   confirmButton: {
@@ -414,7 +414,7 @@ export const styles = StyleSheet.create({
   },
   cartModal: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#0F172A', // Slate 900
   },
   cartHeader: {
     flexDirection: 'row',
@@ -422,13 +422,13 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
+    borderBottomColor: '#334155', // Slate 700
     marginTop: Platform.OS === 'ios' ? 40 : 0,
   },
   cartTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#0F172A',
+    color: '#F8FAFC',
   },
   closeCartButton: {
     padding: 4,
@@ -442,7 +442,7 @@ export const styles = StyleSheet.create({
   emptyCartText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1E293B',
+    color: '#F8FAFC',
     marginTop: 16,
   },
   emptyCartSubText: {
@@ -471,7 +471,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
+    borderBottomColor: '#334155', // Slate 700
   },
   cartItemInfo: {
     flex: 1,
@@ -479,7 +479,7 @@ export const styles = StyleSheet.create({
   cartItemName: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#1E293B',
+    color: '#F8FAFC',
   },
   cartItemManufacturer: {
     fontSize: 14,
@@ -498,13 +498,13 @@ export const styles = StyleSheet.create({
   },
   quantityButton: {
     padding: 4,
-    backgroundColor: '#F1F5F9',
+    backgroundColor: '#334155', // Slate 700
     borderRadius: 8,
   },
   quantityText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#1E293B',
+    color: '#F8FAFC',
     marginHorizontal: 12,
   },
   cartItemTotal: {
@@ -517,8 +517,8 @@ export const styles = StyleSheet.create({
   cartFooter: {
     padding: 16,
     borderTopWidth: 1,
-    borderTopColor: '#F1F5F9',
-    backgroundColor: '#FFFFFF',
+    borderTopColor: '#334155', // Slate 700
+    backgroundColor: '#1E293B', // Slate 800
   },
   totalSection: {
     marginBottom: 16,
@@ -535,7 +535,7 @@ export const styles = StyleSheet.create({
   totalValue: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#1E293B',
+    color: '#F8FAFC',
   },
   deliveryFree: {
     fontSize: 14,
@@ -546,12 +546,12 @@ export const styles = StyleSheet.create({
     marginTop: 8,
     paddingTop: 8,
     borderTopWidth: 1,
-    borderTopColor: '#F1F5F9',
+    borderTopColor: '#334155', // Slate 700
   },
   grandTotalLabel: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#0F172A',
+    color: '#F8FAFC',
   },
   grandTotalValue: {
     fontSize: 18,
@@ -570,6 +570,7 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 10,
     elevation: 4,
+    marginBottom: Platform.OS === 'android' ? 40 : 0,
   },
   placeOrderText: {
     fontSize: 16,
@@ -619,14 +620,14 @@ export const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#1E293B', // Slate 800
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     padding: 16,
     maxHeight: '50%',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.2,
     shadowRadius: 10,
     elevation: 10,
   },
@@ -639,13 +640,13 @@ export const styles = StyleSheet.create({
   sellersListTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#0F172A',
+    color: '#F8FAFC',
   },
   sellersList: {
     marginBottom: 16,
   },
   sellerCard: {
-    backgroundColor: '#F8FAFC',
+    backgroundColor: '#334155', // Slate 700
     borderRadius: 16,
     padding: 16,
     marginBottom: 12,
@@ -653,7 +654,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#F1F5F9',
+    borderColor: '#475569', // Slate 600
   },
   sellerInfo: {
     flex: 1,
@@ -661,7 +662,7 @@ export const styles = StyleSheet.create({
   sellerName: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#1E293B',
+    color: '#F8FAFC',
     marginBottom: 4,
   },
   sellerDetails: {
@@ -672,7 +673,7 @@ export const styles = StyleSheet.create({
   sellerRating: {
     marginLeft: 4,
     marginRight: 12,
-    color: '#1E293B',
+    color: '#F8FAFC',
   },
   sellerDistance: {
     color: '#64748B',
@@ -701,6 +702,7 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 10,
     elevation: 4,
+    marginBottom: Platform.OS === 'android' ? 40 : 0,
   },
   confirmSellerButtonText: {
     color: '#FFFFFF',
@@ -726,7 +728,7 @@ export const styles = StyleSheet.create({
     bottom: 0,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    backgroundColor: 'rgba(15, 23, 42, 0.8)', // Slate 900 with opacity
   },
   noSellersContainer: {
     flex: 1,
@@ -737,7 +739,7 @@ export const styles = StyleSheet.create({
   noSellersText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1E293B',
+    color: '#F8FAFC',
     marginTop: 16,
   },
   noSellersSubText: {

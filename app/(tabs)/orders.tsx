@@ -535,7 +535,7 @@ export default function OrdersScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC', // Slate 50
+    backgroundColor: '#0F172A', // Slate 900
   },
   header: {
     flexDirection: 'row',
@@ -544,24 +544,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: Platform.OS === 'ios' ? 60 : 40,
     paddingBottom: 16,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#1E293B', // Slate 800
     borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
+    borderBottomColor: '#334155', // Slate 700
   },
   headerTitle: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#0F172A',
+    color: '#F8FAFC', // Slate 50
   },
   headerSubtitle: {
     fontSize: 14,
-    color: '#64748B',
+    color: '#94A3B8', // Slate 400
     marginTop: 4,
   },
   helpButton: {
     width: 44,
     height: 44,
-    backgroundColor: '#F1F5F9',
+    backgroundColor: '#334155', // Slate 700
     borderRadius: 22,
     justifyContent: 'center',
     alignItems: 'center',
@@ -582,16 +582,16 @@ const styles = StyleSheet.create({
   filterButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#1E293B', // Slate 800
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 20,
     marginRight: 8,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: '#334155', // Slate 700
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
   },
@@ -600,13 +600,13 @@ const styles = StyleSheet.create({
     borderColor: '#14B8A6',
   },
   filterText: {
-    color: '#475569',
+    color: '#CBD5E1', // Slate 300
     fontSize: 14,
     fontWeight: '600',
     marginLeft: 6,
   },
   filterTextActive: {
-    color: '#FFFFFF',
+    color: '#000000', // Black for contrast against active teal
   },
   ordersContainer: {
     paddingHorizontal: 16,
@@ -614,19 +614,19 @@ const styles = StyleSheet.create({
   ordersCount: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#1E293B',
+    color: '#F8FAFC',
     marginBottom: 16,
   },
   orderCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#1E293B', // Slate 800
     borderRadius: 20,
     padding: 16,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: '#334155', // Slate 700
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.1,
     shadowRadius: 12,
     elevation: 3,
   },
@@ -637,7 +637,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     paddingBottom: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
+    borderBottomColor: '#334155', // Slate 700
   },
   orderHeaderLeft: {
     flex: 1,
@@ -645,12 +645,12 @@ const styles = StyleSheet.create({
   orderId: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#0F172A',
+    color: '#F8FAFC',
     marginBottom: 4,
   },
   orderDate: {
     fontSize: 12,
-    color: '#64748B',
+    color: '#94A3B8',
   },
   statusBadge: {
     flexDirection: 'row',
@@ -676,7 +676,7 @@ const styles = StyleSheet.create({
   itemIcon: {
     width: 40,
     height: 40,
-    backgroundColor: '#F0FDFA',
+    backgroundColor: '#334155', // Slate 700
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
@@ -688,12 +688,12 @@ const styles = StyleSheet.create({
   itemName: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1E293B',
+    color: '#F8FAFC',
     marginBottom: 2,
   },
   itemQuantity: {
     fontSize: 12,
-    color: '#64748B',
+    color: '#94A3B8',
   },
   itemPrice: {
     fontSize: 14,
@@ -704,7 +704,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: '#F1F5F9',
+    borderTopColor: '#334155', // Slate 700
   },
   detailRow: {
     flexDirection: 'row',
@@ -714,13 +714,13 @@ const styles = StyleSheet.create({
   },
   detailText: {
     fontSize: 13,
-    color: '#475569',
+    color: '#CBD5E1', // Slate 300
     flex: 1,
   },
   orderFooter: {
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: '#F1F5F9',
+    borderTopColor: '#334155', // Slate 700
     marginBottom: 12,
   },
   totalContainer: {
@@ -730,7 +730,7 @@ const styles = StyleSheet.create({
   },
   totalLabel: {
     fontSize: 14,
-    color: '#64748B',
+    color: '#94A3B8',
   },
   totalAmount: {
     fontSize: 20,
@@ -755,6 +755,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 8,
     elevation: 3,
+    marginBottom: Platform.OS === 'android' ? 12 : 0,
   },
   actionButtonDanger: {
     backgroundColor: '#EF4444',
@@ -772,12 +773,12 @@ const styles = StyleSheet.create({
   emptyStateText: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#1E293B',
+    color: '#F8FAFC',
     marginTop: 16,
   },
   emptyStateSubText: {
     fontSize: 14,
-    color: '#64748B',
+    color: '#94A3B8',
     marginTop: 8,
     marginBottom: 24,
   },
@@ -786,6 +787,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     paddingVertical: 12,
     borderRadius: 24,
+    marginBottom: Platform.OS === 'android' ? 20 : 0,
   },
   shopNowButtonText: {
     fontSize: 16,
@@ -798,14 +800,14 @@ const styles = StyleSheet.create({
   prescriptionLabel: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#1E293B',
+    color: '#F8FAFC',
     marginBottom: 8,
   },
   prescriptionThumbnail: {
     width: '100%',
     height: 120,
     borderRadius: 8,
-    backgroundColor: '#F1F5F9',
+    backgroundColor: '#334155', // Slate 700
   },
   previewOverlay: {
     position: 'absolute',
@@ -827,7 +829,7 @@ const styles = StyleSheet.create({
   },
   sellerInfo: {
     marginBottom: 12,
-    backgroundColor: '#F0FDFA',
+    backgroundColor: '#334155', // Slate 700
     padding: 12,
     borderRadius: 12,
   },

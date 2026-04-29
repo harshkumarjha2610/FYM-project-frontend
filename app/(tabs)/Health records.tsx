@@ -299,7 +299,7 @@ export default function HealthRecordsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: '#0F172A', // Slate 900
   },
   header: {
     flexDirection: 'row',
@@ -308,18 +308,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: Platform.OS === 'ios' ? 60 : 40,
     paddingBottom: 16,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#1E293B', // Slate 800
     borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
+    borderBottomColor: '#334155', // Slate 700
   },
   headerTitle: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#0F172A',
+    color: '#F8FAFC', // Slate 50
   },
   headerSubtitle: {
     fontSize: 14,
-    color: '#64748B',
+    color: '#94A3B8', // Slate 400
     marginTop: 4,
   },
   addButton: {
@@ -347,7 +347,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#0F172A',
+    color: '#F8FAFC',
     marginBottom: 16,
   },
   metricsGrid: {
@@ -357,14 +357,14 @@ const styles = StyleSheet.create({
   },
   metricCard: {
     width: '48%',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#1E293B', // Slate 800
     borderRadius: 20,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: '#334155', // Slate 700
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.1,
     shadowRadius: 10,
     elevation: 2,
     alignItems: 'center',
@@ -379,17 +379,17 @@ const styles = StyleSheet.create({
   },
   metricName: {
     fontSize: 12,
-    color: '#64748B',
+    color: '#94A3B8', // Slate 400
     marginBottom: 4,
   },
   metricValue: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#1E293B',
+    color: '#F8FAFC',
   },
   metricUnit: {
     fontSize: 12,
-    color: '#64748B',
+    color: '#94A3B8',
   },
   quickActionsRow: {
     flexDirection: 'row',
@@ -397,22 +397,22 @@ const styles = StyleSheet.create({
   },
   quickActionCard: {
     width: '23%',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#1E293B', // Slate 800
     borderRadius: 16,
     padding: 12,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: '#334155', // Slate 700
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 2,
   },
   quickActionIcon: {
     width: 48,
     height: 48,
-    backgroundColor: '#F0FDFA',
+    backgroundColor: '#334155', // Slate 700
     borderRadius: 24,
     justifyContent: 'center',
     alignItems: 'center',
@@ -420,7 +420,7 @@ const styles = StyleSheet.create({
   },
   quickActionText: {
     fontSize: 11,
-    color: '#475569',
+    color: '#CBD5E1', // Slate 300
     textAlign: 'center',
   },
   filterContainer: {
@@ -428,16 +428,16 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   filterButton: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#1E293B', // Slate 800
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
     marginRight: 8,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: '#334155', // Slate 700
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
   },
@@ -446,27 +446,27 @@ const styles = StyleSheet.create({
     borderColor: '#14B8A6',
   },
   filterText: {
-    color: '#475569',
+    color: '#CBD5E1', // Slate 300
     fontSize: 14,
     fontWeight: '600',
   },
   filterTextActive: {
-    color: '#FFFFFF',
+    color: '#000000',
   },
   recordsList: {
     paddingHorizontal: 16,
   },
   recordCard: {
     flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#1E293B', // Slate 800
     borderRadius: 20,
     padding: 16,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: '#334155', // Slate 700
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 2,
     alignItems: 'center',
@@ -474,7 +474,7 @@ const styles = StyleSheet.create({
   recordIconContainer: {
     width: 50,
     height: 50,
-    backgroundColor: '#F0FDFA',
+    backgroundColor: '#334155', // Slate 700
     borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
@@ -486,17 +486,17 @@ const styles = StyleSheet.create({
   recordTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#1E293B',
+    color: '#F8FAFC',
     marginBottom: 4,
   },
   recordDoctor: {
     fontSize: 13,
-    color: '#64748B',
+    color: '#94A3B8',
     marginBottom: 4,
   },
   recordDetails: {
     fontSize: 12,
-    color: '#94A3B8',
+    color: '#CBD5E1',
   },
   recordRight: {
     alignItems: 'flex-end',
@@ -515,12 +515,12 @@ const styles = StyleSheet.create({
   emptyStateText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1E293B',
+    color: '#F8FAFC',
     marginTop: 16,
   },
   emptyStateSubText: {
     fontSize: 14,
-    color: '#64748B',
+    color: '#94A3B8',
     marginTop: 4,
   },
 });

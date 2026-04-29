@@ -321,7 +321,7 @@ export default function MedicineNewsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: '#0F172A', // Slate 900
   },
   header: {
     flexDirection: 'row',
@@ -330,24 +330,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: Platform.OS === 'ios' ? 60 : 40,
     paddingBottom: 16,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#1E293B', // Slate 800
     borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
+    borderBottomColor: '#334155', // Slate 700
   },
   headerTitle: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#0F172A',
+    color: '#F8FAFC', // Slate 50
   },
   headerSubtitle: {
     fontSize: 14,
-    color: '#64748B',
+    color: '#94A3B8', // Slate 400
     marginTop: 4,
   },
   notificationButton: {
     width: 44,
     height: 44,
-    backgroundColor: '#F1F5F9',
+    backgroundColor: '#334155', // Slate 700
     borderRadius: 22,
     justifyContent: 'center',
     alignItems: 'center',
@@ -364,7 +364,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#FFFFFF',
+    borderColor: '#1E293B',
   },
   notificationBadgeText: {
     color: '#FFFFFF',
@@ -384,15 +384,15 @@ const styles = StyleSheet.create({
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#1E293B', // Slate 800
     borderRadius: 16,
     paddingHorizontal: 12,
     paddingVertical: 12,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: '#334155', // Slate 700
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 2,
   },
@@ -400,7 +400,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 8,
     fontSize: 16,
-    color: '#1E293B',
+    color: '#F8FAFC', // Slate 50
   },
   categoriesContainer: {
     paddingLeft: 16,
@@ -412,16 +412,16 @@ const styles = StyleSheet.create({
   categoryButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#1E293B', // Slate 800
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 20,
     marginRight: 8,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: '#334155', // Slate 700
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
   },
@@ -430,13 +430,13 @@ const styles = StyleSheet.create({
     borderColor: '#14B8A6',
   },
   categoryText: {
-    color: '#475569',
+    color: '#CBD5E1', // Slate 300
     fontSize: 14,
     fontWeight: '600',
     marginLeft: 6,
   },
   categoryTextActive: {
-    color: '#FFFFFF',
+    color: '#000000',
   },
   section: {
     paddingHorizontal: 16,
@@ -451,7 +451,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#0F172A',
+    color: '#F8FAFC',
   },
   seeAllText: {
     fontSize: 14,
@@ -460,7 +460,7 @@ const styles = StyleSheet.create({
   },
   resultCount: {
     fontSize: 14,
-    color: '#64748B',
+    color: '#94A3B8',
     marginBottom: 16,
   },
   trendingContainer: {
@@ -468,21 +468,21 @@ const styles = StyleSheet.create({
   },
   trendingCard: {
     width: 280,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#1E293B', // Slate 800
     borderRadius: 20,
     marginRight: 16,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: '#334155', // Slate 700
     overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.1,
     shadowRadius: 10,
     elevation: 3,
   },
   trendingImagePlaceholder: {
     height: 140,
-    backgroundColor: '#F0FDFA',
+    backgroundColor: '#334155', // Slate 700
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -504,7 +504,7 @@ const styles = StyleSheet.create({
   trendingTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#1E293B',
+    color: '#F8FAFC',
     marginBottom: 10,
     lineHeight: 22,
   },
@@ -514,19 +514,19 @@ const styles = StyleSheet.create({
   },
   trendingTime: {
     fontSize: 12,
-    color: '#64748B',
+    color: '#94A3B8',
   },
   newsCard: {
     flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#1E293B', // Slate 800
     borderRadius: 20,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: '#334155', // Slate 700
     overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 2,
   },
@@ -537,7 +537,7 @@ const styles = StyleSheet.create({
   newsImagePlaceholder: {
     width: '100%',
     height: '100%',
-    backgroundColor: '#F0FDFA',
+    backgroundColor: '#334155', // Slate 700
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -562,13 +562,13 @@ const styles = StyleSheet.create({
   newsTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#1E293B',
+    color: '#F8FAFC',
     marginBottom: 8,
     lineHeight: 22,
   },
   newsSummary: {
     fontSize: 13,
-    color: '#475569',
+    color: '#CBD5E1', // Slate 300
     marginBottom: 12,
     lineHeight: 18,
   },
@@ -605,13 +605,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 12,
     borderTopWidth: 1,
-    borderTopColor: '#F1F5F9',
+    borderTopColor: '#334155', // Slate 700
     paddingTop: 12,
   },
   newsActionButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F1F5F9',
+    backgroundColor: '#334155', // Slate 700
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
@@ -625,12 +625,12 @@ const styles = StyleSheet.create({
   emptyStateText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1E293B',
+    color: '#F8FAFC',
     marginTop: 16,
   },
   emptyStateSubText: {
     fontSize: 14,
-    color: '#64748B',
+    color: '#94A3B8',
     marginTop: 4,
   },
 });
