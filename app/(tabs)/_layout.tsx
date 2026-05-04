@@ -24,8 +24,8 @@ export default function TabLayout() {
           borderTopWidth: 1,
           borderTopColor: '#334155', // Slate 700
           elevation: 10,
-          height: Platform.OS === 'ios' ? 88 : 64,
-          paddingBottom: Platform.OS === 'ios' ? 28 : 24,
+          height: Platform.OS === 'ios' ? 88 : 80,
+          paddingBottom: Platform.OS === 'ios' ? 28 : 34,
           paddingTop: 12,
           shadowColor: '#000',
           shadowOffset: { width: 0, height: -4 },
