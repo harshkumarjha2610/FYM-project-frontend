@@ -28,7 +28,6 @@ import {
   Bell,
 } from 'lucide-react-native';
 
-// const API_URL = 'http://192.168.1.3:3000';
 const API_URL = process.env.EXPO_PUBLIC_BACKEND_API;
 
 interface BuyerProfile {
@@ -48,9 +47,7 @@ interface OrderStats {
   totalSpent: number;
 }
 
-export default function HomeScreen() {
-  console.log('🏠 HomeScreen (Buyer Profile) component rendered');
-  
+export default function ProfileScreen() {
   const [profile, setProfile] = useState<BuyerProfile | null>(null);
   const [orderStats, setOrderStats] = useState<OrderStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -59,24 +56,15 @@ export default function HomeScreen() {
 
   // Fetch buyer profile from AsyncStorage and API
   const fetchProfile = async () => {
-    console.log('📱 Fetching buyer profile...');
     try {
-      // Get stored buyer data
       const storedBuyer = await AsyncStorage.getItem('user');
       const token = await AsyncStorage.getItem('token');
       
-      console.log('📦 Stored buyer data:', storedBuyer ? 'Found' : 'Not found');
-      console.log('🔑 Token available:', token ? 'Yes' : 'No');
-
       if (storedBuyer) {
-        const buyerData = JSON.parse(storedBuyer);
-        console.log('👤 Setting profile from stored data:', buyerData.name);
-        setProfile(buyerData);
+        setProfile(JSON.parse(storedBuyer));
       }
 
-      // Fetch fresh data from API if token exists
       if (token) {
-        console.log('🔄 Fetching fresh profile from API...');
         const response = await fetch(`${API_URL}/api/buyer/profile`, {
           method: 'GET',
           headers: {
@@ -85,57 +73,49 @@ export default function HomeScreen() {
           },
         });
 
-        console.log('📡 Profile API response status:', response.status);
-        
         if (response.ok) {
           const data = await response.json();
-          console.log('✅ Fresh profile data received');
           setProfile(data.data.buyer);
-          
-          console.log("Profile data: ", data.data);
-          // Update stored buyer data
           await AsyncStorage.setItem('user', JSON.stringify(data.data.buyer));
-          console.log('💾 Updated stored buyer data');
-        } else {
-          console.log('⚠️ Failed to fetch fresh profile data');
         }
       }
     } catch (error) {
-      console.error('❌ Error fetching profile:', error);
+      console.error('Error fetching profile:', error);
       setError('Failed to load profile');
     } finally {
       setLoading(false);
       setRefreshing(false);
-      console.log('🏁 Profile fetch completed');
     }
   };
 
-  // Fetch order statistics (mock for now - you can implement this in your backend)
+  // Fetch order statistics from backend API
   const fetchOrderStats = async () => {
-    console.log('📊 Fetching order statistics...');
     try {
       const token = await AsyncStorage.getItem('token');
+      const storedBuyer = await AsyncStorage.getItem('user');
       
-      if (token) {
-        // This is a mock implementation - you can create this API endpoint later
-        const mockStats: OrderStats = {
-          totalOrders: 12,
-          completedOrders: 10,
-          pendingOrders: 2,
-          totalSpent: 2850
-        };
+      if (token && storedBuyer) {
+        const buyer = JSON.parse(storedBuyer);
+        const buyerId = buyer.id || buyer._id;
         
-        console.log('📈 Setting mock order stats');
-        setOrderStats(mockStats);
+        if (buyerId) {
+          const res = await fetch(`${API_URL}/api/orders/buyer/${buyerId}/stats`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          const data = await res.json();
+          
+          if (data.success && data.stats) {
+            setOrderStats(data.stats);
+          }
+        }
       }
     } catch (error) {
-      console.error('❌ Error fetching order stats:', error);
+      console.error('Error fetching order stats:', error);
     }
   };
 
   // Handle logout
   const handleLogout = async () => {
-    console.log('🔓 Logout initiated');
     Alert.alert(
       'Logout',
       'Are you sure you want to logout?',
@@ -145,10 +125,7 @@ export default function HomeScreen() {
           text: 'Logout',
           style: 'destructive',
           onPress: async () => {
-            console.log('🔄 Clearing stored data...');
-            await AsyncStorage.multiRemove(['token', 'refreshToken', 'user']);
-            console.log('✅ Stored data cleared');
-            console.log('📍 Navigating to login screen');
+            await AsyncStorage.multiRemove(['token', 'refreshToken', 'user', 'buyerId']);
             router.replace('/(auth)/buyer-login');
           }
         }
@@ -158,22 +135,17 @@ export default function HomeScreen() {
 
   // Handle refresh
   const onRefresh = async () => {
-    console.log('🔄 Profile refresh initiated');
     setRefreshing(true);
     await fetchProfile();
     await fetchOrderStats();
   };
 
-  // Load data on component mount
   useEffect(() => {
-    console.log('🚀 HomeScreen useEffect - Initial data load');
     fetchProfile();
     fetchOrderStats();
   }, []);
 
-  // Loading state
   if (loading) {
-    console.log('⏳ Showing loading state');
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
@@ -184,9 +156,7 @@ export default function HomeScreen() {
     );
   }
 
-  // Error state
   if (error) {
-    console.log('❌ Showing error state:', error);
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.errorContainer}>
@@ -201,143 +171,108 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView 
-        style={styles.scrollView}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
+      <ScrollView
         showsVerticalScrollIndicator={false}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#14B8A6" />}
       >
-        {/* Header */}
+        {/* Header/Profile Info */}
         <View style={styles.header}>
-          <View style={styles.headerLeft}>
-            <Text style={styles.headerTitle}>My Profile</Text>
-            <Text style={styles.headerSubtitle}>Medicine Delivery</Text>
-          </View>
-          <TouchableOpacity style={styles.notificationButton}>
-            <Bell size={24} color="#6B7280" />
-          </TouchableOpacity>
-        </View>
-
-        {/* Profile Card */}
-        <View style={styles.profileCard}>
-          <View style={styles.profileHeader}>
+          <View style={styles.profileInfo}>
             <View style={styles.avatarContainer}>
-              <User size={40} color="#14B8A6" />
-            </View>
-            <View style={styles.profileInfo}>
-              <Text style={styles.profileName}>{profile?.name || 'Buyer'}</Text>
-              <Text style={styles.profileEmail}>{profile?.email || 'No email'}</Text>
-              <View style={styles.membershipBadge}>
-                <Shield size={12} color="#14B8A6" />
-                <Text style={styles.membershipText}>Verified Member</Text>
+              <View style={styles.avatar}>
+                <Text style={styles.avatarText}>{profile?.name?.charAt(0) || 'U'}</Text>
               </View>
+              <TouchableOpacity style={styles.editAvatarButton}>
+                <Edit3 size={16} color="#FFFFFF" />
+              </TouchableOpacity>
             </View>
-            <TouchableOpacity 
-              style={styles.editButton}
-              onPress={() => {
-                console.log('✏️ Edit profile pressed');
-                // Navigate to edit profile screen (implement later)
-                Alert.alert('Coming Soon', 'Profile editing feature will be available soon!');
-              }}
-            >
-              <Edit3 size={20} color="#6B7280" />
+            <Text style={styles.name}>{profile?.name || 'User'}</Text>
+            <Text style={styles.email}>{profile?.email || 'user@example.com'}</Text>
+            <TouchableOpacity style={styles.editProfileButton}>
+              <Text style={styles.editProfileText}>Edit Profile</Text>
             </TouchableOpacity>
           </View>
+        </View>
 
-          {/* Contact Information */}
-          <View style={styles.contactSection}>
-            <Text style={styles.sectionTitle}>Contact Information</Text>
-            
-            <View style={styles.contactItem}>
-              <Mail size={20} color="#6B7280" />
-              <Text style={styles.contactText}>{profile?.email || 'Not provided'}</Text>
+        {/* Order Stats */}
+        <View style={styles.statsContainer}>
+          <View style={styles.statsRow}>
+            <View style={styles.statBox}>
+              <Text style={styles.statValue}>{orderStats?.totalOrders || 0}</Text>
+              <Text style={styles.statLabel}>Total Orders</Text>
             </View>
-            
-            {profile?.mobile && (
-              <View style={styles.contactItem}>
-                <Phone size={20} color="#6B7280" />
-                <Text style={styles.contactText}>{profile.mobile}</Text>
-              </View>
-            )}
-            
-            {profile?.address && (
-              <View style={styles.contactItem}>
-                <MapPin size={20} color="#6B7280" />
-                <Text style={styles.contactText}>
-                  {profile.address}
-                  {profile.pincode && ` - ${profile.pincode}`}
-                </Text>
-              </View>
-            )}
+            <View style={styles.statBox}>
+              <Text style={styles.statValue}>{orderStats?.completedOrders || 0}</Text>
+              <Text style={styles.statLabel}>Completed</Text>
+            </View>
+            <View style={styles.statBox}>
+              <Text style={styles.statValue}>{orderStats?.pendingOrders || 0}</Text>
+              <Text style={styles.statLabel}>Pending</Text>
+            </View>
+          </View>
+          <View style={[styles.statBox, styles.wideStatBox]}>
+            <Text style={[styles.statValue, { color: '#14B8A6' }]}>₹{orderStats?.totalSpent || 0}</Text>
+            <Text style={styles.statLabel}>Total Spent</Text>
           </View>
         </View>
 
-        {/* Order Statistics */}
-        {orderStats && (
-          <View style={styles.statsCard}>
-            <Text style={styles.sectionTitle}>Order Statistics</Text>
-            <View style={styles.statsGrid}>
-              <View style={styles.statItem}>
-                <ShoppingBag size={24} color="#14B8A6" />
-                <Text style={styles.statNumber}>{orderStats.totalOrders}</Text>
-                <Text style={styles.statLabel}>Total Orders</Text>
-              </View>
-              <View style={styles.statItem}>
-                <Heart size={24} color="#EF4444" />
-                <Text style={styles.statNumber}>{orderStats.completedOrders}</Text>
-                <Text style={styles.statLabel}>Completed</Text>
-              </View>
-              <View style={styles.statItem}>
-                <Text style={styles.statNumber}>₹{orderStats.totalSpent}</Text>
-                <Text style={styles.statLabel}>Total Spent</Text>
-              </View>
+        {/* Menu Options */}
+        <View style={styles.menuContainer}>
+          <Text style={styles.sectionTitle}>Account Settings</Text>
+          
+          <TouchableOpacity style={styles.menuItem}>
+            <View style={[styles.menuIcon, { backgroundColor: 'rgba(20, 184, 166, 0.1)' }]}>
+              <User size={20} color="#14B8A6" />
             </View>
-          </View>
-        )}
+            <Text style={styles.menuText}>Personal Details</Text>
+            <Bell size={18} color="#64748B" />
+          </TouchableOpacity>
 
-        {/* Quick Actions */}
-        <View style={styles.actionsCard}>
-          <Text style={styles.sectionTitle}>Quick Actions</Text>
-          
-          <TouchableOpacity 
-            style={styles.actionItem}
-            onPress={() => {
-              console.log('📋 Order history pressed');
-              // Navigate to order history (implement later)
-              Alert.alert('Coming Soon', 'Order history feature will be available soon!');
-            }}
-          >
-            <ShoppingBag size={20} color="#6B7280" />
-            <Text style={styles.actionText}>Order History</Text>
+          <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/(tabs)/orders')}>
+            <View style={[styles.menuIcon, { backgroundColor: 'rgba(59, 130, 246, 0.1)' }]}>
+              <ShoppingBag size={20} color="#3B82F6" />
+            </View>
+            <Text style={styles.menuText}>Order History</Text>
+            <Bell size={18} color="#64748B" />
           </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={styles.actionItem}
-            onPress={() => {
-              console.log('⚙️ Settings pressed');
-              // Navigate to settings (implement later)
-              Alert.alert('Coming Soon', 'Settings feature will be available soon!');
-            }}
-          >
-            <Settings size={20} color="#6B7280" />
-            <Text style={styles.actionText}>Settings</Text>
+
+          <TouchableOpacity style={styles.menuItem}>
+            <View style={[styles.menuIcon, { backgroundColor: 'rgba(239, 68, 68, 0.1)' }]}>
+              <Heart size={20} color="#EF4444" />
+            </View>
+            <Text style={styles.menuText}>My Wishlist</Text>
+            <Bell size={18} color="#64748B" />
           </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={[styles.actionItem, styles.logoutItem]}
-            onPress={handleLogout}
-          >
-            <LogOut size={20} color="#EF4444" />
-            <Text style={[styles.actionText, styles.logoutText]}>Logout</Text>
+
+          <Text style={styles.sectionTitle}>Support & Legal</Text>
+
+          <TouchableOpacity style={styles.menuItem}>
+            <View style={[styles.menuIcon, { backgroundColor: 'rgba(139, 92, 246, 0.1)' }]}>
+              <Shield size={20} color="#8B5CF6" />
+            </View>
+            <Text style={styles.menuText}>Privacy Policy</Text>
+            <Bell size={18} color="#64748B" />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.menuItem}>
+            <View style={[styles.menuIcon, { backgroundColor: 'rgba(245, 158, 11, 0.1)' }]}>
+              <Settings size={20} color="#F59E0B" />
+            </View>
+            <Text style={styles.menuText}>Settings</Text>
+            <Bell size={18} color="#64748B" />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={[styles.menuItem, styles.logoutItem]} onPress={handleLogout}>
+            <View style={[styles.menuIcon, { backgroundColor: 'rgba(239, 68, 68, 0.1)' }]}>
+              <LogOut size={20} color="#EF4444" />
+            </View>
+            <Text style={[styles.menuText, { color: '#EF4444' }]}>Logout</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Account Info */}
-        <View style={styles.accountInfo}>
-          <Text style={styles.accountInfoText}>
-            Member since {new Date(profile?.createdAt || Date.now()).toLocaleDateString()}
-          </Text>
+        <View style={styles.footer}>
+          <Text style={styles.versionText}>Version 1.0.0</Text>
+          <Text style={styles.copyrightText}>© 2026 FYM Medicine Delivery</Text>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -347,228 +282,192 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0F172A', // Slate 900
-  },
-  scrollView: {
-    flex: 1,
+    backgroundColor: '#0F172A',
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 20,
   },
   loadingText: {
-    marginTop: 16,
+    marginTop: 10,
+    color: '#94A3B8',
     fontSize: 16,
-    color: '#94A3B8', // Slate 400
   },
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 24,
+    padding: 20,
   },
   errorText: {
-    fontSize: 16,
     color: '#EF4444',
+    fontSize: 16,
     textAlign: 'center',
-    marginBottom: 16,
+    marginBottom: 20,
   },
   retryButton: {
     backgroundColor: '#14B8A6',
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 12,
-    marginBottom: Platform.OS === 'android' ? 20 : 0,
   },
   retryButtonText: {
     color: '#FFFFFF',
-    fontWeight: '600',
+    fontWeight: 'bold',
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    paddingTop: 20,
+    paddingBottom: 30,
+    backgroundColor: '#1E293B',
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
     alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingTop: Platform.OS === 'ios' ? 60 : 40,
-    paddingBottom: 16,
-    backgroundColor: '#1E293B', // Slate 800
-    borderBottomWidth: 1,
-    borderBottomColor: '#334155', // Slate 700
-  },
-  headerLeft: {
-    flex: 1,
-  },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#F8FAFC', // Slate 50
-  },
-  headerSubtitle: {
-    fontSize: 14,
-    color: '#94A3B8', // Slate 400
-    marginTop: 4,
-  },
-  notificationButton: {
-    padding: 8,
-    backgroundColor: '#334155', // Slate 700
-    borderRadius: 12,
-  },
-  profileCard: {
-    backgroundColor: '#1E293B', // Slate 800
-    margin: 16,
-    borderRadius: 20,
-    padding: 24,
-    borderWidth: 1,
-    borderColor: '#334155', // Slate 700
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 3,
-  },
-  profileHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  avatarContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: '#334155', // Slate 700
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 16,
   },
   profileInfo: {
-    flex: 1,
+    alignItems: 'center',
   },
-  profileName: {
-    fontSize: 22,
+  avatarContainer: {
+    position: 'relative',
+    marginBottom: 16,
+  },
+  avatar: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: '#14B8A6',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 4,
+    borderColor: '#334155',
+  },
+  avatarText: {
+    fontSize: 40,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+  },
+  editAvatarButton: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    backgroundColor: '#3B82F6',
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#1E293B',
+  },
+  name: {
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#F8FAFC',
     marginBottom: 4,
   },
-  profileEmail: {
+  email: {
     fontSize: 14,
     color: '#94A3B8',
-    marginBottom: 8,
-  },
-  membershipBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#334155', // Slate 700
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 12,
-    alignSelf: 'flex-start',
-  },
-  membershipText: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#14B8A6',
-    marginLeft: 6,
-  },
-  editButton: {
-    padding: 10,
-    backgroundColor: '#334155', // Slate 700
-    borderRadius: 12,
-  },
-  contactSection: {
-    marginTop: 8,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#F8FAFC',
     marginBottom: 16,
   },
-  contactItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  contactText: {
-    fontSize: 14,
-    color: '#CBD5E1', // Slate 300
-    marginLeft: 12,
-    flex: 1,
-  },
-  statsCard: {
-    backgroundColor: '#1E293B', // Slate 800
-    marginHorizontal: 16,
-    marginBottom: 16,
+  editProfileButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 8,
     borderRadius: 20,
-    padding: 24,
+    backgroundColor: '#334155',
     borderWidth: 1,
-    borderColor: '#334155', // Slate 700
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 3,
+    borderColor: '#475569',
   },
-  statsGrid: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  statItem: {
-    alignItems: 'center',
-  },
-  statNumber: {
-    fontSize: 20,
-    fontWeight: '800',
+  editProfileText: {
     color: '#F8FAFC',
-    marginTop: 8,
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  statsContainer: {
+    padding: 20,
+    marginTop: -20,
+  },
+  statsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  statBox: {
+    flex: 1,
+    backgroundColor: '#1E293B',
+    borderRadius: 20,
+    padding: 16,
+    alignItems: 'center',
+    marginHorizontal: 4,
+    borderWidth: 1,
+    borderColor: '#334155',
+  },
+  wideStatBox: {
+    flex: 0,
+    marginHorizontal: 4,
+  },
+  statValue: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#F8FAFC',
+    marginBottom: 4,
   },
   statLabel: {
     fontSize: 12,
     color: '#94A3B8',
-    marginTop: 4,
   },
-  actionsCard: {
-    backgroundColor: '#1E293B', // Slate 800
-    marginHorizontal: 16,
-    marginBottom: 16,
-    borderRadius: 20,
-    padding: 24,
-    borderWidth: 1,
-    borderColor: '#334155', // Slate 700
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 3,
+  menuContainer: {
+    paddingHorizontal: 20,
+    paddingBottom: 20,
   },
-  actionItem: {
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#64748B',
+    marginTop: 20,
+    marginBottom: 12,
+    marginLeft: 4,
+  },
+  menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 14,
-    borderBottomWidth: 1,
-    borderBottomColor: '#334155', // Slate 700
+    backgroundColor: '#1E293B',
+    padding: 12,
+    borderRadius: 16,
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: '#334155',
   },
-  actionText: {
-    fontSize: 16,
-    color: '#E2E8F0', // Slate 200
-    marginLeft: 12,
+  menuIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  menuText: {
     flex: 1,
+    fontSize: 16,
+    color: '#F8FAFC',
     fontWeight: '500',
   },
   logoutItem: {
-    borderBottomWidth: 0,
-    marginTop: 8,
+    marginTop: 12,
+    borderColor: 'rgba(239, 68, 68, 0.2)',
   },
-  logoutText: {
-    color: '#EF4444',
-  },
-  accountInfo: {
+  footer: {
     alignItems: 'center',
-    paddingVertical: 24,
-    marginBottom: 40,
+    paddingVertical: 30,
   },
-  accountInfoText: {
+  versionText: {
     fontSize: 12,
-    color: '#64748B', // Slate 500
+    color: '#475569',
+    marginBottom: 4,
+  },
+  copyrightText: {
+    fontSize: 12,
+    color: '#475569',
   },
 });

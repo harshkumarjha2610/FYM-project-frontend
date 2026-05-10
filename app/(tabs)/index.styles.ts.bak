@@ -784,19 +784,6 @@ export const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '700',
   },
-  prescriptionActions: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 10,
-  },
-  removePrescriptionButton: {
-    paddingVertical: 8,
-  },
-  removePrescriptionText: {
-    color: '#EF4444',
-    fontSize: 13,
-    fontWeight: '700',
-  },
   matchingOverlay: {
     flex: 1,
     backgroundColor: 'rgba(15, 23, 42, 0.78)',
@@ -835,29 +822,6 @@ export const styles = StyleSheet.create({
     fontWeight: '700',
     marginBottom: 18,
   },
-  progressBarContainer: {
-    width: '100%',
-    height: 12,
-    backgroundColor: '#F1F5F9',
-    borderRadius: 6,
-    overflow: 'hidden',
-    marginVertical: 12,
-  },
-  progressBarFill: {
-    height: '100%',
-    backgroundColor: '#14B8A6',
-  },
-  progressInfo: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-    marginBottom: 16,
-  },
-  progressText: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#64748B',
-  },
   scheduleOrderButton: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -872,19 +836,6 @@ export const styles = StyleSheet.create({
     color: '#000000',
     fontWeight: '800',
     fontSize: 15,
-  },
-  searchingNoteContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    justifyContent: 'center',
-    marginTop: 8,
-    marginBottom: 4,
-  },
-  searchingNote: {
-    color: '#64748B',
-    fontSize: 13,
-    fontWeight: '600',
   },
   viewOrdersButton: {
     backgroundColor: '#14B8A6',
@@ -931,14 +882,6 @@ export const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: '#F8FAFC',
-  },
-  modalOrderId: {
-    fontSize: 12,
-    color: '#14B8A6',
-    fontWeight: '800',
-    marginTop: 2,
-    textTransform: 'uppercase',
-    letterSpacing: 1,
   },
   modalSubtitle: {
     fontSize: 14,
@@ -1033,7 +976,7 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#CBD5E1',
   },
-  scheduleConfirmBtn: {
+  confirmBtn: {
     flex: 2,
     paddingVertical: 16,
     borderRadius: 16,
@@ -1045,11 +988,12 @@ export const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 4,
   },
-  scheduleConfirmBtnText: {
+  confirmBtnText: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#FFFFFF',
   },
 });
+
 
 

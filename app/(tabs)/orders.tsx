@@ -38,10 +38,12 @@ interface SellerInfo {
 interface Order {
   _id: string;
   buyerId: string;
-  status: 'pending' | 'accepted' | 'confirmed' | 'preparing' | 'shipped' | 'delivered' | 'cancelled' | 'rejected' | 'scheduled';
-  items: OrderItem[];
+  status: 'pending' | 'accepted' | 'confirmed' | 'packing' | 'waiting_for_rider' | 'shipped' | 'out_for_delivery' | 'delivered' | 'cancelled' | 'rejected' | 'scheduled';
+  items: Array<{ name: string; quantity: number; price: number }>;
   totalAmount: number;
   prescriptionImage: string | null;
+  scheduledAt: string | null;
+  scheduledFor: string | null;
   deliveryAddress: string;
   createdAt: string;
   updatedAt: string;
@@ -56,12 +58,25 @@ export default function OrdersScreen() {
   const [loading, setLoading] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [scheduleModalVisible, setScheduleModalVisible] = useState(false);
+  const [schedulingOrderId, setSchedulingOrderId] = useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('10:00 AM');
+
 
   const fetchOrders = async (showLoading = true) => {
     try {
       if (showLoading) setLoading(true);
-      const buyerId = await AsyncStorage.getItem('buyerId');
+      let buyerId = await AsyncStorage.getItem('buyerId');
       const token = await AsyncStorage.getItem('token');
+      const userStr = await AsyncStorage.getItem('user');
+
+      // Fallback: If buyerId is missing but user object exists, extract it
+      if (!buyerId && userStr) {
+        const user = JSON.parse(userStr);
+        buyerId = user.id || user._id;
+        if (buyerId) await AsyncStorage.setItem('buyerId', buyerId);
+      }
 
       if (!buyerId || !token) {
         console.log('⚠️ Authentication data missing');
@@ -93,7 +108,7 @@ export default function OrdersScreen() {
     }, [])
   );
 
-  // Socket setup for real-time updates
+  // Socket setup and 7-minute timer logic
   useEffect(() => {
     let socket: Socket | null = null;
 
@@ -120,14 +135,8 @@ export default function OrdersScreen() {
 
         socket.on('order-unaccepted', (data: any) => {
           console.log('⚠️ Order unaccepted alert:', data);
-          Alert.alert(
-            'No Sellers Found',
-            'We couldn\'t find a seller for your order immediately. Would you like to schedule it for later?',
-            [
-              { text: 'No', style: 'cancel' },
-              { text: 'Schedule', onPress: () => handleScheduleOrder(data.orderId) }
-            ]
-          );
+          setSchedulingOrderId(data.orderId);
+          setScheduleModalVisible(true);
           fetchOrders(false);
         });
 
@@ -153,7 +162,9 @@ export default function OrdersScreen() {
     { id: 'pending', label: 'Pending', icon: 'time-outline' },
     { id: 'scheduled', label: 'Scheduled', icon: 'calendar-outline' },
     { id: 'accepted', label: 'Accepted', icon: 'checkmark-circle-outline' },
-    { id: 'shipped', label: 'Shipped', icon: 'rocket-outline' },
+    { id: 'packing', label: 'Packing', icon: 'gift-outline' },
+    { id: 'waiting_for_rider', label: 'Waiting Rider', icon: 'person-outline' },
+    { id: 'out_for_delivery', label: 'Out for Delivery', icon: 'bicycle-outline' },
     { id: 'delivered', label: 'Delivered', icon: 'checkmark-done-outline' },
     { id: 'cancelled', label: 'Cancelled', icon: 'close-circle-outline' },
   ];
@@ -163,12 +174,14 @@ export default function OrdersScreen() {
       pending: '#FFB800',
       accepted: '#5AC8FA',
       confirmed: '#5AC8FA',
-      preparing: '#FF9500',
+      packing: '#AF52DE',
+      waiting_for_rider: '#5856D6',
       shipped: '#AF52DE',
+      out_for_delivery: '#0A84FF',
       delivered: '#32D74B',
       cancelled: '#FF6B6B',
       rejected: '#FF6B6B',
-      scheduled: '#AF52DE',
+      scheduled: '#14B8A6',
     };
     return colors[status] || '#2EC4B6';
   };
@@ -177,8 +190,11 @@ export default function OrdersScreen() {
     const icons: { [key: string]: any } = {
       pending: 'time',
       scheduled: 'calendar',
-      confirmed: 'checkmark-circle',      preparing: 'construct',
+      confirmed: 'checkmark-circle',
+      packing: 'gift',
+      waiting_for_rider: 'person',
       shipped: 'rocket',
+      out_for_delivery: 'bicycle',
       delivered: 'checkmark-done-circle',
       cancelled: 'close-circle',
     };
@@ -208,17 +224,23 @@ export default function OrdersScreen() {
     }
   };
 
-  const handleScheduleOrder = async (orderId: string) => {
+  const handleScheduleOrder = async (orderId: string, scheduledDate?: Date) => {
     try {
       const token = await AsyncStorage.getItem('token');
       if (!token) return;
 
-      const response = await axios.patch(`${API_URL}/api/orders/${orderId}/schedule`, {}, {
+      const payload = scheduledDate ? { scheduledFor: scheduledDate.toISOString() } : {};
+      
+      const response = await axios.patch(`${API_URL}/api/orders/${orderId}/schedule`, payload, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
       if (response.data.success) {
-        Alert.alert('Scheduled! 📅', 'Your order is now scheduled. Sellers can see and accept it anytime.');
+        Alert.alert('Scheduled! 📅', scheduledDate 
+          ? `Your order is scheduled for ${scheduledDate.toLocaleString()}.`
+          : 'Your order is now scheduled. Sellers can see and accept it anytime.'
+        );
+        setScheduleModalVisible(false);
         fetchOrders(false);
       }
     } catch (error: any) {
@@ -226,6 +248,22 @@ export default function OrdersScreen() {
       Alert.alert('Error', error.response?.data?.message || 'Failed to schedule order');
     }
   };
+
+  const confirmSchedule = () => {
+    if (!schedulingOrderId) return;
+    
+    // Combine selectedDate and selectedTimeSlot
+    const [time, period] = selectedTimeSlot.split(' ');
+    let [hours, minutes] = time.split(':').map(Number);
+    if (period === 'PM' && hours < 12) hours += 12;
+    if (period === 'AM' && hours === 12) hours = 0;
+    
+    const finalDate = new Date(selectedDate);
+    finalDate.setHours(hours, minutes, 0, 0);
+    
+    handleScheduleOrder(schedulingOrderId, finalDate);
+  };
+
 
   const formatDate = (dateString: string) => {
     try {
@@ -260,14 +298,8 @@ export default function OrdersScreen() {
         Alert.alert('Reorder', `Would you like to reorder from ${order.seller?.pharmacyName || 'this seller'}?`);
         break;
       case 'schedule':
-        Alert.alert(
-          'Schedule Order',
-          'No sellers were found immediately. Would you like to schedule this order for later? It will be visible to all pharmacies.',
-          [
-            { text: 'Cancel', style: 'cancel' },
-            { text: 'Schedule', onPress: () => handleScheduleOrder(order._id) },
-          ]
-        );
+        setSchedulingOrderId(order._id);
+        setScheduleModalVisible(true);
         break;
       case 'cancel':
         Alert.alert(
@@ -426,6 +458,15 @@ export default function OrdersScreen() {
                     <Ionicons name="map" size={16} color="#2EC4B6" />
                     <Text style={styles.detailText}>{order.deliveryAddress}</Text>
                   </View>
+
+                  {order.status === 'scheduled' && order.scheduledFor && (
+                    <View style={[styles.detailRow, { marginTop: 8, backgroundColor: 'rgba(46, 196, 182, 0.1)', padding: 8, borderRadius: 8 }]}>
+                      <Ionicons name="calendar" size={16} color="#2EC4B6" />
+                      <Text style={[styles.detailText, { fontWeight: 'bold', color: '#2EC4B6' }]}>
+                        Scheduled For: {formatDate(order.scheduledFor)}
+                      </Text>
+                    </View>
+                  )}
                 </View>
 
               {/* Order Footer */}
@@ -524,6 +565,90 @@ export default function OrdersScreen() {
                   resizeMode="contain" 
                 />
               )}
+            </View>
+          </Modal>
+
+          {/* Schedule Order Modal */}
+          <Modal
+            visible={scheduleModalVisible}
+            transparent
+            animationType="slide"
+            onRequestClose={() => setScheduleModalVisible(false)}
+          >
+            <View style={styles.modalOverlay}>
+              <View style={styles.scheduleModalContent}>
+                <View style={styles.modalHeader}>
+                  <Text style={styles.modalTitle}>Schedule Delivery</Text>
+                  <TouchableOpacity onPress={() => setScheduleModalVisible(false)}>
+                    <Ionicons name="close" size={24} color="#CBD5E1" />
+                  </TouchableOpacity>
+                </View>
+
+                <Text style={styles.modalSubtitle}>Select a date and time for your delivery (up to 7 days in advance)</Text>
+
+                <Text style={styles.sectionLabel}>Select Date</Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.dateSelector}>
+                  {Array.from({ length: 7 }, (_, i) => {
+                    const d = new Date();
+                    d.setDate(d.getDate() + i);
+                    const isSelected = d.toDateString() === selectedDate.toDateString();
+                    return (
+                      <TouchableOpacity
+                        key={i}
+                        style={[styles.dateItem, isSelected && styles.dateItemActive]}
+                        onPress={() => setSelectedDate(d)}
+                      >
+                        <Text style={[styles.dateDay, isSelected && styles.dateTextActive]}>
+                          {i === 0 ? 'Today' : d.toLocaleDateString('en-IN', { weekday: 'short' })}
+                        </Text>
+                        <Text style={[styles.dateNumber, isSelected && styles.dateTextActive]}>
+                          {d.getDate()}
+                        </Text>
+                        <Text style={[styles.dateMonth, isSelected && styles.dateTextActive]}>
+                          {d.toLocaleDateString('en-IN', { month: 'short' })}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </ScrollView>
+
+                <Text style={styles.sectionLabel}>Select Time Slot</Text>
+                <View style={styles.timeSlotsGrid}>
+                  {[
+                    '09:00 AM', '10:00 AM', '11:00 AM', '12:00 PM',
+                    '01:00 PM', '02:00 PM', '03:00 PM', '04:00 PM',
+                    '05:00 PM', '06:00 PM', '07:00 PM', '08:00 PM'
+                  ].map((slot) => {
+                    const isSelected = slot === selectedTimeSlot;
+                    return (
+                      <TouchableOpacity
+                        key={slot}
+                        style={[styles.timeSlotItem, isSelected && styles.timeSlotItemActive]}
+                        onPress={() => setSelectedTimeSlot(slot)}
+                      >
+                        <Text style={[styles.timeSlotText, isSelected && styles.timeSlotTextActive]}>
+                          {slot}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+
+                <View style={styles.modalActions}>
+                  <TouchableOpacity
+                    style={styles.cancelBtn}
+                    onPress={() => setScheduleModalVisible(false)}
+                  >
+                    <Text style={styles.cancelBtnText}>Cancel</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.confirmBtn}
+                    onPress={confirmSchedule}
+                  >
+                    <Text style={styles.confirmBtnText}>Confirm Schedule</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
             </View>
           </Modal>
         </View>
@@ -849,4 +974,140 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height * 0.8,
   },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(15, 23, 42, 0.95)', // Darker overlay
+    justifyContent: 'flex-end',
+  },
+  scheduleModalContent: {
+    backgroundColor: '#1E293B',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    padding: 24,
+    minHeight: '60%',
+    borderWidth: 1,
+    borderColor: '#334155',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#F8FAFC',
+  },
+  modalSubtitle: {
+    fontSize: 14,
+    color: '#94A3B8',
+    marginBottom: 24,
+    lineHeight: 20,
+  },
+  sectionLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#F8FAFC',
+    marginBottom: 12,
+    marginTop: 8,
+  },
+  dateSelector: {
+    marginBottom: 20,
+  },
+  dateItem: {
+    width: 80,
+    height: 100,
+    backgroundColor: '#334155',
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+    borderWidth: 1,
+    borderColor: '#475569',
+  },
+  dateItemActive: {
+    backgroundColor: '#14B8A6',
+    borderColor: '#2DD4BF',
+  },
+  dateDay: {
+    fontSize: 12,
+    color: '#94A3B8',
+    marginBottom: 4,
+  },
+  dateNumber: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#F8FAFC',
+    marginBottom: 2,
+  },
+  dateMonth: {
+    fontSize: 12,
+    color: '#94A3B8',
+  },
+  dateTextActive: {
+    color: '#FFFFFF',
+  },
+  timeSlotsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 32,
+  },
+  timeSlotItem: {
+    width: '31%',
+    paddingVertical: 12,
+    backgroundColor: '#334155',
+    borderRadius: 12,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#475569',
+  },
+  timeSlotItemActive: {
+    backgroundColor: 'rgba(20, 184, 166, 0.2)',
+    borderColor: '#14B8A6',
+  },
+  timeSlotText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#CBD5E1',
+  },
+  timeSlotTextActive: {
+    color: '#14B8A6',
+    fontWeight: 'bold',
+  },
+  modalActions: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  cancelBtn: {
+    flex: 1,
+    paddingVertical: 16,
+    borderRadius: 16,
+    backgroundColor: '#334155',
+    alignItems: 'center',
+  },
+  cancelBtnText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#CBD5E1',
+  },
+  confirmBtn: {
+    flex: 2,
+    paddingVertical: 16,
+    borderRadius: 16,
+    backgroundColor: '#14B8A6',
+    alignItems: 'center',
+    shadowColor: '#14B8A6',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  confirmBtnText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+  },
 });
+

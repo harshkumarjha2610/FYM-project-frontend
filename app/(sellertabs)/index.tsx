@@ -375,7 +375,7 @@ const SellerDashboard = () => {
       <View style={styles.header}>
         <View>
           <Text style={styles.headerTitle}>Incoming Orders</Text>
-          <Text style={styles.headerSubtitle}>🔔 Auto-refresh every 30s</Text>
+          {/* <Text style={styles.headerSubtitle}>🔔 Auto-refresh every 30s</Text> */}
         </View>
       </View>
 

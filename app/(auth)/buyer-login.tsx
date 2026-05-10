@@ -1350,6 +1350,7 @@ export default function BuyerLoginScreen() {
         await AsyncStorage.setItem('token', data.data.token);
         await AsyncStorage.setItem('refreshToken', data.data.refreshToken);
         await AsyncStorage.setItem('user', JSON.stringify(data.data.buyer));
+        await AsyncStorage.setItem('buyerId', data.data.buyer.id || data.data.buyer._id);
 
         router.replace('/(tabs)');
       } else {

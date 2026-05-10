@@ -134,7 +134,7 @@ const ScheduledOrdersScreen = () => {
                           {order.items?.map((i: any) => i.name).join(", ")}
                         </Text>
                         <Text style={styles.timeTag}>
-                          Scheduled: {new Date(order.scheduledAt || order.createdAt).toLocaleString()}
+                          Scheduled For: {order.scheduledFor ? new Date(order.scheduledFor).toLocaleString() : new Date(order.createdAt).toLocaleString()}
                         </Text>
                       </View>
                       <View style={styles.rightMeta}>
