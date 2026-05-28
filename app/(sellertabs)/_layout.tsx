@@ -31,27 +31,27 @@ export default function SellerTabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Dashboard',
+          title: 'Live Orders',
           tabBarIcon: ({ size, color }) => (
             <BarChart3 size={size} color={color} strokeWidth={2} />
           ),
         }}
       />
       <Tabs.Screen
-        name="orders"
+        name="scheduled-orders"
         options={{
-          title: 'Orders',
+          title: 'Scheduled Orders',
           tabBarIcon: ({ size, color }) => (
-            <ShoppingCart size={size} color={color} strokeWidth={2} />
+            <Calendar size={size} color={color} strokeWidth={2} />
           ),
         }}
       />
       <Tabs.Screen
-        name="scheduled-orders"
+        name="orders"
         options={{
-          title: 'Scheduled',
+          title: 'Accepted Orders',
           tabBarIcon: ({ size, color }) => (
-            <Calendar size={size} color={color} strokeWidth={2} />
+            <ShoppingCart size={size} color={color} strokeWidth={2} />
           ),
         }}
       />

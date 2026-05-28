@@ -149,7 +149,7 @@ export default function ProfileScreen() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#14B8A6" />
+          <ActivityIndicator size="large" color="#2ec5b6" />
           <Text style={styles.loadingText}>Loading your profile...</Text>
         </View>
       </SafeAreaView>
@@ -173,7 +173,7 @@ export default function ProfileScreen() {
     <SafeAreaView style={styles.container}>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#14B8A6" />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#2ec5b6" />}
       >
         {/* Header/Profile Info */}
         <View style={styles.header}>
@@ -211,7 +211,7 @@ export default function ProfileScreen() {
             </View>
           </View>
           <View style={[styles.statBox, styles.wideStatBox]}>
-            <Text style={[styles.statValue, { color: '#14B8A6' }]}>₹{orderStats?.totalSpent || 0}</Text>
+            <Text style={[styles.statValue, { color: '#2ec5b6' }]}>₹{orderStats?.totalSpent || 0}</Text>
             <Text style={styles.statLabel}>Total Spent</Text>
           </View>
         </View>
@@ -222,7 +222,7 @@ export default function ProfileScreen() {
           
           <TouchableOpacity style={styles.menuItem}>
             <View style={[styles.menuIcon, { backgroundColor: 'rgba(20, 184, 166, 0.1)' }]}>
-              <User size={20} color="#14B8A6" />
+              <User size={20} color="#2ec5b6" />
             </View>
             <Text style={styles.menuText}>Personal Details</Text>
             <Bell size={18} color="#64748B" />
@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   retryButton: {
-    backgroundColor: '#14B8A6',
+    backgroundColor: '#2ec5b6',
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 12,
@@ -336,7 +336,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: '#14B8A6',
+    backgroundColor: '#2ec5b6',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 4,
@@ -471,3 +471,4 @@ const styles = StyleSheet.create({
     color: '#475569',
   },
 });
+

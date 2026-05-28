@@ -91,13 +91,13 @@ export default function HealthRecordsScreen() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'normal':
-        return '#2EC4B6';
+        return '#2ec5b6';
       case 'warning':
         return '#FFB800';
       case 'critical':
         return '#FF6B6B';
       default:
-        return '#2EC4B6';
+        return '#2ec5b6';
     }
   };
 
@@ -160,7 +160,7 @@ export default function HealthRecordsScreen() {
               onPress={() => Alert.alert('Upload Report', 'Feature coming soon!')}
             >
               <View style={styles.quickActionIcon}>
-                <Ionicons name="cloud-upload-outline" size={24} color="#2EC4B6" />
+                <Ionicons name="cloud-upload-outline" size={24} color="#2ec5b6" />
               </View>
               <Text style={styles.quickActionText}>Upload Report</Text>
             </TouchableOpacity>
@@ -170,7 +170,7 @@ export default function HealthRecordsScreen() {
               onPress={() => Alert.alert('Book Appointment', 'Feature coming soon!')}
             >
               <View style={styles.quickActionIcon}>
-                <Ionicons name="calendar-outline" size={24} color="#2EC4B6" />
+                <Ionicons name="calendar-outline" size={24} color="#2ec5b6" />
               </View>
               <Text style={styles.quickActionText}>Book Test</Text>
             </TouchableOpacity>
@@ -180,7 +180,7 @@ export default function HealthRecordsScreen() {
               onPress={() => Alert.alert('Reminders', 'Feature coming soon!')}
             >
               <View style={styles.quickActionIcon}>
-                <Ionicons name="alarm-outline" size={24} color="#2EC4B6" />
+                <Ionicons name="alarm-outline" size={24} color="#2ec5b6" />
               </View>
               <Text style={styles.quickActionText}>Reminders</Text>
             </TouchableOpacity>
@@ -190,7 +190,7 @@ export default function HealthRecordsScreen() {
               onPress={() => Alert.alert('Share Records', 'Feature coming soon!')}
             >
               <View style={styles.quickActionIcon}>
-                <Ionicons name="share-social-outline" size={24} color="#2EC4B6" />
+                <Ionicons name="share-social-outline" size={24} color="#2ec5b6" />
               </View>
               <Text style={styles.quickActionText}>Share</Text>
             </TouchableOpacity>
@@ -264,7 +264,7 @@ export default function HealthRecordsScreen() {
                 <Ionicons 
                   name={getRecordIcon(record.type)} 
                   size={24} 
-                  color="#2EC4B6" 
+                  color="#2ec5b6" 
                 />
               </View>
               
@@ -323,13 +323,13 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   addButton: {
-    backgroundColor: '#14B8A6',
+    backgroundColor: '#2ec5b6',
     width: 44,
     height: 44,
     borderRadius: 22,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#14B8A6',
+    shadowColor: '#2ec5b6',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 8,
@@ -442,8 +442,8 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   filterButtonActive: {
-    backgroundColor: '#14B8A6',
-    borderColor: '#14B8A6',
+    backgroundColor: '#2ec5b6',
+    borderColor: '#2ec5b6',
   },
   filterText: {
     color: '#CBD5E1', // Slate 300
@@ -503,7 +503,7 @@ const styles = StyleSheet.create({
   },
   recordDate: {
     fontSize: 12,
-    color: '#14B8A6',
+    color: '#2ec5b6',
     marginBottom: 8,
     fontWeight: '600',
   },
@@ -524,3 +524,4 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
 });
+

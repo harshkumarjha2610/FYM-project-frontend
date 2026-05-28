@@ -74,8 +74,7 @@ const HomeScreen: React.FC = () => {
   const [cartCount, setCartCount] = useState<number>(0);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [showCart, setShowCart] = useState<boolean>(false);
-  const [prescriptionImage, setPrescriptionImage] = useState<string | null>(null);
-  const [prescriptionUri, setPrescriptionUri] = useState<string | null>(null); // Store the file URI
+  const [prescriptionImages, setPrescriptionImages] = useState<string[]>([]);
   const [medicines, setMedicines] = useState<Medicine[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedLocation, setSelectedLocation] = useState<string>('Enable GPS to get location');
@@ -97,7 +96,31 @@ const HomeScreen: React.FC = () => {
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('10:00 AM');
   const [matchProgress, setMatchProgress] = useState<number>(0);
   const [socket, setSocket] = useState<Socket | null>(null);
+  const [matchingOptions, setMatchingOptions] = useState<Array<{ r: number; discount: number[] }>>([]);
 
+  const DEFAULT_MATCHING_OPTIONS = [
+    { r: 2000, discount: [15, 20] },
+    { r: 5000, discount: [15, 20] },
+    { r: 2000, discount: [10, 12, 15, 20] },
+    { r: 5000, discount: [10, 12, 15, 20] },
+    { r: 7000, discount: [0] },
+    { r: 200000, discount: [0, 5, 10, 12, 15, 20] },
+  ];
+
+  const fetchMatchingOptions = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      if (!token) return;
+      const response = await axios.get(`${API_URL}/api/orders/matching-options`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (response.data?.success && Array.isArray(response.data?.options)) {
+        setMatchingOptions(response.data.options);
+      }
+    } catch (error) {
+      console.error('Fetch matching options error:', error);
+    }
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -133,6 +156,7 @@ const HomeScreen: React.FC = () => {
       await requestLocationPermission();
       await getCurrentLocation();
       await fetchMedicines();
+      await fetchMatchingOptions();
     })();
 
     // Socket Setup
@@ -322,7 +346,7 @@ const HomeScreen: React.FC = () => {
   const findNearestSellers = async () => {
     console.log('🎯 FYM button clicked - PLACING ORDER');
     
-    if (!prescriptionImage && cartItems.length === 0) {
+    if (prescriptionImages.length === 0 && cartItems.length === 0) {
       Alert.alert('Empty Cart', 'Please add some medicines to your cart before placing an order.');
       return;
     }
@@ -376,17 +400,19 @@ const HomeScreen: React.FC = () => {
         coordinates: [userCoordinates.longitude, userCoordinates.latitude],
       }));
 
-      // Append prescription image as file if exists
-      if (prescriptionUri) {
-        const filename = prescriptionUri.split('/').pop() || 'prescription.jpg';
-        const match = /\.(\w+)$/.exec(filename);
-        const type = match ? `image/${match[1]}` : 'image/jpeg';
-        
-        formData.append('prescriptionImage', {
-          uri: prescriptionUri,
-          name: filename,
-          type: type,
-        } as any);
+      // Append prescription images as files if any exist
+      if (prescriptionImages.length > 0) {
+        prescriptionImages.forEach((uri) => {
+          const filename = uri.split('/').pop() || `prescription-${Date.now()}.jpg`;
+          const match = /\.(\w+)$/.exec(filename);
+          const type = match ? `image/${match[1]}` : 'image/jpeg';
+
+          formData.append('prescriptionImages', {
+            uri,
+            name: filename,
+            type: type,
+          } as any);
+        });
       }
 
       console.log('🚀 FYM - Placing order with FormData');
@@ -446,20 +472,18 @@ const HomeScreen: React.FC = () => {
 
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [4, 3],
+        allowsEditing: false,
+        allowsMultipleSelection: true,
         quality: 0.8,
-        // Remove base64: true, we want the file URI instead
       });
 
       console.log('Gallery result:', result);
 
       if (!result.canceled && result.assets && result.assets.length > 0) {
-        const asset = result.assets[0];
-        setPrescriptionUri(asset.uri); // Store the file URI
-        setPrescriptionImage(asset.uri); // For preview display
-        Alert.alert('Success', 'Prescription uploaded from gallery!');
-        console.log('✅ Prescription image set from gallery:', asset.uri);
+        const newUris = result.assets.map((asset) => asset.uri).filter(Boolean) as string[];
+        setPrescriptionImages((prev) => [...prev, ...newUris]);
+        Alert.alert('Success', `${newUris.length} prescription image${newUris.length > 1 ? 's' : ''} uploaded from gallery!`);
+        console.log('✅ Prescription images set from gallery:', newUris);
       }
     } catch (error) {
       console.error('❌ Gallery error:', error);
@@ -488,19 +512,16 @@ const HomeScreen: React.FC = () => {
       console.log('✅ Camera permission granted, launching camera...');
 
       const result = await ImagePicker.launchCameraAsync({
-        allowsEditing: true,
-        aspect: [4, 3],
+        allowsEditing: false,
         quality: 0.8,
-        // Remove base64: true, we want the file URI instead
       });
 
       console.log('Camera result:', result);
 
       if (!result.canceled && result.assets && result.assets.length > 0) {
         const asset = result.assets[0];
-        setPrescriptionUri(asset.uri); // Store the file URI
-        setPrescriptionImage(asset.uri); // For preview display
-        Alert.alert('Success', 'Prescription photo taken successfully!');
+        setPrescriptionImages((prev) => [...prev, asset.uri]);
+        Alert.alert('Success', 'Prescription photo added successfully!');
         console.log('✅ Prescription image set from camera:', asset.uri);
       }
     } catch (error) {
@@ -510,15 +531,15 @@ const HomeScreen: React.FC = () => {
   };
 
   const handleUploadPrescription = async () => {
-    console.log('🔄 Upload prescription clicked, current image:', prescriptionImage ? 'exists' : 'none');
-    
-    if (prescriptionImage) {
+    console.log('🔄 Upload prescription clicked, current images:', prescriptionImages.length);
+
+    if (prescriptionImages.length > 0) {
       Alert.alert(
         'Prescription Uploaded',
-        'Would you like to change the prescription?',
+        'You can add more prescription images or keep the existing ones.',
         [
-          { text: 'Change', onPress: () => showImagePickerOptions() },
-          { text: 'Keep', style: 'cancel' },
+          { text: 'Add more', onPress: () => showImagePickerOptions() },
+          { text: 'Cancel', style: 'cancel' },
         ]
       );
     } else {
@@ -606,8 +627,32 @@ const HomeScreen: React.FC = () => {
   const clearPlacedOrderDraft = () => {
     setCartItems([]);
     setCartCount(0);
-    setPrescriptionImage(null);
-    setPrescriptionUri(null);
+    setPrescriptionImages([]);
+  };
+
+  const handleCancelActiveOrder = async () => {
+    if (!activeOrderId) return;
+    try {
+      setLoading(true);
+      const token = await AsyncStorage.getItem('token');
+      if (!token) return;
+
+      const response = await axios.patch(
+        `${API_URL}/api/orders/${activeOrderId}/cancel`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (response.data?.success) {
+        Alert.alert('Order Cancelled', 'Your order has been cancelled.');
+        closeMatchingModal();
+      }
+    } catch (error: any) {
+      console.error('Cancel order error:', error);
+      Alert.alert('Error', error.response?.data?.message || 'Failed to cancel order');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleScheduleActiveOrder = async (scheduledDate?: Date) => {
@@ -645,14 +690,8 @@ const HomeScreen: React.FC = () => {
   const confirmSchedule = () => {
     if (!activeOrderId) return;
     
-    // Combine selectedDate and selectedTimeSlot
-    const [time, period] = selectedTimeSlot.split(' ');
-    let [hours, minutes] = time.split(':').map(Number);
-    if (period === 'PM' && hours < 12) hours += 12;
-    if (period === 'AM' && hours === 12) hours = 0;
-    
     const finalDate = new Date(selectedDate);
-    finalDate.setHours(hours, minutes, 0, 0);
+    finalDate.setHours(21, 0, 0, 0); // 9:00 PM
     
     handleScheduleActiveOrder(finalDate);
   };
@@ -715,20 +754,22 @@ const HomeScreen: React.FC = () => {
         coordinates: [userCoordinates.longitude, userCoordinates.latitude],
       }));
 
-      // Append prescription image as file if exists
-      if (prescriptionUri) {
-        const filename = prescriptionUri.split('/').pop() || 'prescription.jpg';
-        const match = /\.(\w+)$/.exec(filename);
-        const type = match ? `image/${match[1]}` : 'image/jpeg';
-        
-        formData.append('prescriptionImage', {
-          uri: prescriptionUri,
-          name: filename,
-          type: type,
-        } as any);
+      // Append prescription images as files if any exist
+      if (prescriptionImages.length > 0) {
+        prescriptionImages.forEach((uri) => {
+          const filename = uri.split('/').pop() || `prescription-${Date.now()}.jpg`;
+          const match = /\.(\w+)$/.exec(filename);
+          const type = match ? `image/${match[1]}` : 'image/jpeg';
+
+          formData.append('prescriptionImages', {
+            uri,
+            name: filename,
+            type: type,
+          } as any);
+        });
       }
 
-      console.log('🚀 Placing order with FormData');
+      console.log('🚀 FYM - Placing order with FormData');
 
       const response = await axios.post(
         `${API_URL}/api/orders`,
@@ -773,6 +814,18 @@ const HomeScreen: React.FC = () => {
     setSearchText(text);
     setShowSuggestions(text.length > 0);
   };
+
+  const getActiveMatchingOption = () => {
+    const optionsList = matchingOptions && matchingOptions.length > 0 ? matchingOptions : DEFAULT_MATCHING_OPTIONS;
+    if (!matchingStartedAt) return optionsList[0];
+    const elapsedSeconds = (Date.now() - matchingStartedAt) / 1000;
+    const tierIndex = Math.min(Math.floor(elapsedSeconds / 70), optionsList.length - 1);
+    return optionsList[Math.max(0, tierIndex)];
+  };
+
+  const currentOption = getActiveMatchingOption();
+  const currentRadiusKm = currentOption ? (currentOption.r / 1000).toFixed(0) : '2';
+  const currentDiscountText = currentOption ? currentOption.discount.join(', ') : '15, 20';
 
   return (
     <View style={styles.mainContainer}>
@@ -845,7 +898,7 @@ const HomeScreen: React.FC = () => {
             {userCoordinates && (
               <Marker coordinate={userCoordinates}>
                 <View style={styles.userMarker}>
-                  <Ionicons name="person" size={24} color="#2EC4B6" />
+                  <Ionicons name="person" size={24} color="#2ec5b6" />
                 </View>
               </Marker>
             )}
@@ -869,7 +922,7 @@ const HomeScreen: React.FC = () => {
 
             {loading ? (
               <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color="#2EC4B6" />
+                <ActivityIndicator size="large" color="#2ec5b6" />
                 <Text style={styles.loadingText}>Loading sellers...</Text>
               </View>
             ) : nearestSellers.length === 0 ? (
@@ -931,13 +984,13 @@ const HomeScreen: React.FC = () => {
                 style={styles.closeCartButton}
                 disabled={loading}
               >
-                <Ionicons name="close" size={24} color="#2EC4B6" />
+                <Ionicons name="close" size={24} color="#2ec5b6" />
               </TouchableOpacity>
             </View>
 
             {loading ? (
               <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color="#2EC4B6" />
+                <ActivityIndicator size="large" color="#2ec5b6" />
                 <Text style={styles.loadingText}>Processing...</Text>
               </View>
             ) : cartItems.length === 0 ? (
@@ -954,25 +1007,28 @@ const HomeScreen: React.FC = () => {
               </View>
             ) : (
               <>
-                {prescriptionImage && (
+                {prescriptionImages.length > 0 && (
                   <View style={styles.cartPrescriptionBox}>
                     <View style={styles.cartPrescriptionHeader}>
-                      <Ionicons name="document-attach" size={18} color="#14B8A6" />
-                      <Text style={styles.cartPrescriptionTitle}>Prescription added</Text>
+                      <Ionicons name="document-attach" size={18} color="#2ec5b6" />
+                      <Text style={styles.cartPrescriptionTitle}>{`Prescription${prescriptionImages.length > 1 ? 's' : ''} added`}</Text>
                     </View>
-                    <Image source={{ uri: prescriptionImage }} style={styles.cartPrescriptionImage} />
+                    <View style={styles.prescriptionImageList}>
+                      {prescriptionImages.map((uri, index) => (
+                        <View key={`${uri}-${index}`} style={styles.prescriptionImageItem}>
+                          <Image source={{ uri }} style={styles.cartPrescriptionImage} resizeMode="contain" />
+                          <TouchableOpacity
+                            style={styles.removePrescriptionButton}
+                            onPress={() => setPrescriptionImages((prev) => prev.filter((_, i) => i !== index))}
+                          >
+                            <Text style={styles.removePrescriptionText}>Remove</Text>
+                          </TouchableOpacity>
+                        </View>
+                      ))}
+                    </View>
                     <View style={styles.prescriptionActions}>
                       <TouchableOpacity onPress={handleUploadPrescription} style={styles.changePrescriptionButton}>
-                        <Text style={styles.changePrescriptionText}>Change</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity 
-                        onPress={() => {
-                          setPrescriptionImage(null);
-                          setPrescriptionUri(null);
-                        }} 
-                        style={styles.removePrescriptionButton}
-                      >
-                        <Text style={styles.removePrescriptionText}>Remove</Text>
+                        <Text style={styles.changePrescriptionText}>Add more</Text>
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -991,7 +1047,7 @@ const HomeScreen: React.FC = () => {
                           style={styles.quantityButton}
                           onPress={() => removeFromCart(item.id)}
                         >
-                          <Ionicons name="remove" size={20} color="#2EC4B6" />
+                          <Ionicons name="remove" size={20} color="#2ec5b6" />
                         </TouchableOpacity>
 
                         <Text style={styles.quantityText}>{item.quantity}</Text>
@@ -1000,7 +1056,7 @@ const HomeScreen: React.FC = () => {
                           style={styles.quantityButton}
                           onPress={() => addToCart(item)}
                         >
-                          <Ionicons name="add" size={20} color="#2EC4B6" />
+                          <Ionicons name="add" size={20} color="#2ec5b6" />
                         </TouchableOpacity>
                       </View>
 
@@ -1047,12 +1103,12 @@ const HomeScreen: React.FC = () => {
           <View style={styles.matchingPanel}>
             <View style={styles.matchingIconWrap}>
               {matchingStatus === 'pending' ? (
-                <Ionicons name="search" size={42} color="#14B8A6" />
+                <Ionicons name="search" size={42} color="#2ec5b6" />
               ) : (
                 <Ionicons
                   name={matchingStatus === 'scheduled' ? 'calendar' : 'checkmark-circle'}
                   size={42}
-                  color="#14B8A6"
+                  color="#2ec5b6"
                 />
               )}
             </View>
@@ -1082,7 +1138,7 @@ const HomeScreen: React.FC = () => {
 
             <Text style={styles.matchingSubtitle}>
               {matchingStatus === 'pending'
-                ? 'We are contacting verified pharmacies within 10km of your location to fulfill your order.'
+                ? `sending request ${currentRadiusKm} km radius and ${currentDiscountText}% discount offering pharmacies`
                 : matchingStatus === 'scheduled'
                   ? 'Every seller can now see this order until the deadline.'
                   : `Your order is ${matchingStatus.replace(/_/g, ' ')}. You can track it in Orders.`}
@@ -1112,11 +1168,11 @@ const HomeScreen: React.FC = () => {
             )}
 
             <TouchableOpacity
-              style={styles.matchingSecondaryButton}
-              onPress={closeMatchingModal}
+              style={[styles.matchingSecondaryButton, matchingStatus === 'pending' && { borderColor: '#EF4444', borderWidth: 1 }]}
+              onPress={matchingStatus === 'pending' ? handleCancelActiveOrder : closeMatchingModal}
             >
-              <Text style={styles.matchingSecondaryText}>
-                {matchingStatus === 'pending' ? 'Keep searching in background' : 'Close'}
+              <Text style={[styles.matchingSecondaryText, matchingStatus === 'pending' && { color: '#EF4444' }]}>
+                {matchingStatus === 'pending' ? 'Cancel Order' : 'Close'}
               </Text>
             </TouchableOpacity>
           </View>
@@ -1132,12 +1188,12 @@ const HomeScreen: React.FC = () => {
             disabled={loading}
           >
             <View style={styles.locationIconContainer}>
-              <Ionicons name="location" size={18} color="#2EC4B6" />
+              <Ionicons name="location" size={18} color="#2ec5b6" />
             </View>
             <Text style={styles.locationText} numberOfLines={1}>
               {isLocating ? 'Detecting location...' : selectedLocation}
             </Text>
-            <Ionicons name="chevron-down" size={16} color="#2EC4B6" />
+            <Ionicons name="chevron-down" size={16} color="#2ec5b6" />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -1163,7 +1219,7 @@ const HomeScreen: React.FC = () => {
         <View style={styles.searchWrapper}>
           <View style={styles.searchBar}>
             <View style={styles.searchIconContainer}>
-              <Ionicons name="search" size={20} color="#2EC4B6" />
+              <Ionicons name="search" size={20} color="#2ec5b6" />
             </View>
             <TextInput
               style={styles.searchInput}
@@ -1264,7 +1320,7 @@ const HomeScreen: React.FC = () => {
                       <Ionicons
                         name={medicine.inStock ? 'add-circle' : 'ban'}
                         size={24}
-                        color={medicine.inStock ? '#2EC4B6' : '#666'}
+                        color={medicine.inStock ? '#2ec5b6' : '#666'}
                       />
                     </TouchableOpacity>
                   </View>
@@ -1301,19 +1357,20 @@ const HomeScreen: React.FC = () => {
                   </View>
                   <Text style={styles.cardTitle}>Upload Prescription</Text>
                   <Text style={styles.cardSubText}>
-                    {prescriptionImage ? 'Prescription uploaded!' : 'Take a photo or upload your prescription'}
+                    {prescriptionImages.length > 0 ? 'Prescription uploaded!' : 'Take a photo or upload your prescription'}
                   </Text>
-                  {prescriptionImage && (
+                  {prescriptionImages.length > 0 && (
                     <Image
-                      source={{ uri: prescriptionImage }} // Now using file URI directly
+                      source={{ uri: prescriptionImages[0] }}
                       style={styles.prescriptionPreview}
+                      resizeMode="contain"
                     />
                   )}
                   <View style={styles.cardAction}>
                     <Text style={styles.cardActionText}>
-                      {prescriptionImage ? 'Change Prescription' : 'Get Started'}
+                      {prescriptionImages.length > 0 ? 'Change Prescription' : 'Get Started'}
                     </Text>
-                    <Ionicons name="arrow-forward" size={16} color="#2EC4B6" />
+                    <Ionicons name="arrow-forward" size={16} color="#2ec5b6" />
                   </View>
                 </TouchableOpacity>
 
@@ -1329,7 +1386,7 @@ const HomeScreen: React.FC = () => {
                   </Text>
                   <View style={styles.cardAction}>
                     <Text style={styles.cardActionText}>Talk to Expert</Text>
-                    <Ionicons name="arrow-forward" size={16} color="#2EC4B6" />
+                    <Ionicons name="arrow-forward" size={16} color="#2ec5b6" />
                   </View>
                 </TouchableOpacity>
               </View>
@@ -1373,7 +1430,7 @@ const HomeScreen: React.FC = () => {
 
       {loading && (
         <View style={styles.globalLoading}>
-          <ActivityIndicator size="large" color="#2EC4B6" />
+          <ActivityIndicator size="large" color="#2ec5b6" />
           <Text style={styles.loadingText}>Please wait...</Text>
         </View>
       )}
@@ -1399,7 +1456,7 @@ const HomeScreen: React.FC = () => {
               </TouchableOpacity>
             </View>
 
-            <Text style={styles.modalSubtitle}>Select a date and time for your delivery (up to 7 days in advance)</Text>
+            <Text style={styles.modalSubtitle}>Select a date for your delivery (by evening 9pm)</Text>
 
             <Text style={styles.sectionLabel}>Select Date</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.dateSelector}>
@@ -1427,28 +1484,6 @@ const HomeScreen: React.FC = () => {
               })}
             </ScrollView>
 
-            <Text style={styles.sectionLabel}>Select Time Slot</Text>
-            <View style={styles.timeSlotsGrid}>
-              {[
-                '09:00 AM', '10:00 AM', '11:00 AM', '12:00 PM',
-                '01:00 PM', '02:00 PM', '03:00 PM', '04:00 PM',
-                '05:00 PM', '06:00 PM', '07:00 PM', '08:00 PM'
-              ].map((slot) => {
-                const isSelected = slot === selectedTimeSlot;
-                return (
-                  <TouchableOpacity
-                    key={slot}
-                    style={[styles.timeSlotItem, isSelected && styles.timeSlotItemActive]}
-                    onPress={() => setSelectedTimeSlot(slot)}
-                  >
-                    <Text style={[styles.timeSlotText, isSelected && styles.timeSlotTextActive]}>
-                      {slot}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-
             <View style={styles.modalActions}>
               <TouchableOpacity
                 style={styles.cancelBtn}
@@ -1472,6 +1507,7 @@ const HomeScreen: React.FC = () => {
 
 
 export default HomeScreen;
+
 
 
 

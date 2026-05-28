@@ -268,7 +268,7 @@
 //               }}
 //               disabled={loading}
 //             >
-//               <ArrowLeft size={20} color="#14B8A6" />
+//               <ArrowLeft size={20} color="#2ec5b6" />
 //             </TouchableOpacity>
 //             <Text style={styles.headerTitle}>Buyer Registration</Text>
 //           </View>
@@ -618,7 +618,7 @@
 //     borderRadius: 12,
 //     overflow: 'hidden',
 //     marginTop: 8,
-//     backgroundColor: '#14B8A6',
+//     backgroundColor: '#2ec5b6',
 //   },
 //   registerButtonDisabled: {
 //     opacity: 0.6,
@@ -647,7 +647,7 @@
 //     color: '#6B7280',
 //   },
 //   loginLink: {
-//     color: '#14B8A6',
+//     color: '#2ec5b6',
 //     fontWeight: '600',
 //     fontSize: 16,
 //   },
@@ -859,7 +859,7 @@ export default function BuyerRegisterScreen() {
         {options.showToggle && (
           <TouchableOpacity onPress={options.onToggle} style={styles.eyeButton}>
             {options.toggleValue ? (
-              <EyeOff size={20} color="#14B8A6" />
+              <EyeOff size={20} color="#2ec5b6" />
             ) : (
               <Eye size={20} color="#94A3B8" />
             )}
@@ -978,7 +978,7 @@ export default function BuyerRegisterScreen() {
                     onPress={() => setStep(2)}
                   >
                     <LinearGradient
-                      colors={['#14B8A6', '#0D9488']}
+                      colors={['#2ec5b6', '#0D9488']}
                       style={styles.nextButtonGradient}
                     >
                       <Text style={styles.nextButtonText}>Continue</Text>
@@ -1029,7 +1029,7 @@ export default function BuyerRegisterScreen() {
                       disabled={loading}
                     >
                       <LinearGradient
-                        colors={loading ? ['#99F6E4', '#5EEAD4'] : ['#14B8A6', '#0D9488']}
+                        colors={loading ? ['#99F6E4', '#5EEAD4'] : ['#2ec5b6', '#0D9488']}
                         style={styles.registerButtonGradient}
                       >
                         {loading ? (

@@ -120,13 +120,13 @@ export default function MedicineNewsScreen() {
 
   const getCategoryColor = (category: string) => {
     const colors: { [key: string]: string } = {
-      research: '#2EC4B6',
+      research: '#2ec5b6',
       covid: '#FF6B6B',
       pharma: '#5AC8FA',
       wellness: '#32D74B',
       latest: '#FFB800',
     };
-    return colors[category] || '#2EC4B6';
+    return colors[category] || '#2ec5b6';
   };
 
   return (
@@ -156,7 +156,7 @@ export default function MedicineNewsScreen() {
         {/* Search Bar */}
         <View style={styles.searchSection}>
           <View style={styles.searchBar}>
-            <Ionicons name="search" size={20} color="#2EC4B6" />
+            <Ionicons name="search" size={20} color="#2ec5b6" />
             <TextInput
               style={styles.searchInput}
               placeholder="Search news..."
@@ -227,7 +227,7 @@ export default function MedicineNewsScreen() {
                   onPress={() => Alert.alert(article.title, article.summary)}
                 >
                   <View style={styles.trendingImagePlaceholder}>
-                    <Ionicons name="newspaper" size={40} color="#2EC4B6" />
+                    <Ionicons name="newspaper" size={40} color="#2ec5b6" />
                   </View>
                   <View style={styles.trendingContent}>
                     <View style={[styles.trendingCategory, { backgroundColor: getCategoryColor(article.category) }]}>
@@ -263,7 +263,7 @@ export default function MedicineNewsScreen() {
             >
               <View style={styles.newsImageContainer}>
                 <View style={styles.newsImagePlaceholder}>
-                  <Ionicons name="newspaper" size={32} color="#2EC4B6" />
+                  <Ionicons name="newspaper" size={32} color="#2ec5b6" />
                 </View>
                 <View style={[styles.newsCategoryBadge, { backgroundColor: getCategoryColor(article.category) }]}>
                   <Text style={styles.newsCategoryBadgeText}>{article.category}</Text>
@@ -280,7 +280,7 @@ export default function MedicineNewsScreen() {
 
                 <View style={styles.newsFooter}>
                   <View style={styles.newsSource}>
-                    <Ionicons name="newspaper-outline" size={12} color="#2EC4B6" />
+                    <Ionicons name="newspaper-outline" size={12} color="#2ec5b6" />
                     <Text style={styles.newsSourceText}>{article.source}</Text>
                   </View>
                   <View style={styles.newsMeta}>
@@ -426,8 +426,8 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   categoryButtonActive: {
-    backgroundColor: '#14B8A6',
-    borderColor: '#14B8A6',
+    backgroundColor: '#2ec5b6',
+    borderColor: '#2ec5b6',
   },
   categoryText: {
     color: '#CBD5E1', // Slate 300
@@ -455,7 +455,7 @@ const styles = StyleSheet.create({
   },
   seeAllText: {
     fontSize: 14,
-    color: '#14B8A6',
+    color: '#2ec5b6',
     fontWeight: '600',
   },
   resultCount: {
@@ -584,7 +584,7 @@ const styles = StyleSheet.create({
   },
   newsSourceText: {
     fontSize: 12,
-    color: '#14B8A6',
+    color: '#2ec5b6',
     marginLeft: 4,
     fontWeight: '600',
   },
@@ -634,3 +634,4 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
 });
+

@@ -373,22 +373,17 @@ const SellerDashboard = () => {
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
     >
       <View style={styles.header}>
-        <View>
-          <Text style={styles.headerTitle}>Incoming Orders</Text>
-          {/* <Text style={styles.headerSubtitle}>🔔 Auto-refresh every 30s</Text> */}
+        <View style={styles.orderToggleContainer}>
+          <Text style={styles.orderToggleLabel}>
+            {isAcceptingOrders ? "Recieve Orders ✅" : "Not Recieve Orders ❌"}
+          </Text>
+          <Switch
+            trackColor={{ false: "#EF4444", true: "#22C55E" }}
+            thumbColor="#FFFFFF"
+            onValueChange={toggleOrderStatus}
+            value={isAcceptingOrders}
+          />
         </View>
-      </View>
-
-      <View style={styles.orderToggleContainer}>
-        <Text style={styles.orderToggleLabel}>
-          {isAcceptingOrders ? "Accepting Orders ✅" : "Not Accepting Orders ❌"}
-        </Text>
-        <Switch
-          trackColor={{ false: "#EF4444", true: "#22C55E" }}
-          thumbColor="#FFFFFF"
-          onValueChange={toggleOrderStatus}
-          value={isAcceptingOrders}
-        />
       </View>
 
       {isAcceptingOrders && (

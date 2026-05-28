@@ -111,7 +111,7 @@
 //       <SafeAreaView style={styles.container}>
 //         {/* Gradient Background */}
 //         <LinearGradient
-//           colors={['#0F766E', '#14B8A6', '#5EEAD4']}
+//           colors={['#0F766E', '#2ec5b6', '#5EEAD4']}
 //           start={{ x: 0, y: 0 }}
 //           end={{ x: 1, y: 1 }}
 //           style={styles.gradientBackground}
@@ -146,7 +146,7 @@
 //             {/* Logo/Icon Section */}
 //             <View style={styles.logoContainer}>
 //               <View style={styles.logoCircle}>
-//                 <LogIn size={36} color="#14B8A6" strokeWidth={2.5} />
+//                 <LogIn size={36} color="#2ec5b6" strokeWidth={2.5} />
 //               </View>
 //               <Text style={styles.title}>Sign In</Text>
 //               <Text style={styles.subtitle}>Access your buyer account</Text>
@@ -248,7 +248,7 @@
 //                 activeOpacity={0.8}
 //               >
 //                 <LinearGradient
-//                   colors={['#14B8A6', '#0F766E']}
+//                   colors={['#2ec5b6', '#0F766E']}
 //                   start={{ x: 0, y: 0 }}
 //                   end={{ x: 1, y: 0 }}
 //                   style={styles.loginButtonGradient}
@@ -390,7 +390,7 @@
 //     justifyContent: 'center',
 //     alignItems: 'center',
 //     marginBottom: 20,
-//     shadowColor: '#14B8A6',
+//     shadowColor: '#2ec5b6',
 //     shadowOffset: { width: 0, height: 6 },
 //     shadowOpacity: 0.2,
 //     shadowRadius: 16,
@@ -484,8 +484,8 @@
 //     backgroundColor: '#FFFFFF',
 //   },
 //   checkboxChecked: {
-//     backgroundColor: '#14B8A6',
-//     borderColor: '#14B8A6',
+//     backgroundColor: '#2ec5b6',
+//     borderColor: '#2ec5b6',
 //   },
 //   checkboxMark: {
 //     color: '#FFFFFF',
@@ -502,7 +502,7 @@
 //   },
 //   forgotText: {
 //     fontSize: 15,
-//     color: '#14B8A6',
+//     color: '#2ec5b6',
 //     fontWeight: '700',
 //     letterSpacing: 0.2,
 //   },
@@ -510,7 +510,7 @@
 //     borderRadius: 14,
 //     overflow: 'hidden',
 //     marginTop: 10,
-//     shadowColor: '#14B8A6',
+//     shadowColor: '#2ec5b6',
 //     shadowOffset: { width: 0, height: 6 },
 //     shadowOpacity: 0.35,
 //     shadowRadius: 12,
@@ -564,7 +564,7 @@
 //   },
 //   registerLink: {
 //     fontSize: 16,
-//     color: '#14B8A6',
+//     color: '#2ec5b6',
 //     fontWeight: '800',
 //     letterSpacing: 0.3,
 //   },
@@ -688,7 +688,7 @@
       
 //       {/* Animated Background */}
 //       <LinearGradient
-//         colors={['#0D9488', '#14B8A6', '#2DD4BF', '#5EEAD4']}
+//         colors={['#0D9488', '#2ec5b6', '#2DD4BF', '#5EEAD4']}
 //         start={{ x: 0, y: 0 }}
 //         end={{ x: 1, y: 1 }}
 //         style={styles.gradientBackground}
@@ -757,7 +757,7 @@
 //               <View style={styles.logoSection}>
 //                 <View style={styles.logoOuterRing}>
 //                   <LinearGradient
-//                     colors={['#14B8A6', '#0D9488']}
+//                     colors={['#2ec5b6', '#0D9488']}
 //                     style={styles.logoGradient}
 //                   >
 //                     <LogIn size={32} color="#FFFFFF" strokeWidth={2.5} />
@@ -778,7 +778,7 @@
 //                     email.length > 0 && styles.inputContainerValid
 //                   ]}>
 //                     <View style={styles.inputIconContainer}>
-//                       <Mail size={20} color={focusedField === 'email' ? '#14B8A6' : '#9CA3AF'} strokeWidth={2} />
+//                       <Mail size={20} color={focusedField === 'email' ? '#2ec5b6' : '#9CA3AF'} strokeWidth={2} />
 //                     </View>
 //                     <TextInput
 //                       blurOnSubmit={false}
@@ -813,7 +813,7 @@
 //                     focusedField === 'password' && styles.inputContainerFocused
 //                   ]}>
 //                     <View style={styles.inputIconContainer}>
-//                       <Lock size={20} color={focusedField === 'password' ? '#14B8A6' : '#9CA3AF'} strokeWidth={2} />
+//                       <Lock size={20} color={focusedField === 'password' ? '#2ec5b6' : '#9CA3AF'} strokeWidth={2} />
 //                     </View>
 //                     <TextInput
 //                       ref={passwordInputRef}
@@ -838,7 +838,7 @@
 //                       disabled={loading}
 //                     >
 //                       {showPassword ? (
-//                         <EyeOff size={20} color="#14B8A6" strokeWidth={2} />
+//                         <EyeOff size={20} color="#2ec5b6" strokeWidth={2} />
 //                       ) : (
 //                         <Eye size={20} color="#9CA3AF" strokeWidth={2} />
 //                       )}
@@ -878,7 +878,7 @@
 //                   activeOpacity={0.85}
 //                 >
 //                   <LinearGradient
-//                     colors={loading ? ['#99F6E4', '#5EEAD4'] : ['#14B8A6', '#0D9488']}
+//                     colors={loading ? ['#99F6E4', '#5EEAD4'] : ['#2ec5b6', '#0D9488']}
 //                     start={{ x: 0, y: 0 }}
 //                     end={{ x: 1, y: 0 }}
 //                     style={styles.loginButtonGradient}
@@ -1049,7 +1049,7 @@
 //     borderRadius: 40,
 //     justifyContent: 'center',
 //     alignItems: 'center',
-//     shadowColor: '#14B8A6',
+//     shadowColor: '#2ec5b6',
 //     shadowOffset: { width: 0, height: 8 },
 //     shadowOpacity: 0.3,
 //     shadowRadius: 16,
@@ -1091,9 +1091,9 @@
 //     minHeight: 56,
 //   },
 //   inputContainerFocused: {
-//     borderColor: '#14B8A6',
+//     borderColor: '#2ec5b6',
 //     backgroundColor: '#F0FDFA',
-//     shadowColor: '#14B8A6',
+//     shadowColor: '#2ec5b6',
 //     shadowOffset: { width: 0, height: 4 },
 //     shadowOpacity: 0.1,
 //     shadowRadius: 8,
@@ -1165,8 +1165,8 @@
 //     backgroundColor: '#FFFFFF',
 //   },
 //   checkboxChecked: {
-//     backgroundColor: '#14B8A6',
-//     borderColor: '#14B8A6',
+//     backgroundColor: '#2ec5b6',
+//     borderColor: '#2ec5b6',
 //   },
 //   checkmark: {
 //     color: '#FFFFFF',
@@ -1183,14 +1183,14 @@
 //   },
 //   forgotText: {
 //     fontSize: 14,
-//     color: '#14B8A6',
+//     color: '#2ec5b6',
 //     fontWeight: '700',
 //   },
 //   loginButton: {
 //     borderRadius: 16,
 //     overflow: 'hidden',
 //     marginTop: 8,
-//     shadowColor: '#14B8A6',
+//     shadowColor: '#2ec5b6',
 //     shadowOffset: { width: 0, height: 6 },
 //     shadowOpacity: 0.3,
 //     shadowRadius: 12,
@@ -1249,7 +1249,7 @@
 //   },
 //   footerLink: {
 //     fontSize: 15,
-//     color: '#14B8A6',
+//     color: '#2ec5b6',
 //     fontWeight: '700',
 //   },
 // });
@@ -1372,7 +1372,7 @@ export default function BuyerLoginScreen() {
       <StatusBar barStyle="light-content" backgroundColor="#0D9488" />
 
       <LinearGradient
-        colors={['#0D9488', '#14B8A6', '#2DD4BF', '#5EEAD4']}
+        colors={['#0D9488', '#2ec5b6', '#2DD4BF', '#5EEAD4']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.gradientBackground}
@@ -1446,7 +1446,7 @@ export default function BuyerLoginScreen() {
                 <View style={styles.logoOuterRing}>
 
                   <LinearGradient
-                    colors={['#14B8A6', '#0D9488']}
+                    colors={['#2ec5b6', '#0D9488']}
                     style={styles.logoGradient}
                   >
                     <LogIn size={32} color="#FFFFFF" strokeWidth={2.5} />
@@ -1534,7 +1534,7 @@ export default function BuyerLoginScreen() {
                       disabled={loading}
                     >
                       {showPassword
-                        ? <EyeOff size={20} color="#14B8A6" />
+                        ? <EyeOff size={20} color="#2ec5b6" />
                         : <Eye size={20} color="#9CA3AF" />}
                     </TouchableOpacity>
 
@@ -1582,7 +1582,7 @@ export default function BuyerLoginScreen() {
                     colors={
                       loading
                         ? ['#99F6E4', '#5EEAD4']
-                        : ['#14B8A6', '#0D9488']
+                        : ['#2ec5b6', '#0D9488']
                     }
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
@@ -1876,8 +1876,8 @@ const styles = StyleSheet.create({
   },
 
   checkboxChecked: {
-    backgroundColor: '#14B8A6',
-    borderColor: '#14B8A6',
+    backgroundColor: '#2ec5b6',
+    borderColor: '#2ec5b6',
   },
 
   checkmark: {
@@ -1897,7 +1897,7 @@ const styles = StyleSheet.create({
 
   forgotText: {
     fontSize: 14,
-    color: '#14B8A6',
+    color: '#2ec5b6',
     fontWeight: '700',
   },
 
@@ -1961,7 +1961,7 @@ const styles = StyleSheet.create({
 
   footerLink: {
     fontSize: 15,
-    color: '#14B8A6',
+    color: '#2ec5b6',
     fontWeight: '700',
   },
 });

@@ -59,7 +59,7 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     top: -5,
     right: -5,
-    backgroundColor: '#14B8A6', // Primary Teal
+    backgroundColor: '#2ec5b6', // Primary Teal
     borderRadius: 10,
     width: 20,
     height: 20,
@@ -120,7 +120,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#14B8A6',
+    backgroundColor: '#2ec5b6',
     borderRadius: 12,
     paddingHorizontal: 16,
   },
@@ -232,7 +232,7 @@ export const styles = StyleSheet.create({
   priceText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#14B8A6',
+    color: '#2ec5b6',
   },
   addToCartButton: {
     marginLeft: 12,
@@ -304,8 +304,14 @@ export const styles = StyleSheet.create({
   },
   prescriptionPreview: {
     width: '100%',
-    height: 80,
+    height: 180,
     borderRadius: 8,
+    marginBottom: 12,
+  },
+  prescriptionImageList: {
+    marginTop: 8,
+  },
+  prescriptionImageItem: {
     marginBottom: 12,
   },
   cardAction: {
@@ -314,7 +320,7 @@ export const styles = StyleSheet.create({
   },
   cardActionText: {
     fontSize: 14,
-    color: '#14B8A6',
+    color: '#2ec5b6',
     fontWeight: 'bold',
     marginRight: 4,
   },
@@ -389,8 +395,8 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   confirmButton: {
-    backgroundColor: '#14B8A6',
-    borderColor: '#14B8A6',
+    backgroundColor: '#2ec5b6',
+    borderColor: '#2ec5b6',
   },
   confirmButtonText: {
     color: '#FFFFFF',
@@ -452,7 +458,7 @@ export const styles = StyleSheet.create({
   },
   continueShopping: {
     marginTop: 24,
-    backgroundColor: '#14B8A6',
+    backgroundColor: '#2ec5b6',
     borderRadius: 12,
     paddingVertical: 12,
     paddingHorizontal: 24,
@@ -510,7 +516,7 @@ export const styles = StyleSheet.create({
   cartItemTotal: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#14B8A6',
+    color: '#2ec5b6',
     minWidth: 60,
     textAlign: 'right',
   },
@@ -556,16 +562,16 @@ export const styles = StyleSheet.create({
   grandTotalValue: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#14B8A6',
+    color: '#2ec5b6',
   },
   placeOrderButton: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#14B8A6',
+    backgroundColor: '#2ec5b6',
     borderRadius: 14,
     padding: 16,
-    shadowColor: '#14B8A6',
+    shadowColor: '#2ec5b6',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 10,
@@ -606,7 +612,7 @@ export const styles = StyleSheet.create({
     padding: 5,
     borderRadius: 20,
     borderWidth: 2,
-    borderColor: '#14B8A6',
+    borderColor: '#2ec5b6',
   },
   sellerMarker: {
     backgroundColor: 'white',
@@ -683,7 +689,7 @@ export const styles = StyleSheet.create({
     fontSize: 14,
   },
   selectSellerButton: {
-    backgroundColor: '#14B8A6',
+    backgroundColor: '#2ec5b6',
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 10,
@@ -693,11 +699,11 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   confirmSellerButton: {
-    backgroundColor: '#14B8A6',
+    backgroundColor: '#2ec5b6',
     padding: 16,
     borderRadius: 14,
     alignItems: 'center',
-    shadowColor: '#14B8A6',
+    shadowColor: '#2ec5b6',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 10,
@@ -770,7 +776,8 @@ export const styles = StyleSheet.create({
   },
   cartPrescriptionImage: {
     width: '100%',
-    height: 140,
+    minHeight: 180,
+    maxHeight: 320,
     borderRadius: 8,
     backgroundColor: '#1E293B',
   },
@@ -780,7 +787,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   changePrescriptionText: {
-    color: '#14B8A6',
+    color: '#2ec5b6',
     fontSize: 13,
     fontWeight: '700',
   },
@@ -845,7 +852,7 @@ export const styles = StyleSheet.create({
   },
   progressBarFill: {
     height: '100%',
-    backgroundColor: '#14B8A6',
+    backgroundColor: '#2ec5b6',
   },
   progressInfo: {
     flexDirection: 'row',
@@ -863,7 +870,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    backgroundColor: '#14B8A6',
+    backgroundColor: '#2ec5b6',
     borderRadius: 14,
     paddingVertical: 15,
     marginTop: 4,
@@ -887,7 +894,7 @@ export const styles = StyleSheet.create({
     fontWeight: '600',
   },
   viewOrdersButton: {
-    backgroundColor: '#14B8A6',
+    backgroundColor: '#2ec5b6',
     borderRadius: 14,
     paddingVertical: 15,
     alignItems: 'center',
@@ -934,7 +941,7 @@ export const styles = StyleSheet.create({
   },
   modalOrderId: {
     fontSize: 12,
-    color: '#14B8A6',
+    color: '#2ec5b6',
     fontWeight: '800',
     marginTop: 2,
     textTransform: 'uppercase',
@@ -968,7 +975,7 @@ export const styles = StyleSheet.create({
     borderColor: '#475569',
   },
   dateItemActive: {
-    backgroundColor: '#14B8A6',
+    backgroundColor: '#2ec5b6',
     borderColor: '#2DD4BF',
   },
   dateDay: {
@@ -1006,7 +1013,7 @@ export const styles = StyleSheet.create({
   },
   timeSlotItemActive: {
     backgroundColor: 'rgba(20, 184, 166, 0.2)',
-    borderColor: '#14B8A6',
+    borderColor: '#2ec5b6',
   },
   timeSlotText: {
     fontSize: 12,
@@ -1014,7 +1021,7 @@ export const styles = StyleSheet.create({
     color: '#CBD5E1',
   },
   timeSlotTextActive: {
-    color: '#14B8A6',
+    color: '#2ec5b6',
     fontWeight: 'bold',
   },
   modalActions: {
@@ -1037,9 +1044,9 @@ export const styles = StyleSheet.create({
     flex: 2,
     paddingVertical: 16,
     borderRadius: 16,
-    backgroundColor: '#14B8A6',
+    backgroundColor: '#2ec5b6',
     alignItems: 'center',
-    shadowColor: '#14B8A6',
+    shadowColor: '#2ec5b6',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -1051,5 +1058,6 @@ export const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
 });
+
 
 

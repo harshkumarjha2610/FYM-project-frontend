@@ -68,7 +68,7 @@ export default function BuyerChoiceScreen() {
       <SafeAreaView style={styles.container}>
         {/* Gradient Background with Decorative Elements */}
         <LinearGradient
-          colors={['#0F766E', '#14B8A6', '#5EEAD4']}
+          colors={['#0F766E', '#2ec5b6', '#5EEAD4']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.gradientBackground}
@@ -186,7 +186,7 @@ export default function BuyerChoiceScreen() {
                 >
                   <View style={styles.buttonIconContainer}>
                     <View style={styles.buttonIcon}>
-                      <LogIn color="#14B8A6" size={28} strokeWidth={2.5} />
+                      <LogIn color="#2ec5b6" size={28} strokeWidth={2.5} />
                     </View>
                     <View style={styles.buttonTextContainer}>
                       <Text style={styles.primaryButtonText}>Sign In</Text>
@@ -215,7 +215,7 @@ export default function BuyerChoiceScreen() {
                 >
                   <View style={styles.buttonIconContainer}>
                     <View style={[styles.buttonIcon, { backgroundColor: '#F0FDF4' }]}>
-                      <UserPlus color="#14B8A6" size={28} strokeWidth={2.5} />
+                      <UserPlus color="#2ec5b6" size={28} strokeWidth={2.5} />
                     </View>
                     <View style={styles.buttonTextContainer}>
                       <Text style={styles.primaryButtonText}>Create Account</Text>
@@ -440,7 +440,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 16,
-    shadowColor: '#14B8A6',
+    shadowColor: '#2ec5b6',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 8,
@@ -469,7 +469,7 @@ const styles = StyleSheet.create({
   },
   arrowText: {
     fontSize: 18,
-    color: '#14B8A6',
+    color: '#2ec5b6',
     fontWeight: 'bold',
   },
   divider: {
@@ -542,3 +542,4 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
 });
+

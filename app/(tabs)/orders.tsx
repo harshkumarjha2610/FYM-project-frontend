@@ -181,9 +181,9 @@ export default function OrdersScreen() {
       delivered: '#32D74B',
       cancelled: '#FF6B6B',
       rejected: '#FF6B6B',
-      scheduled: '#14B8A6',
+      scheduled: '#2ec5b6',
     };
-    return colors[status] || '#2EC4B6';
+    return colors[status] || '#2ec5b6';
   };
 
   const getStatusIcon = (status: string) => {
@@ -252,14 +252,8 @@ export default function OrdersScreen() {
   const confirmSchedule = () => {
     if (!schedulingOrderId) return;
     
-    // Combine selectedDate and selectedTimeSlot
-    const [time, period] = selectedTimeSlot.split(' ');
-    let [hours, minutes] = time.split(':').map(Number);
-    if (period === 'PM' && hours < 12) hours += 12;
-    if (period === 'AM' && hours === 12) hours = 0;
-    
     const finalDate = new Date(selectedDate);
-    finalDate.setHours(hours, minutes, 0, 0);
+    finalDate.setHours(21, 0, 0, 0); // 9:00 PM
     
     handleScheduleOrder(schedulingOrderId, finalDate);
   };
@@ -340,7 +334,7 @@ export default function OrdersScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#2EC4B6" />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#2ec5b6" />
         }
       >
         {/* Status Filters */}
@@ -379,7 +373,7 @@ export default function OrdersScreen() {
         {/* Orders List */}
         <View style={styles.ordersContainer}>
           {loading && !refreshing ? (
-            <ActivityIndicator size="large" color="#2EC4B6" style={{ marginTop: 40 }} />
+            <ActivityIndicator size="large" color="#2ec5b6" style={{ marginTop: 40 }} />
           ) : (
             filteredOrders.map((order) => (
               <View key={order._id} style={styles.orderCard}>
@@ -418,7 +412,7 @@ export default function OrdersScreen() {
                 {order.items.map((item, index) => (
                   <View key={index} style={styles.orderItem}>
                     <View style={styles.itemIcon}>
-                      <Ionicons name="medkit" size={20} color="#2EC4B6" />
+                      <Ionicons name="medkit" size={20} color="#2ec5b6" />
                     </View>
                     <View style={styles.itemDetails}>
                       <Text style={styles.itemName}>{item.name}</Text>
@@ -434,20 +428,20 @@ export default function OrdersScreen() {
                   {order.seller && (
                     <View style={styles.sellerInfo}>
                       <View style={styles.detailRow}>
-                        <Ionicons name="business" size={16} color="#2EC4B6" />
+                        <Ionicons name="business" size={16} color="#2ec5b6" />
                         <Text style={[styles.detailText, { fontWeight: 'bold', color: '#FFFFFF' }]}>
                           {order.seller.pharmacyName}
                         </Text>
                       </View>
                       {order.seller.address && (
                         <View style={styles.detailRow}>
-                          <Ionicons name="location" size={16} color="#2EC4B6" />
+                          <Ionicons name="location" size={16} color="#2ec5b6" />
                           <Text style={styles.detailText}>{order.seller.address}</Text>
                         </View>
                       )}
                       {(order.seller.phone || order.seller.number) && (
                         <View style={styles.detailRow}>
-                          <Ionicons name="call" size={16} color="#2EC4B6" />
+                          <Ionicons name="call" size={16} color="#2ec5b6" />
                           <Text style={styles.detailText}>{order.seller.phone || order.seller.number}</Text>
                         </View>
                       )}
@@ -455,14 +449,14 @@ export default function OrdersScreen() {
                   )}
                   
                   <View style={styles.detailRow}>
-                    <Ionicons name="map" size={16} color="#2EC4B6" />
+                    <Ionicons name="map" size={16} color="#2ec5b6" />
                     <Text style={styles.detailText}>{order.deliveryAddress}</Text>
                   </View>
 
                   {order.status === 'scheduled' && order.scheduledFor && (
                     <View style={[styles.detailRow, { marginTop: 8, backgroundColor: 'rgba(46, 196, 182, 0.1)', padding: 8, borderRadius: 8 }]}>
-                      <Ionicons name="calendar" size={16} color="#2EC4B6" />
-                      <Text style={[styles.detailText, { fontWeight: 'bold', color: '#2EC4B6' }]}>
+                      <Ionicons name="calendar" size={16} color="#2ec5b6" />
+                      <Text style={[styles.detailText, { fontWeight: 'bold', color: '#2ec5b6' }]}>
                         Scheduled For: {formatDate(order.scheduledFor)}
                       </Text>
                     </View>
@@ -584,7 +578,7 @@ export default function OrdersScreen() {
                   </TouchableOpacity>
                 </View>
 
-                <Text style={styles.modalSubtitle}>Select a date and time for your delivery (up to 7 days in advance)</Text>
+                <Text style={styles.modalSubtitle}>Select a date for your delivery (by evening 9pm)</Text>
 
                 <Text style={styles.sectionLabel}>Select Date</Text>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.dateSelector}>
@@ -611,28 +605,6 @@ export default function OrdersScreen() {
                     );
                   })}
                 </ScrollView>
-
-                <Text style={styles.sectionLabel}>Select Time Slot</Text>
-                <View style={styles.timeSlotsGrid}>
-                  {[
-                    '09:00 AM', '10:00 AM', '11:00 AM', '12:00 PM',
-                    '01:00 PM', '02:00 PM', '03:00 PM', '04:00 PM',
-                    '05:00 PM', '06:00 PM', '07:00 PM', '08:00 PM'
-                  ].map((slot) => {
-                    const isSelected = slot === selectedTimeSlot;
-                    return (
-                      <TouchableOpacity
-                        key={slot}
-                        style={[styles.timeSlotItem, isSelected && styles.timeSlotItemActive]}
-                        onPress={() => setSelectedTimeSlot(slot)}
-                      >
-                        <Text style={[styles.timeSlotText, isSelected && styles.timeSlotTextActive]}>
-                          {slot}
-                        </Text>
-                      </TouchableOpacity>
-                    );
-                  })}
-                </View>
 
                 <View style={styles.modalActions}>
                   <TouchableOpacity
@@ -721,8 +693,8 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   filterButtonActive: {
-    backgroundColor: '#14B8A6',
-    borderColor: '#14B8A6',
+    backgroundColor: '#2ec5b6',
+    borderColor: '#2ec5b6',
   },
   filterText: {
     color: '#CBD5E1', // Slate 300
@@ -823,7 +795,7 @@ const styles = StyleSheet.create({
   itemPrice: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#14B8A6',
+    color: '#2ec5b6',
   },
   orderDetails: {
     marginBottom: 16,
@@ -860,7 +832,7 @@ const styles = StyleSheet.create({
   totalAmount: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#14B8A6',
+    color: '#2ec5b6',
   },
   orderActions: {
     flexDirection: 'row',
@@ -871,11 +843,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#14B8A6',
+    backgroundColor: '#2ec5b6',
     paddingVertical: 12,
     borderRadius: 12,
     gap: 6,
-    shadowColor: '#14B8A6',
+    shadowColor: '#2ec5b6',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 8,
@@ -908,7 +880,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   shopNowButton: {
-    backgroundColor: '#14B8A6',
+    backgroundColor: '#2ec5b6',
     paddingHorizontal: 32,
     paddingVertical: 12,
     borderRadius: 24,
@@ -1027,7 +999,7 @@ const styles = StyleSheet.create({
     borderColor: '#475569',
   },
   dateItemActive: {
-    backgroundColor: '#14B8A6',
+    backgroundColor: '#2ec5b6',
     borderColor: '#2DD4BF',
   },
   dateDay: {
@@ -1065,7 +1037,7 @@ const styles = StyleSheet.create({
   },
   timeSlotItemActive: {
     backgroundColor: 'rgba(20, 184, 166, 0.2)',
-    borderColor: '#14B8A6',
+    borderColor: '#2ec5b6',
   },
   timeSlotText: {
     fontSize: 12,
@@ -1073,7 +1045,7 @@ const styles = StyleSheet.create({
     color: '#CBD5E1',
   },
   timeSlotTextActive: {
-    color: '#14B8A6',
+    color: '#2ec5b6',
     fontWeight: 'bold',
   },
   modalActions: {
@@ -1096,9 +1068,9 @@ const styles = StyleSheet.create({
     flex: 2,
     paddingVertical: 16,
     borderRadius: 16,
-    backgroundColor: '#14B8A6',
+    backgroundColor: '#2ec5b6',
     alignItems: 'center',
-    shadowColor: '#14B8A6',
+    shadowColor: '#2ec5b6',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -1110,4 +1082,5 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
 });
+
 
