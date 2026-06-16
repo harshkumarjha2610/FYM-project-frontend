@@ -300,8 +300,8 @@ export default function OrdersScreen() {
           'Cancel Order',
           'Are you sure you want to cancel this order?',
           [
-            { text: 'No', style: 'cancel' },
-            { text: 'Yes, Cancel', onPress: () => handleCancelOrder(order._id) },
+            { text: 'No, Keep Order', style: 'cancel' },
+            { text: 'Yes, Cancel Order', onPress: () => handleCancelOrder(order._id) },
           ]
         );
         break;

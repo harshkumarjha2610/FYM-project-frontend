@@ -210,10 +210,6 @@ export default function ProfileScreen() {
               <Text style={styles.statLabel}>Pending</Text>
             </View>
           </View>
-          <View style={[styles.statBox, styles.wideStatBox]}>
-            <Text style={[styles.statValue, { color: '#2ec5b6' }]}>₹{orderStats?.totalSpent || 0}</Text>
-            <Text style={styles.statLabel}>Total Spent</Text>
-          </View>
         </View>
 
         {/* Menu Options */}

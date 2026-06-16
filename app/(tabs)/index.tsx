@@ -211,17 +211,17 @@ const HomeScreen: React.FC = () => {
     };
   }, []);
 
-  // 7-minute timer logic
+  // 5-minute timer logic
   useEffect(() => {
     let interval: any;
     if (findingSellerModal && matchingStatus === 'pending' && matchingStartedAt) {
       interval = setInterval(() => {
         const elapsed = (Date.now() - matchingStartedAt) / 1000;
-        const progress = Math.min(elapsed / 420, 1);
+        const progress = Math.min(elapsed / 300, 1);
         setMatchProgress(progress);
 
-        if (elapsed >= 420) {
-          console.log('⏱️ 7 minutes elapsed without seller acceptance');
+        if (elapsed >= 300) {
+          console.log('⏱️ 5 minutes elapsed without seller acceptance');
           setCanScheduleOrder(true);
           setScheduleModalVisible(true);
           clearInterval(interval);
@@ -632,27 +632,43 @@ const HomeScreen: React.FC = () => {
 
   const handleCancelActiveOrder = async () => {
     if (!activeOrderId) return;
-    try {
-      setLoading(true);
-      const token = await AsyncStorage.getItem('token');
-      if (!token) return;
+    Alert.alert(
+      'Cancel Order',
+      'Are you sure you want to cancel this order?',
+      [
+        {
+          text: 'No, Keep Order',
+          style: 'cancel',
+        },
+        {
+          text: 'Yes, Cancel Order',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              setLoading(true);
+              const token = await AsyncStorage.getItem('token');
+              if (!token) return;
 
-      const response = await axios.patch(
-        `${API_URL}/api/orders/${activeOrderId}/cancel`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+              const response = await axios.patch(
+                `${API_URL}/api/orders/${activeOrderId}/cancel`,
+                {},
+                { headers: { Authorization: `Bearer ${token}` } }
+              );
 
-      if (response.data?.success) {
-        Alert.alert('Order Cancelled', 'Your order has been cancelled.');
-        closeMatchingModal();
-      }
-    } catch (error: any) {
-      console.error('Cancel order error:', error);
-      Alert.alert('Error', error.response?.data?.message || 'Failed to cancel order');
-    } finally {
-      setLoading(false);
-    }
+              if (response.data?.success) {
+                Alert.alert('Order Cancelled', 'Your order has been cancelled.');
+                closeMatchingModal();
+              }
+            } catch (error: any) {
+              console.error('Cancel order error:', error);
+              Alert.alert('Error', error.response?.data?.message || 'Failed to cancel order');
+            } finally {
+              setLoading(false);
+            }
+          },
+        },
+      ]
+    );
   };
 
   const handleScheduleActiveOrder = async (scheduledDate?: Date) => {
@@ -826,6 +842,24 @@ const HomeScreen: React.FC = () => {
   const currentOption = getActiveMatchingOption();
   const currentRadiusKm = currentOption ? (currentOption.r / 1000).toFixed(0) : '2';
   const currentDiscountText = currentOption ? currentOption.discount.join(', ') : '15, 20';
+
+  const getMatchingStatusMessage = () => {
+    if (!matchingStartedAt) return '';
+    const elapsedSeconds = (Date.now() - matchingStartedAt) / 1000;
+    if (elapsedSeconds < 60) {
+      return "Sending request to 2 km radius and 20% discount offering pharmacies";
+    }
+    if (elapsedSeconds < 120) {
+      return "Sending request to 2 km radius and 15-20% discount offering pharmacies";
+    }
+    if (elapsedSeconds < 180) {
+      return "Sending request to 3 km radius & 10-20% discount offering pharmacies";
+    }
+    if (elapsedSeconds < 240) {
+      return "Sending request to 5 km radius & 0-20% discount offering pharmacies";
+    }
+    return "Sending request to 5 km radius & 10-20% discount offering pharmacies";
+  };
 
   return (
     <View style={styles.mainContainer}>
@@ -1128,17 +1162,13 @@ const HomeScreen: React.FC = () => {
                 </View>
                 <View style={styles.progressInfo}>
                   <Text style={styles.progressText}>Searching nearby pharmacies...</Text>
-                  <Text style={styles.progressText}>
-                    {Math.max(0, Math.floor((420 - (matchProgress * 420)) / 60))}:
-                    {String(Math.max(0, Math.floor((420 - (matchProgress * 420)) % 60))).padStart(2, '0')} left
-                  </Text>
                 </View>
               </>
             )}
 
             <Text style={styles.matchingSubtitle}>
               {matchingStatus === 'pending'
-                ? `sending request ${currentRadiusKm} km radius and ${currentDiscountText}% discount offering pharmacies`
+                ? getMatchingStatusMessage()
                 : matchingStatus === 'scheduled'
                   ? 'Every seller can now see this order until the deadline.'
                   : `Your order is ${matchingStatus.replace(/_/g, ' ')}. You can track it in Orders.`}
