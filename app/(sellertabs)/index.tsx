@@ -375,7 +375,7 @@ const SellerDashboard = () => {
       <View style={styles.header}>
         <View style={styles.orderToggleContainer}>
           <Text style={styles.orderToggleLabel}>
-            {isAcceptingOrders ? "Recieve Orders ✅" : "Not Recieve Orders ❌"}
+            Recieve Orders
           </Text>
           <Switch
             trackColor={{ false: "#EF4444", true: "#22C55E" }}
