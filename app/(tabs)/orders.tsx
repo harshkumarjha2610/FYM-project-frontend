@@ -62,6 +62,8 @@ export default function OrdersScreen() {
   const [schedulingOrderId, setSchedulingOrderId] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('10:00 AM');
+  const [cancelModalVisible, setCancelModalVisible] = useState<boolean>(false);
+  const [cancellingOrderId, setCancellingOrderId] = useState<string | null>(null);
 
 
   const fetchOrders = async (showLoading = true) => {
@@ -296,14 +298,8 @@ export default function OrdersScreen() {
         setScheduleModalVisible(true);
         break;
       case 'cancel':
-        Alert.alert(
-          'Cancel Order',
-          'Are you sure you want to cancel this order?',
-          [
-            { text: 'No, Keep Order', style: 'cancel' },
-            { text: 'Yes, Cancel Order', onPress: () => handleCancelOrder(order._id) },
-          ]
-        );
+        setCancellingOrderId(order._id);
+        setCancelModalVisible(true);
         break;
       case 'help':
         Alert.alert('Need Help?', 'Contact customer support for assistance.');
@@ -618,6 +614,49 @@ export default function OrdersScreen() {
                     onPress={confirmSchedule}
                   >
                     <Text style={styles.confirmBtnText}>Confirm Schedule</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </Modal>
+
+          {/* Custom Cancel Confirmation Modal */}
+          <Modal
+            visible={cancelModalVisible}
+            transparent
+            animationType="fade"
+            onRequestClose={() => setCancelModalVisible(false)}
+          >
+            <View style={styles.customAlertOverlay}>
+              <View style={styles.customAlertContent}>
+                <View style={styles.customAlertIcon}>
+                  <Ionicons name="warning" size={36} color="#EF4444" />
+                </View>
+                <Text style={styles.customAlertTitle}>Cancel Order</Text>
+                <Text style={styles.customAlertMessage}>
+                  Are you sure you want to cancel this order?
+                </Text>
+                <View style={styles.customAlertButtons}>
+                  <TouchableOpacity
+                    style={[styles.customAlertButton, styles.customAlertKeepBtn]}
+                    onPress={() => {
+                      setCancelModalVisible(false);
+                      setCancellingOrderId(null);
+                    }}
+                  >
+                    <Text style={styles.customAlertKeepText}>No, Keep Order</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.customAlertButton, styles.customAlertConfirmBtn]}
+                    onPress={async () => {
+                      if (cancellingOrderId) {
+                        await handleCancelOrder(cancellingOrderId);
+                        setCancelModalVisible(false);
+                        setCancellingOrderId(null);
+                      }
+                    }}
+                  >
+                    <Text style={styles.customAlertConfirmText}>Yes, Cancel Order</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -1080,6 +1119,79 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#FFFFFF',
+  },
+  customAlertOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(15, 23, 42, 0.85)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  customAlertContent: {
+    backgroundColor: '#1E293B',
+    borderRadius: 24,
+    padding: 24,
+    width: '100%',
+    maxWidth: 340,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#334155',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    elevation: 10,
+  },
+  customAlertIcon: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  customAlertTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#F8FAFC',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  customAlertMessage: {
+    fontSize: 15,
+    color: '#94A3B8',
+    textAlign: 'center',
+    lineHeight: 22,
+    marginBottom: 24,
+  },
+  customAlertButtons: {
+    width: '100%',
+    flexDirection: 'column',
+    gap: 12,
+  },
+  customAlertButton: {
+    width: '100%',
+    paddingVertical: 14,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  customAlertConfirmBtn: {
+    backgroundColor: '#EF4444',
+  },
+  customAlertConfirmText: {
+    color: '#FFFFFF',
+    fontSize: 15,
+    fontWeight: 'bold',
+  },
+  customAlertKeepBtn: {
+    backgroundColor: '#2ec5b6',
+  },
+  customAlertKeepText: {
+    color: '#000000',
+    fontSize: 15,
+    fontWeight: 'bold',
   },
 });
 

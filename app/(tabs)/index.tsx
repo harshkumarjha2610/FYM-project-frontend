@@ -97,6 +97,7 @@ const HomeScreen: React.FC = () => {
   const [matchProgress, setMatchProgress] = useState<number>(0);
   const [socket, setSocket] = useState<Socket | null>(null);
   const [matchingOptions, setMatchingOptions] = useState<Array<{ r: number; discount: number[] }>>([]);
+  const [cancelModalVisible, setCancelModalVisible] = useState<boolean>(false);
 
   const DEFAULT_MATCHING_OPTIONS = [
     { r: 2000, discount: [15, 20] },
@@ -630,45 +631,34 @@ const HomeScreen: React.FC = () => {
     setPrescriptionImages([]);
   };
 
-  const handleCancelActiveOrder = async () => {
+  const handleCancelActiveOrder = () => {
+    setCancelModalVisible(true);
+  };
+
+  const confirmCancelActiveOrder = async () => {
     if (!activeOrderId) return;
-    Alert.alert(
-      'Cancel Order',
-      'Are you sure you want to cancel this order?',
-      [
-        {
-          text: 'No, Keep Order',
-          style: 'cancel',
-        },
-        {
-          text: 'Yes, Cancel Order',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              setLoading(true);
-              const token = await AsyncStorage.getItem('token');
-              if (!token) return;
+    try {
+      setLoading(true);
+      const token = await AsyncStorage.getItem('token');
+      if (!token) return;
 
-              const response = await axios.patch(
-                `${API_URL}/api/orders/${activeOrderId}/cancel`,
-                {},
-                { headers: { Authorization: `Bearer ${token}` } }
-              );
+      const response = await axios.patch(
+        `${API_URL}/api/orders/${activeOrderId}/cancel`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
-              if (response.data?.success) {
-                Alert.alert('Order Cancelled', 'Your order has been cancelled.');
-                closeMatchingModal();
-              }
-            } catch (error: any) {
-              console.error('Cancel order error:', error);
-              Alert.alert('Error', error.response?.data?.message || 'Failed to cancel order');
-            } finally {
-              setLoading(false);
-            }
-          },
-        },
-      ]
-    );
+      if (response.data?.success) {
+        Alert.alert('Order Cancelled', 'Your order has been cancelled.');
+        closeMatchingModal();
+      }
+    } catch (error: any) {
+      console.error('Cancel order error:', error);
+      Alert.alert('Error', error.response?.data?.message || 'Failed to cancel order');
+    } finally {
+      setLoading(false);
+      setCancelModalVisible(false);
+    }
   };
 
   const handleScheduleActiveOrder = async (scheduledDate?: Date) => {
@@ -1205,6 +1195,40 @@ const HomeScreen: React.FC = () => {
                 {matchingStatus === 'pending' ? 'Cancel Order' : 'Close'}
               </Text>
             </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Custom Cancel Confirmation Modal */}
+      <Modal
+        visible={cancelModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setCancelModalVisible(false)}
+      >
+        <View style={styles.customAlertOverlay}>
+          <View style={styles.customAlertContent}>
+            <View style={styles.customAlertIcon}>
+              <Ionicons name="warning" size={36} color="#EF4444" />
+            </View>
+            <Text style={styles.customAlertTitle}>Cancel Order</Text>
+            <Text style={styles.customAlertMessage}>
+              Are you sure you want to cancel this order?
+            </Text>
+            <View style={styles.customAlertButtons}>
+              <TouchableOpacity
+                style={[styles.customAlertButton, styles.customAlertKeepBtn]}
+                onPress={() => setCancelModalVisible(false)}
+              >
+                <Text style={styles.customAlertKeepText}>No, Keep Order</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.customAlertButton, styles.customAlertConfirmBtn]}
+                onPress={confirmCancelActiveOrder}
+              >
+                <Text style={styles.customAlertConfirmText}>Yes, Cancel Order</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
