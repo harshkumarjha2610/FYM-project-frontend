@@ -97,6 +97,7 @@ const HomeScreen: React.FC = () => {
   const [matchProgress, setMatchProgress] = useState<number>(0);
   const [socket, setSocket] = useState<Socket | null>(null);
   const [matchingOptions, setMatchingOptions] = useState<Array<{ r: number; discount: number[] }>>([]);
+  const [cancelModalVisible, setCancelModalVisible] = useState<boolean>(false);
 
   const DEFAULT_MATCHING_OPTIONS = [
     { r: 2000, discount: [15, 20] },
@@ -211,17 +212,17 @@ const HomeScreen: React.FC = () => {
     };
   }, []);
 
-  // 7-minute timer logic
+  // 5-minute timer logic
   useEffect(() => {
     let interval: any;
     if (findingSellerModal && matchingStatus === 'pending' && matchingStartedAt) {
       interval = setInterval(() => {
         const elapsed = (Date.now() - matchingStartedAt) / 1000;
-        const progress = Math.min(elapsed / 420, 1);
+        const progress = Math.min(elapsed / 300, 1);
         setMatchProgress(progress);
 
-        if (elapsed >= 420) {
-          console.log('⏱️ 7 minutes elapsed without seller acceptance');
+        if (elapsed >= 300) {
+          console.log('⏱️ 5 minutes elapsed without seller acceptance');
           setCanScheduleOrder(true);
           setScheduleModalVisible(true);
           clearInterval(interval);
@@ -630,7 +631,11 @@ const HomeScreen: React.FC = () => {
     setPrescriptionImages([]);
   };
 
-  const handleCancelActiveOrder = async () => {
+  const handleCancelActiveOrder = () => {
+    setCancelModalVisible(true);
+  };
+
+  const confirmCancelActiveOrder = async () => {
     if (!activeOrderId) return;
     try {
       setLoading(true);
@@ -652,6 +657,7 @@ const HomeScreen: React.FC = () => {
       Alert.alert('Error', error.response?.data?.message || 'Failed to cancel order');
     } finally {
       setLoading(false);
+      setCancelModalVisible(false);
     }
   };
 
@@ -826,6 +832,24 @@ const HomeScreen: React.FC = () => {
   const currentOption = getActiveMatchingOption();
   const currentRadiusKm = currentOption ? (currentOption.r / 1000).toFixed(0) : '2';
   const currentDiscountText = currentOption ? currentOption.discount.join(', ') : '15, 20';
+
+  const getMatchingStatusMessage = () => {
+    if (!matchingStartedAt) return '';
+    const elapsedSeconds = (Date.now() - matchingStartedAt) / 1000;
+    if (elapsedSeconds < 60) {
+      return "Sending request to 2 km radius and 20% discount offering pharmacies";
+    }
+    if (elapsedSeconds < 120) {
+      return "Sending request to 2 km radius and 15-20% discount offering pharmacies";
+    }
+    if (elapsedSeconds < 180) {
+      return "Sending request to 3 km radius & 10-20% discount offering pharmacies";
+    }
+    if (elapsedSeconds < 240) {
+      return "Sending request to 5 km radius & 0-20% discount offering pharmacies";
+    }
+    return "Sending request to 5 km radius & 10-20% discount offering pharmacies";
+  };
 
   return (
     <View style={styles.mainContainer}>
@@ -1128,17 +1152,13 @@ const HomeScreen: React.FC = () => {
                 </View>
                 <View style={styles.progressInfo}>
                   <Text style={styles.progressText}>Searching nearby pharmacies...</Text>
-                  <Text style={styles.progressText}>
-                    {Math.max(0, Math.floor((420 - (matchProgress * 420)) / 60))}:
-                    {String(Math.max(0, Math.floor((420 - (matchProgress * 420)) % 60))).padStart(2, '0')} left
-                  </Text>
                 </View>
               </>
             )}
 
             <Text style={styles.matchingSubtitle}>
               {matchingStatus === 'pending'
-                ? `sending request ${currentRadiusKm} km radius and ${currentDiscountText}% discount offering pharmacies`
+                ? getMatchingStatusMessage()
                 : matchingStatus === 'scheduled'
                   ? 'Every seller can now see this order until the deadline.'
                   : `Your order is ${matchingStatus.replace(/_/g, ' ')}. You can track it in Orders.`}
@@ -1175,6 +1195,40 @@ const HomeScreen: React.FC = () => {
                 {matchingStatus === 'pending' ? 'Cancel Order' : 'Close'}
               </Text>
             </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Custom Cancel Confirmation Modal */}
+      <Modal
+        visible={cancelModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setCancelModalVisible(false)}
+      >
+        <View style={styles.customAlertOverlay}>
+          <View style={styles.customAlertContent}>
+            <View style={styles.customAlertIcon}>
+              <Ionicons name="warning" size={36} color="#EF4444" />
+            </View>
+            <Text style={styles.customAlertTitle}>Cancel Order</Text>
+            <Text style={styles.customAlertMessage}>
+              Are you sure you want to cancel this order?
+            </Text>
+            <View style={styles.customAlertButtons}>
+              <TouchableOpacity
+                style={[styles.customAlertButton, styles.customAlertKeepBtn]}
+                onPress={() => setCancelModalVisible(false)}
+              >
+                <Text style={styles.customAlertKeepText}>No, Keep Order</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.customAlertButton, styles.customAlertConfirmBtn]}
+                onPress={confirmCancelActiveOrder}
+              >
+                <Text style={styles.customAlertConfirmText}>Yes, Cancel Order</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
