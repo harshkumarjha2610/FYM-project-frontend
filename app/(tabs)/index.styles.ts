@@ -1,9 +1,9 @@
-import { StyleSheet, Platform } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: '#0F172A', // Slate 900
+    backgroundColor: '#000000', // Slate 900
   },
   container: {
     flex: 1,
@@ -827,7 +827,7 @@ export const styles = StyleSheet.create({
   matchingTitle: {
     fontSize: 24,
     fontWeight: '800',
-    color: '#0F172A',
+    color: '#000000',
     marginBottom: 8,
   },
   matchingSubtitle: {

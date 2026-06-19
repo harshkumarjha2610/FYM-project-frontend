@@ -1,32 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  Alert,
-  ActivityIndicator,
-  SafeAreaView,
-  Image,
-  RefreshControl,
-  Platform,
-} from 'react-native';
-import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { router } from 'expo-router';
 import {
-  User,
-  Mail,
-  Phone,
-  MapPin,
-  Edit3,
-  LogOut,
-  Shield,
-  Heart,
-  ShoppingBag,
-  Settings,
   Bell,
+  Edit3,
+  Heart,
+  LogOut,
+  Settings,
+  Shield,
+  ShoppingBag,
+  User
 } from 'lucide-react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  RefreshControl,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native';
 
 const API_URL = process.env.EXPO_PUBLIC_BACKEND_API;
 
@@ -59,7 +54,7 @@ export default function ProfileScreen() {
     try {
       const storedBuyer = await AsyncStorage.getItem('user');
       const token = await AsyncStorage.getItem('token');
-      
+
       if (storedBuyer) {
         setProfile(JSON.parse(storedBuyer));
       }
@@ -93,17 +88,17 @@ export default function ProfileScreen() {
     try {
       const token = await AsyncStorage.getItem('token');
       const storedBuyer = await AsyncStorage.getItem('user');
-      
+
       if (token && storedBuyer) {
         const buyer = JSON.parse(storedBuyer);
         const buyerId = buyer.id || buyer._id;
-        
+
         if (buyerId) {
           const res = await fetch(`${API_URL}/api/orders/buyer/${buyerId}/stats`, {
             headers: { Authorization: `Bearer ${token}` }
           });
           const data = await res.json();
-          
+
           if (data.success && data.stats) {
             setOrderStats(data.stats);
           }
@@ -215,7 +210,7 @@ export default function ProfileScreen() {
         {/* Menu Options */}
         <View style={styles.menuContainer}>
           <Text style={styles.sectionTitle}>Account Settings</Text>
-          
+
           <TouchableOpacity style={styles.menuItem}>
             <View style={[styles.menuIcon, { backgroundColor: 'rgba(20, 184, 166, 0.1)' }]}>
               <User size={20} color="#2ec5b6" />
@@ -278,7 +273,7 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0F172A',
+    backgroundColor: '#000000',
   },
   loadingContainer: {
     flex: 1,
