@@ -1,14 +1,14 @@
+import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  StyleSheet,
-  Platform,
   Alert,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 
 interface HealthRecord {
   id: string;
@@ -101,8 +101,8 @@ export default function HealthRecordsScreen() {
     }
   };
 
-  const filteredRecords = selectedFilter === 'all' 
-    ? healthRecords 
+  const filteredRecords = selectedFilter === 'all'
+    ? healthRecords
     : healthRecords.filter(record => record.type === selectedFilter);
 
   return (
@@ -113,7 +113,7 @@ export default function HealthRecordsScreen() {
           <Text style={styles.headerTitle}>Health Records</Text>
           <Text style={styles.headerSubtitle}>Track your medical history</Text>
         </View>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.addButton}
           onPress={() => Alert.alert('Add Record', 'Feature coming soon!')}
         >
@@ -121,7 +121,7 @@ export default function HealthRecordsScreen() {
         </TouchableOpacity>
       </View>
 
-      <ScrollView 
+      <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
@@ -131,16 +131,16 @@ export default function HealthRecordsScreen() {
           <Text style={styles.sectionTitle}>Health Metrics</Text>
           <View style={styles.metricsGrid}>
             {healthMetrics.map((metric) => (
-              <TouchableOpacity 
-                key={metric.id} 
+              <TouchableOpacity
+                key={metric.id}
                 style={styles.metricCard}
                 onPress={() => Alert.alert(metric.name, `Current value: ${metric.value} ${metric.unit}`)}
               >
                 <View style={[styles.metricIconContainer, { backgroundColor: `${getStatusColor(metric.status)}20` }]}>
-                  <Ionicons 
-                    name={metric.icon} 
-                    size={24} 
-                    color={getStatusColor(metric.status)} 
+                  <Ionicons
+                    name={metric.icon}
+                    size={24}
+                    color={getStatusColor(metric.status)}
                   />
                 </View>
                 <Text style={styles.metricName}>{metric.name}</Text>
@@ -155,7 +155,7 @@ export default function HealthRecordsScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Quick Actions</Text>
           <View style={styles.quickActionsRow}>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.quickActionCard}
               onPress={() => Alert.alert('Upload Report', 'Feature coming soon!')}
             >
@@ -165,7 +165,7 @@ export default function HealthRecordsScreen() {
               <Text style={styles.quickActionText}>Upload Report</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.quickActionCard}
               onPress={() => Alert.alert('Book Appointment', 'Feature coming soon!')}
             >
@@ -175,7 +175,7 @@ export default function HealthRecordsScreen() {
               <Text style={styles.quickActionText}>Book Test</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.quickActionCard}
               onPress={() => Alert.alert('Reminders', 'Feature coming soon!')}
             >
@@ -185,7 +185,7 @@ export default function HealthRecordsScreen() {
               <Text style={styles.quickActionText}>Reminders</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.quickActionCard}
               onPress={() => Alert.alert('Share Records', 'Feature coming soon!')}
             >
@@ -200,8 +200,8 @@ export default function HealthRecordsScreen() {
         {/* Filter Buttons */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Medical History</Text>
-          <ScrollView 
-            horizontal 
+          <ScrollView
+            horizontal
             showsHorizontalScrollIndicator={false}
             style={styles.filterContainer}
           >
@@ -261,13 +261,13 @@ export default function HealthRecordsScreen() {
               onPress={() => Alert.alert(record.title, record.details)}
             >
               <View style={styles.recordIconContainer}>
-                <Ionicons 
-                  name={getRecordIcon(record.type)} 
-                  size={24} 
-                  color="#2ec5b6" 
+                <Ionicons
+                  name={getRecordIcon(record.type)}
+                  size={24}
+                  color="#2ec5b6"
                 />
               </View>
-              
+
               <View style={styles.recordInfo}>
                 <Text style={styles.recordTitle}>{record.title}</Text>
                 <Text style={styles.recordDoctor}>
@@ -299,7 +299,7 @@ export default function HealthRecordsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0F172A', // Slate 900
+    backgroundColor: '#000000', // Slate 900
   },
   header: {
     flexDirection: 'row',

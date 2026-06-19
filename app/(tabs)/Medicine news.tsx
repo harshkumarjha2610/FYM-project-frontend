@@ -1,16 +1,15 @@
+import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  StyleSheet,
-  Platform,
-  TextInput,
   Alert,
-  Image,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 
 interface NewsArticle {
   id: string;
@@ -114,7 +113,7 @@ export default function MedicineNewsScreen() {
   const filteredNews = newsArticles.filter((article) => {
     const matchesCategory = selectedCategory === 'all' || article.category === selectedCategory;
     const matchesSearch = article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         article.summary.toLowerCase().includes(searchQuery.toLowerCase());
+      article.summary.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 
@@ -137,7 +136,7 @@ export default function MedicineNewsScreen() {
           <Text style={styles.headerTitle}>Medicine News</Text>
           <Text style={styles.headerSubtitle}>Stay updated with latest health news</Text>
         </View>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.notificationButton}
           onPress={() => Alert.alert('Notifications', 'No new notifications')}
         >
@@ -148,7 +147,7 @@ export default function MedicineNewsScreen() {
         </TouchableOpacity>
       </View>
 
-      <ScrollView 
+      <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
@@ -173,8 +172,8 @@ export default function MedicineNewsScreen() {
         </View>
 
         {/* Categories */}
-        <ScrollView 
-          horizontal 
+        <ScrollView
+          horizontal
           showsHorizontalScrollIndicator={false}
           style={styles.categoriesContainer}
           contentContainerStyle={styles.categoriesContent}
@@ -188,10 +187,10 @@ export default function MedicineNewsScreen() {
               ]}
               onPress={() => setSelectedCategory(category.id)}
             >
-              <Ionicons 
-                name={category.icon as any} 
-                size={18} 
-                color={selectedCategory === category.id ? '#FFFFFF' : '#475569'} 
+              <Ionicons
+                name={category.icon as any}
+                size={18}
+                color={selectedCategory === category.id ? '#FFFFFF' : '#475569'}
               />
               <Text
                 style={[
@@ -215,8 +214,8 @@ export default function MedicineNewsScreen() {
               </TouchableOpacity>
             </View>
 
-            <ScrollView 
-              horizontal 
+            <ScrollView
+              horizontal
               showsHorizontalScrollIndicator={false}
               style={styles.trendingContainer}
             >
@@ -321,7 +320,7 @@ export default function MedicineNewsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0F172A', // Slate 900
+    backgroundColor: '#000000', // Slate 900
   },
   header: {
     flexDirection: 'row',

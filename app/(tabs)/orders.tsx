@@ -1,23 +1,23 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  StyleSheet,
-  Platform,
-  Alert,
-  ActivityIndicator,
-  RefreshControl,
-  Image,
-  Modal,
-  Dimensions,
-} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useFocusEffect, router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { io as socketIO, Socket } from 'socket.io-client';
+import { router, useFocusEffect } from 'expo-router';
+import React, { useCallback, useEffect, useState } from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  Dimensions,
+  Image,
+  Modal,
+  Platform,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { Socket, io as socketIO } from 'socket.io-client';
 
 interface OrderItem {
   name: string;
@@ -203,8 +203,8 @@ export default function OrdersScreen() {
     return icons[status] || 'information-circle';
   };
 
-  const filteredOrders = selectedStatus === 'all' 
-    ? orders 
+  const filteredOrders = selectedStatus === 'all'
+    ? orders
     : orders.filter(order => order.status === selectedStatus);
 
   const handleCancelOrder = async (orderId: string) => {
@@ -232,13 +232,13 @@ export default function OrdersScreen() {
       if (!token) return;
 
       const payload = scheduledDate ? { scheduledFor: scheduledDate.toISOString() } : {};
-      
+
       const response = await axios.patch(`${API_URL}/api/orders/${orderId}/schedule`, payload, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
       if (response.data.success) {
-        Alert.alert('Scheduled! 📅', scheduledDate 
+        Alert.alert('Scheduled! 📅', scheduledDate
           ? `Your order is scheduled for ${scheduledDate.toLocaleString()}.`
           : 'Your order is now scheduled. Sellers can see and accept it anytime.'
         );
@@ -253,10 +253,10 @@ export default function OrdersScreen() {
 
   const confirmSchedule = () => {
     if (!schedulingOrderId) return;
-    
+
     const finalDate = new Date(selectedDate);
     finalDate.setHours(21, 0, 0, 0); // 9:00 PM
-    
+
     handleScheduleOrder(schedulingOrderId, finalDate);
   };
 
@@ -317,7 +317,7 @@ export default function OrdersScreen() {
           <Text style={styles.headerTitle}>My Orders</Text>
           <Text style={styles.headerSubtitle}>Track your medicine orders</Text>
         </View>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.helpButton}
           onPress={() => Alert.alert('Help', 'Contact support: +91-XXXXXXXXXX')}
         >
@@ -325,7 +325,7 @@ export default function OrdersScreen() {
         </TouchableOpacity>
       </View>
 
-      <ScrollView 
+      <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
@@ -334,8 +334,8 @@ export default function OrdersScreen() {
         }
       >
         {/* Status Filters */}
-        <ScrollView 
-          horizontal 
+        <ScrollView
+          horizontal
           showsHorizontalScrollIndicator={false}
           style={styles.filtersContainer}
           contentContainerStyle={styles.filtersContent}
@@ -349,10 +349,10 @@ export default function OrdersScreen() {
               ]}
               onPress={() => setSelectedStatus(filter.id)}
             >
-              <Ionicons 
-                name={filter.icon as any} 
-                size={18} 
-                color={selectedStatus === filter.id ? '#000000' : '#FFFFFF'} 
+              <Ionicons
+                name={filter.icon as any}
+                size={18}
+                color={selectedStatus === filter.id ? '#000000' : '#FFFFFF'}
               />
               <Text
                 style={[
@@ -390,8 +390,8 @@ export default function OrdersScreen() {
                   <View style={styles.prescriptionThumbContainer}>
                     <Text style={styles.prescriptionLabel}>Prescription:</Text>
                     <TouchableOpacity onPress={() => setPreviewImage(getFullImageUrl(order.prescriptionImage!))}>
-                      <Image 
-                        source={{ uri: getFullImageUrl(order.prescriptionImage) || undefined }} 
+                      <Image
+                        source={{ uri: getFullImageUrl(order.prescriptionImage) || undefined }}
                         style={styles.prescriptionThumbnail}
                         resizeMode="cover"
                       />
@@ -403,21 +403,21 @@ export default function OrdersScreen() {
                   </View>
                 )}
 
-              {/* Order Items */}
-              <View style={styles.orderItems}>
-                {order.items.map((item, index) => (
-                  <View key={index} style={styles.orderItem}>
-                    <View style={styles.itemIcon}>
-                      <Ionicons name="medkit" size={20} color="#2ec5b6" />
+                {/* Order Items */}
+                <View style={styles.orderItems}>
+                  {order.items.map((item, index) => (
+                    <View key={index} style={styles.orderItem}>
+                      <View style={styles.itemIcon}>
+                        <Ionicons name="medkit" size={20} color="#2ec5b6" />
+                      </View>
+                      <View style={styles.itemDetails}>
+                        <Text style={styles.itemName}>{item.name}</Text>
+                        <Text style={styles.itemQuantity}>Qty: {item.quantity}</Text>
+                      </View>
+                      <Text style={styles.itemPrice}>₹{item.price}</Text>
                     </View>
-                    <View style={styles.itemDetails}>
-                      <Text style={styles.itemName}>{item.name}</Text>
-                      <Text style={styles.itemQuantity}>Qty: {item.quantity}</Text>
-                    </View>
-                    <Text style={styles.itemPrice}>₹{item.price}</Text>
-                  </View>
-                ))}
-              </View>
+                  ))}
+                </View>
 
                 {/* Order Details */}
                 <View style={styles.orderDetails}>
@@ -443,7 +443,7 @@ export default function OrdersScreen() {
                       )}
                     </View>
                   )}
-                  
+
                   <View style={styles.detailRow}>
                     <Ionicons name="map" size={16} color="#2ec5b6" />
                     <Text style={styles.detailText}>{order.deliveryAddress}</Text>
@@ -459,35 +459,35 @@ export default function OrdersScreen() {
                   )}
                 </View>
 
-              {/* Order Footer */}
-              <View style={styles.orderFooter}>
-                <View style={styles.totalContainer}>
-                  <Text style={styles.totalLabel}>Total Amount:</Text>
-                  <Text style={styles.totalAmount}>₹{order.totalAmount}</Text>
+                {/* Order Footer */}
+                <View style={styles.orderFooter}>
+                  <View style={styles.totalContainer}>
+                    <Text style={styles.totalLabel}>Total Amount:</Text>
+                    <Text style={styles.totalAmount}>₹{order.totalAmount}</Text>
+                  </View>
                 </View>
-              </View>
 
-              {/* Order Actions */}
-              <View style={styles.orderActions}>
-                {order.status !== 'cancelled' && order.status !== 'delivered' && (
-                  <TouchableOpacity
-                    style={styles.actionButton}
-                    onPress={() => handleOrderAction(order, 'track')}
-                  >
-                    <Ionicons name="location-outline" size={18} color="#FFFFFF" />
-                    <Text style={styles.actionButtonText}>Track</Text>
-                  </TouchableOpacity>
-                )}
+                {/* Order Actions */}
+                <View style={styles.orderActions}>
+                  {order.status !== 'cancelled' && order.status !== 'delivered' && (
+                    <TouchableOpacity
+                      style={styles.actionButton}
+                      onPress={() => handleOrderAction(order, 'track')}
+                    >
+                      <Ionicons name="location-outline" size={18} color="#FFFFFF" />
+                      <Text style={styles.actionButtonText}>Track</Text>
+                    </TouchableOpacity>
+                  )}
 
-                {order.status === 'delivered' && (
-                  <TouchableOpacity
-                    style={styles.actionButton}
-                    onPress={() => handleOrderAction(order, 'reorder')}
-                  >
-                    <Ionicons name="refresh-outline" size={18} color="#FFFFFF" />
-                    <Text style={styles.actionButtonText}>Reorder</Text>
-                  </TouchableOpacity>
-                )}
+                  {order.status === 'delivered' && (
+                    <TouchableOpacity
+                      style={styles.actionButton}
+                      onPress={() => handleOrderAction(order, 'reorder')}
+                    >
+                      <Ionicons name="refresh-outline" size={18} color="#FFFFFF" />
+                      <Text style={styles.actionButtonText}>Reorder</Text>
+                    </TouchableOpacity>
+                  )}
 
                   {order.status === 'pending' && (
                     <TouchableOpacity
@@ -526,11 +526,11 @@ export default function OrdersScreen() {
               <Ionicons name="bag-outline" size={64} color="#666666" />
               <Text style={styles.emptyStateText}>No orders found</Text>
               <Text style={styles.emptyStateSubText}>
-                {selectedStatus === 'all' 
-                  ? 'Start shopping for medicines' 
+                {selectedStatus === 'all'
+                  ? 'Start shopping for medicines'
                   : `No ${selectedStatus} orders`}
               </Text>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.shopNowButton}
                 onPress={() => router.push('/')}
               >
@@ -542,17 +542,17 @@ export default function OrdersScreen() {
           {/* Prescription Preview Modal */}
           <Modal visible={!!previewImage} transparent animationType="fade">
             <View style={styles.previewContainer}>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.closeButton}
                 onPress={() => setPreviewImage(null)}
               >
                 <Ionicons name="close" size={30} color="#FFFFFF" />
               </TouchableOpacity>
               {previewImage && (
-                <Image 
-                  source={{ uri: previewImage }} 
-                  style={styles.fullImage} 
-                  resizeMode="contain" 
+                <Image
+                  source={{ uri: previewImage }}
+                  style={styles.fullImage}
+                  resizeMode="contain"
                 />
               )}
             </View>
@@ -671,7 +671,7 @@ export default function OrdersScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0F172A', // Slate 900
+    backgroundColor: '#000000',
   },
   header: {
     flexDirection: 'row',
