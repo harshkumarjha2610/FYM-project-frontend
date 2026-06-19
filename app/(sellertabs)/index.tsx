@@ -26,7 +26,7 @@ import { io as socketIO, Socket } from "socket.io-client";
 
 const API_URL = process.env.EXPO_PUBLIC_BACKEND_API;
 const API_BASE_URL = `${API_URL}/api/orders`;
-const ORDER_TIMEOUT = 10 * 60 * 1000;
+const BUYER_TIMEOUT_MS = 5 * 60 * 1000; // fallback if server doesn't send timeRemaining
 
 if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -229,11 +229,16 @@ const SellerDashboard = () => {
       // preserve existing expiry timers if order already exists
       const prevMap = new Map(prev.map(o => [o._id, o]));
 
-      return pending.map((o: any) => ({
-        ...o,
-        expiry:
-          prevMap.get(o._id)?.expiry || Date.now() + ORDER_TIMEOUT,
-      }));
+      return pending.map((o: any) => {
+        const existing = prevMap.get(o._id);
+        // Use server-provided timeRemaining (ms), or fallback
+        const serverTimeout = typeof o.timeRemaining === 'number' ? o.timeRemaining : BUYER_TIMEOUT_MS;
+        return {
+          ...o,
+          expiry: existing?.expiry || Date.now() + serverTimeout,
+          initialTimeout: existing?.initialTimeout || serverTimeout,
+        };
+      });
     });
 
   } catch (err) {
@@ -296,8 +301,10 @@ const SellerDashboard = () => {
           setPendingOrders((prev) => {
             // Avoid duplicates
             if (prev.some((o) => o._id === order._id)) return prev;
+            // Use server-provided timeRemaining (ms), or fallback
+            const serverTimeout = typeof order.timeRemaining === 'number' ? order.timeRemaining : BUYER_TIMEOUT_MS;
             return [
-              { ...order, expiry: Date.now() + ORDER_TIMEOUT },
+              { ...order, expiry: Date.now() + serverTimeout, initialTimeout: serverTimeout },
               ...prev,
             ];
           });
@@ -331,14 +338,15 @@ const SellerDashboard = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const TimerBar = ({ expiry }: { expiry: number }) => {
+  const TimerBar = ({ expiry, initialTimeout }: { expiry: number; initialTimeout?: number }) => {
     const [remaining, setRemaining] = useState(expiry - Date.now());
+    const timeout = initialTimeout || BUYER_TIMEOUT_MS;
     useEffect(() => {
       const interval = setInterval(() => setRemaining(expiry - Date.now()), 1000);
       return () => clearInterval(interval);
     }, [expiry]);
 
-    const progress = Math.max(0, remaining / ORDER_TIMEOUT);
+    const progress = Math.max(0, remaining / timeout);
     return (
       <View style={styles.timerBarBackground}>
         <View style={[styles.timerBarFill, { flex: progress }]} />
@@ -418,7 +426,7 @@ const SellerDashboard = () => {
                     </View>
                   </View>
 
-                  <TimerBar expiry={order.expiry} />
+                  <TimerBar expiry={order.expiry} initialTimeout={order.initialTimeout} />
 
                   {isExpanded && (
                     <View style={styles.expandedSection}>

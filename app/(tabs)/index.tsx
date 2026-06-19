@@ -130,7 +130,7 @@ const HomeScreen: React.FC = () => {
           'Logout',
           'Are you sure you want to logout?',
           [
-            { text: 'Cancel', style: 'cancel', onPress: () => {} },
+            { text: 'Cancel', style: 'cancel', onPress: () => { } },
             {
               text: 'Logout',
               style: 'destructive',
@@ -323,7 +323,7 @@ const HomeScreen: React.FC = () => {
         ]
           .filter(Boolean)
           .join(', ');
-        
+
         setFullAddress(completeAddress);
         setSelectedLocation(completeAddress);
       }
@@ -346,7 +346,7 @@ const HomeScreen: React.FC = () => {
 
   const findNearestSellers = async () => {
     console.log('🎯 FYM button clicked - PLACING ORDER');
-    
+
     if (prescriptionImages.length === 0 && cartItems.length === 0) {
       Alert.alert('Empty Cart', 'Please add some medicines to your cart before placing an order.');
       return;
@@ -375,7 +375,7 @@ const HomeScreen: React.FC = () => {
         buyerId = user.id || user._id;
         if (buyerId) await AsyncStorage.setItem('buyerId', buyerId);
       }
-      
+
       if (!token) {
         Alert.alert('Authentication Required', 'Please log in to place an order.');
         setLoading(false);
@@ -383,7 +383,7 @@ const HomeScreen: React.FC = () => {
       }
 
       const finalBuyerId = buyerId || `buyer_${Date.now()}`;
-      
+
       // Create FormData instead of JSON
       const formData = new FormData();
       formData.append('buyerId', finalBuyerId);
@@ -432,10 +432,10 @@ const HomeScreen: React.FC = () => {
       console.log('✅ FYM - Order placed successfully:', response.data);
 
       startSellerMatching(response.data?.order?._id || response.data?.orderId);
-      
+
     } catch (error: any) {
       console.error('❌ FYM - Place order error:', error.response?.data || error.message);
-      
+
       const errorMessage = error.response?.data?.message || 'Failed to place order. Please try again.';
       Alert.alert(
         'Order Failed',
@@ -445,7 +445,7 @@ const HomeScreen: React.FC = () => {
           { text: 'Retry', onPress: findNearestSellers }
         ]
       );
-      
+
     } finally {
       setLoading(false);
     }
@@ -454,9 +454,9 @@ const HomeScreen: React.FC = () => {
   const handleChooseFromGallery = async () => {
     try {
       console.log('📸 Requesting gallery permissions...');
-      
+
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      
+
       if (status !== 'granted') {
         Alert.alert(
           'Permission Required',
@@ -495,9 +495,9 @@ const HomeScreen: React.FC = () => {
   const handleTakePhoto = async () => {
     try {
       console.log('📷 Requesting camera permissions...');
-      
+
       const { status } = await ImagePicker.requestCameraPermissionsAsync();
-      
+
       if (status !== 'granted') {
         Alert.alert(
           'Permission Required',
@@ -553,15 +553,15 @@ const HomeScreen: React.FC = () => {
       'Upload Prescription',
       'Choose how to upload your prescription',
       [
-        { 
-          text: 'Take Photo', 
+        {
+          text: 'Take Photo',
           onPress: () => {
             console.log('📷 User selected: Take Photo');
             handleTakePhoto();
           }
         },
-        { 
-          text: 'Choose from Gallery', 
+        {
+          text: 'Choose from Gallery',
           onPress: () => {
             console.log('🖼️ User selected: Gallery');
             handleChooseFromGallery();
@@ -580,7 +580,7 @@ const HomeScreen: React.FC = () => {
 
     console.log("medicine: ", medicine);
     console.log("current cart: ", cartItems);
-    
+
     const existingItem = cartItems.find((item) => item._id === medicine._id);
     console.log("matching: ", existingItem);
     if (existingItem) {
@@ -681,7 +681,7 @@ const HomeScreen: React.FC = () => {
         setMatchingStatus('scheduled');
         clearPlacedOrderDraft();
         setScheduleModalVisible(false);
-        Alert.alert('Order Scheduled', scheduledDate 
+        Alert.alert('Order Scheduled', scheduledDate
           ? `Your order is scheduled for ${scheduledDate.toLocaleString()}.`
           : 'Your order is now visible to all sellers until the deadline.'
         );
@@ -695,10 +695,10 @@ const HomeScreen: React.FC = () => {
 
   const confirmSchedule = () => {
     if (!activeOrderId) return;
-    
+
     const finalDate = new Date(selectedDate);
     finalDate.setHours(21, 0, 0, 0); // 9:00 PM
-    
+
     handleScheduleActiveOrder(finalDate);
   };
 
@@ -712,7 +712,7 @@ const HomeScreen: React.FC = () => {
 
   const placeOrder = async () => {
     console.log('🛒 Place Order button clicked');
-    
+
     if (cartItems.length === 0) {
       Alert.alert('Empty Cart', 'Please add some medicines to your cart before placing an order.');
       return;
@@ -734,7 +734,7 @@ const HomeScreen: React.FC = () => {
     try {
       const token = await AsyncStorage.getItem('token');
       const buyerId = await AsyncStorage.getItem('buyerId');
-      
+
       if (!token) {
         Alert.alert('Authentication Required', 'Please log in to place an order.');
         setLoading(false);
@@ -742,7 +742,7 @@ const HomeScreen: React.FC = () => {
       }
 
       const finalBuyerId = buyerId || `buyer_${Date.now()}`;
-      
+
       // Create FormData instead of JSON
       const formData = new FormData();
       formData.append('buyerId', finalBuyerId);
@@ -791,13 +791,13 @@ const HomeScreen: React.FC = () => {
       console.log('✅ Order placed successfully:', response.data);
 
       startSellerMatching(response.data?.order?._id || response.data?.orderId);
-      
+
     } catch (error: any) {
       console.error('❌ Place order error:', error.response?.data || error.message);
-      
+
       const errorMessage = error.response?.data?.message || 'Failed to place order. Please try again.';
       Alert.alert('Order Failed', errorMessage);
-      
+
     } finally {
       setLoading(false);
     }
@@ -805,11 +805,11 @@ const HomeScreen: React.FC = () => {
 
   const filteredMedicines = medicines && Array.isArray(medicines)
     ? medicines.filter(
-        (medicine) =>
-          medicine.name.toLowerCase().includes(searchText.toLowerCase()) ||
-          medicine.manufacturer.toLowerCase().includes(searchText.toLowerCase()) ||
-          medicine.category.toLowerCase().includes(searchText.toLowerCase())
-      )
+      (medicine) =>
+        medicine.name.toLowerCase().includes(searchText.toLowerCase()) ||
+        medicine.manufacturer.toLowerCase().includes(searchText.toLowerCase()) ||
+        medicine.category.toLowerCase().includes(searchText.toLowerCase())
+    )
     : [];
 
   const handleSearchFocus = () => {
@@ -1144,7 +1144,7 @@ const HomeScreen: React.FC = () => {
                   ? 'Order scheduled'
                   : 'Seller found'}
             </Text>
-            
+
             {matchingStatus === 'pending' && (
               <>
                 <View style={styles.progressBarContainer}>
@@ -1164,9 +1164,9 @@ const HomeScreen: React.FC = () => {
                   : `Your order is ${matchingStatus.replace(/_/g, ' ')}. You can track it in Orders.`}
             </Text>
 
-            {activeOrderId && (
+            {/* {activeOrderId && (
               <Text style={styles.matchingOrderId}>Order #{activeOrderId.slice(-8).toUpperCase()}</Text>
-            )}
+            )} */}
 
             {matchingStatus === 'pending' && (
               <View style={styles.searchingNoteContainer}>
@@ -1297,7 +1297,7 @@ const HomeScreen: React.FC = () => {
               </TouchableOpacity>
             )}
           </View>
-          
+
           <TouchableOpacity
             style={[styles.fymButton, loading && styles.disabledButton]}
             activeOpacity={0.8}
@@ -1449,28 +1449,28 @@ const HomeScreen: React.FC = () => {
             <View style={styles.quickActionsSection}>
               <Text style={styles.sectionTitle}>Quick Actions</Text>
               <View style={styles.quickActionsRow}>
-                <TouchableOpacity style={styles.quickActionCard} activeOpacity={0.8} disabled={loading} onPress={() => router.push('/(tabs)/orders') }>
+                <TouchableOpacity style={styles.quickActionCard} activeOpacity={0.8} disabled={loading} onPress={() => router.push('/(tabs)/orders')}>
                   <View style={styles.quickActionIcon}>
                     <Ionicons name="repeat" size={20} color="#000000" />
                   </View>
                   <Text style={styles.quickActionText}>Reorder</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.quickActionCard} activeOpacity={0.8} disabled={loading} onPress={() => Alert.alert('Wishlist', 'Wishlist support will be available soon.') }>
+                <TouchableOpacity style={styles.quickActionCard} activeOpacity={0.8} disabled={loading} onPress={() => Alert.alert('Wishlist', 'Wishlist support will be available soon.')}>
                   <View style={styles.quickActionIcon}>
                     <Ionicons name="heart" size={20} color="#000000" />
                   </View>
                   <Text style={styles.quickActionText}>Wishlist</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.quickActionCard} activeOpacity={0.8} disabled={loading} onPress={() => router.push('/(tabs)/orders') }>
+                <TouchableOpacity style={styles.quickActionCard} activeOpacity={0.8} disabled={loading} onPress={() => router.push('/(tabs)/orders')}>
                   <View style={styles.quickActionIcon}>
                     <Ionicons name="time" size={20} color="#000000" />
                   </View>
                   <Text style={styles.quickActionText}>Orders</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.quickActionCard} activeOpacity={0.8} disabled={loading} onPress={() => Alert.alert('Support', 'Contact support: +91-XXXXXXXXXX') }>
+                <TouchableOpacity style={styles.quickActionCard} activeOpacity={0.8} disabled={loading} onPress={() => Alert.alert('Support', 'Contact support: +91-XXXXXXXXXX')}>
                   <View style={styles.quickActionIcon}>
                     <Ionicons name="call" size={20} color="#000000" />
                   </View>
@@ -1545,12 +1545,12 @@ const HomeScreen: React.FC = () => {
               >
                 <Text style={styles.cancelBtnText}>Cancel</Text>
               </TouchableOpacity>
-                <TouchableOpacity 
-                  style={styles.scheduleConfirmBtn}
-                  onPress={confirmSchedule}
-                >
-                  <Text style={styles.scheduleConfirmBtnText}>Confirm Delivery</Text>
-                </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.scheduleConfirmBtn}
+                onPress={confirmSchedule}
+              >
+                <Text style={styles.scheduleConfirmBtnText}>Confirm Delivery</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
