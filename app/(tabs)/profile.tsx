@@ -178,7 +178,7 @@ export default function ProfileScreen() {
                 <Text style={styles.avatarText}>{profile?.name?.charAt(0) || 'U'}</Text>
               </View>
               <TouchableOpacity style={styles.editAvatarButton}>
-                <Edit3 size={16} color="#FFFFFF" />
+                <Edit3 size={16} color="#000000" />
               </TouchableOpacity>
             </View>
             <Text style={styles.name}>{profile?.name || 'User'}</Text>
@@ -212,24 +212,24 @@ export default function ProfileScreen() {
           <Text style={styles.sectionTitle}>Account Settings</Text>
 
           <TouchableOpacity style={styles.menuItem}>
-            <View style={[styles.menuIcon, { backgroundColor: 'rgba(20, 184, 166, 0.1)' }]}>
-              <User size={20} color="#2ec5b6" />
+            <View style={styles.menuIcon}>
+              <User size={20} color="#000000" />
             </View>
             <Text style={styles.menuText}>Personal Details</Text>
             <Bell size={18} color="#64748B" />
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/(tabs)/orders')}>
-            <View style={[styles.menuIcon, { backgroundColor: 'rgba(59, 130, 246, 0.1)' }]}>
-              <ShoppingBag size={20} color="#3B82F6" />
+            <View style={styles.menuIcon}>
+              <ShoppingBag size={20} color="#000000" />
             </View>
             <Text style={styles.menuText}>Order History</Text>
             <Bell size={18} color="#64748B" />
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.menuItem}>
-            <View style={[styles.menuIcon, { backgroundColor: 'rgba(239, 68, 68, 0.1)' }]}>
-              <Heart size={20} color="#EF4444" />
+            <View style={styles.menuIcon}>
+              <Heart size={20} color="#000000" />
             </View>
             <Text style={styles.menuText}>My Wishlist</Text>
             <Bell size={18} color="#64748B" />
@@ -238,24 +238,24 @@ export default function ProfileScreen() {
           <Text style={styles.sectionTitle}>Support & Legal</Text>
 
           <TouchableOpacity style={styles.menuItem}>
-            <View style={[styles.menuIcon, { backgroundColor: 'rgba(139, 92, 246, 0.1)' }]}>
-              <Shield size={20} color="#8B5CF6" />
+            <View style={styles.menuIcon}>
+              <Shield size={20} color="#000000" />
             </View>
             <Text style={styles.menuText}>Privacy Policy</Text>
             <Bell size={18} color="#64748B" />
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.menuItem}>
-            <View style={[styles.menuIcon, { backgroundColor: 'rgba(245, 158, 11, 0.1)' }]}>
-              <Settings size={20} color="#F59E0B" />
+            <View style={styles.menuIcon}>
+              <Settings size={20} color="#000000" />
             </View>
             <Text style={styles.menuText}>Settings</Text>
             <Bell size={18} color="#64748B" />
           </TouchableOpacity>
 
           <TouchableOpacity style={[styles.menuItem, styles.logoutItem]} onPress={handleLogout}>
-            <View style={[styles.menuIcon, { backgroundColor: 'rgba(239, 68, 68, 0.1)' }]}>
-              <LogOut size={20} color="#EF4444" />
+            <View style={[styles.menuIcon, { backgroundColor: '#EF4444' }]}>
+              <LogOut size={20} color="#000000" />
             </View>
             <Text style={[styles.menuText, { color: '#EF4444' }]}>Logout</Text>
           </TouchableOpacity>
@@ -331,18 +331,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 4,
-    borderColor: '#334155',
+    borderColor: '#2ec5b6', // Neon-teal
   },
   avatarText: {
     fontSize: 40,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: '#000000', // Black on neon-teal
   },
   editAvatarButton: {
     position: 'absolute',
     bottom: 0,
     right: 0,
-    backgroundColor: '#3B82F6',
+    backgroundColor: '#2ec5b6', // Neon-teal
     width: 32,
     height: 32,
     borderRadius: 16,
@@ -366,12 +366,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 8,
     borderRadius: 20,
-    backgroundColor: '#334155',
-    borderWidth: 1,
-    borderColor: '#475569',
+    backgroundColor: 'transparent',
+    borderWidth: 1.5,
+    borderColor: '#2ec5b6', // Neon-teal
   },
   editProfileText: {
-    color: '#F8FAFC',
+    color: '#2ec5b6', // Neon-teal
     fontSize: 14,
     fontWeight: '600',
   },
@@ -391,7 +391,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#334155',
+    borderColor: '#2ec5b6', // Neon-teal
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
@@ -404,7 +404,7 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#F8FAFC',
+    color: '#2ec5b6', // Neon-teal
     marginBottom: 4,
   },
   statLabel: {
@@ -431,7 +431,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     marginBottom: 8,
     borderWidth: 1,
-    borderColor: '#334155',
+    borderColor: '#2ec5b6', // Neon-teal
   },
   menuIcon: {
     width: 40,
@@ -440,6 +440,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
+    backgroundColor: '#2ec5b6', // Neon-teal
   },
   menuText: {
     flex: 1,
@@ -449,7 +450,7 @@ const styles = StyleSheet.create({
   },
   logoutItem: {
     marginTop: 12,
-    borderColor: 'rgba(239, 68, 68, 0.2)',
+    borderColor: '#EF4444', // Red outline for logout
   },
   footer: {
     alignItems: 'center',

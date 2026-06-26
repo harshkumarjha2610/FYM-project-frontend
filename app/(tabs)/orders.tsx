@@ -321,7 +321,7 @@ export default function OrdersScreen() {
           style={styles.helpButton}
           onPress={() => Alert.alert('Help', 'Contact support: +91-XXXXXXXXXX')}
         >
-          <Ionicons name="help-circle-outline" size={24} color="#FFFFFF" />
+          <Ionicons name="help-circle-outline" size={24} color="#000000" />
         </TouchableOpacity>
       </View>
 
@@ -408,7 +408,7 @@ export default function OrdersScreen() {
                   {order.items.map((item, index) => (
                     <View key={index} style={styles.orderItem}>
                       <View style={styles.itemIcon}>
-                        <Ionicons name="medkit" size={20} color="#2ec5b6" />
+                        <Ionicons name="medkit" size={20} color="#000000" />
                       </View>
                       <View style={styles.itemDetails}>
                         <Text style={styles.itemName}>{item.name}</Text>
@@ -682,7 +682,7 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
     backgroundColor: '#1E293B', // Slate 800
     borderBottomWidth: 1,
-    borderBottomColor: '#334155', // Slate 700
+    borderBottomColor: '#2ec5b6', // Neon-teal
   },
   headerTitle: {
     fontSize: 28,
@@ -697,7 +697,7 @@ const styles = StyleSheet.create({
   helpButton: {
     width: 44,
     height: 44,
-    backgroundColor: '#334155', // Slate 700
+    backgroundColor: '#2ec5b6', // Neon-teal
     borderRadius: 22,
     justifyContent: 'center',
     alignItems: 'center',
@@ -724,7 +724,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginRight: 8,
     borderWidth: 1,
-    borderColor: '#334155', // Slate 700
+    borderColor: '#2ec5b6', // Neon-teal
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -759,7 +759,7 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: '#334155', // Slate 700
+    borderColor: '#2ec5b6', // Neon-teal
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
@@ -773,7 +773,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     paddingBottom: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#334155', // Slate 700
+    borderBottomColor: '#2ec5b6', // Neon-teal
   },
   orderHeaderLeft: {
     flex: 1,
@@ -812,7 +812,7 @@ const styles = StyleSheet.create({
   itemIcon: {
     width: 40,
     height: 40,
-    backgroundColor: '#334155', // Slate 700
+    backgroundColor: '#2ec5b6', // Neon-teal
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
@@ -944,6 +944,8 @@ const styles = StyleSheet.create({
     height: 120,
     borderRadius: 8,
     backgroundColor: '#334155', // Slate 700
+    borderWidth: 1,
+    borderColor: '#2ec5b6', // Neon-teal
   },
   previewOverlay: {
     position: 'absolute',
@@ -968,6 +970,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#334155', // Slate 700
     padding: 12,
     borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#2ec5b6', // Neon-teal
   },
   previewContainer: {
     flex: 1,
@@ -997,7 +1001,7 @@ const styles = StyleSheet.create({
     padding: 24,
     minHeight: '60%',
     borderWidth: 1,
-    borderColor: '#334155',
+    borderColor: '#2ec5b6', // Neon-teal
   },
   modalHeader: {
     flexDirection: 'row',
@@ -1135,7 +1139,7 @@ const styles = StyleSheet.create({
     maxWidth: 340,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#334155',
+    borderColor: '#2ec5b6', // Neon-teal
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.3,

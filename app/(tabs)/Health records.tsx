@@ -136,11 +136,11 @@ export default function HealthRecordsScreen() {
                 style={styles.metricCard}
                 onPress={() => Alert.alert(metric.name, `Current value: ${metric.value} ${metric.unit}`)}
               >
-                <View style={[styles.metricIconContainer, { backgroundColor: `${getStatusColor(metric.status)}20` }]}>
+                <View style={[styles.metricIconContainer, { backgroundColor: '#2ec5b6' }]}>
                   <Ionicons
                     name={metric.icon}
                     size={24}
-                    color={getStatusColor(metric.status)}
+                    color="#000000"
                   />
                 </View>
                 <Text style={styles.metricName}>{metric.name}</Text>
@@ -160,7 +160,7 @@ export default function HealthRecordsScreen() {
               onPress={() => Alert.alert('Upload Report', 'Feature coming soon!')}
             >
               <View style={styles.quickActionIcon}>
-                <Ionicons name="cloud-upload-outline" size={24} color="#2ec5b6" />
+                <Ionicons name="cloud-upload-outline" size={24} color="#000000" />
               </View>
               <Text style={styles.quickActionText}>Upload Report</Text>
             </TouchableOpacity>
@@ -170,7 +170,7 @@ export default function HealthRecordsScreen() {
               onPress={() => Alert.alert('Book Appointment', 'Feature coming soon!')}
             >
               <View style={styles.quickActionIcon}>
-                <Ionicons name="calendar-outline" size={24} color="#2ec5b6" />
+                <Ionicons name="calendar-outline" size={24} color="#000000" />
               </View>
               <Text style={styles.quickActionText}>Book Test</Text>
             </TouchableOpacity>
@@ -180,7 +180,7 @@ export default function HealthRecordsScreen() {
               onPress={() => Alert.alert('Reminders', 'Feature coming soon!')}
             >
               <View style={styles.quickActionIcon}>
-                <Ionicons name="alarm-outline" size={24} color="#2ec5b6" />
+                <Ionicons name="alarm-outline" size={24} color="#000000" />
               </View>
               <Text style={styles.quickActionText}>Reminders</Text>
             </TouchableOpacity>
@@ -190,7 +190,7 @@ export default function HealthRecordsScreen() {
               onPress={() => Alert.alert('Share Records', 'Feature coming soon!')}
             >
               <View style={styles.quickActionIcon}>
-                <Ionicons name="share-social-outline" size={24} color="#2ec5b6" />
+                <Ionicons name="share-social-outline" size={24} color="#000000" />
               </View>
               <Text style={styles.quickActionText}>Share</Text>
             </TouchableOpacity>
@@ -264,7 +264,7 @@ export default function HealthRecordsScreen() {
                 <Ionicons
                   name={getRecordIcon(record.type)}
                   size={24}
-                  color="#2ec5b6"
+                  color="#000000"
                 />
               </View>
 
@@ -285,7 +285,7 @@ export default function HealthRecordsScreen() {
 
           {filteredRecords.length === 0 && (
             <View style={styles.emptyState}>
-              <Ionicons name="folder-open-outline" size={64} color="#666666" />
+              <Ionicons name="folder-open-outline" size={64} color="#2ec5b6" />
               <Text style={styles.emptyStateText}>No records found</Text>
               <Text style={styles.emptyStateSubText}>Add your first health record</Text>
             </View>
@@ -310,7 +310,7 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
     backgroundColor: '#1E293B', // Slate 800
     borderBottomWidth: 1,
-    borderBottomColor: '#334155', // Slate 700
+    borderBottomColor: '#2ec5b6', // Neon-teal
   },
   headerTitle: {
     fontSize: 28,
@@ -361,7 +361,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#334155', // Slate 700
+    borderColor: '#2ec5b6', // Neon-teal
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
@@ -402,7 +402,7 @@ const styles = StyleSheet.create({
     padding: 12,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#334155', // Slate 700
+    borderColor: '#2ec5b6', // Neon-teal
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -412,7 +412,7 @@ const styles = StyleSheet.create({
   quickActionIcon: {
     width: 48,
     height: 48,
-    backgroundColor: '#334155', // Slate 700
+    backgroundColor: '#2ec5b6', // Neon-teal
     borderRadius: 24,
     justifyContent: 'center',
     alignItems: 'center',
@@ -434,7 +434,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginRight: 8,
     borderWidth: 1,
-    borderColor: '#334155', // Slate 700
+    borderColor: '#2ec5b6', // Neon-teal
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -463,7 +463,7 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#334155', // Slate 700
+    borderColor: '#2ec5b6', // Neon-teal
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -474,7 +474,7 @@ const styles = StyleSheet.create({
   recordIconContainer: {
     width: 50,
     height: 50,
-    backgroundColor: '#334155', // Slate 700
+    backgroundColor: '#2ec5b6', // Neon-teal
     borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
