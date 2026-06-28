@@ -26,7 +26,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     marginRight: 12,
     borderWidth: 1,
-    borderColor: '#334155', // Slate 700
+    borderColor: '#2ec5b6', // Neon-teal
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -48,7 +48,7 @@ export const styles = StyleSheet.create({
     padding: 10,
     position: 'relative',
     borderWidth: 1,
-    borderColor: '#334155', // Slate 700
+    borderColor: '#2ec5b6', // Neon-teal
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -98,7 +98,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 12,
     marginRight: 12,
     borderWidth: 1,
-    borderColor: '#334155', // Slate 700
+    borderColor: '#2ec5b6', // Neon-teal
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -275,7 +275,7 @@ export const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#334155', // Slate 700
+    borderColor: '#2ec5b6', // Neon-teal
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
@@ -287,7 +287,7 @@ export const styles = StyleSheet.create({
     marginBottom: 12,
   },
   cardIconBg: {
-    backgroundColor: '#334155', // Slate 700
+    backgroundColor: '#2ec5b6', // Neon-teal
     borderRadius: 20,
     padding: 12,
   },
@@ -338,7 +338,7 @@ export const styles = StyleSheet.create({
     padding: 12,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#334155', // Slate 700
+    borderColor: '#2ec5b6', // Neon-teal
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -346,7 +346,7 @@ export const styles = StyleSheet.create({
     elevation: 2,
   },
   quickActionIcon: {
-    backgroundColor: '#334155', // Slate 700
+    backgroundColor: '#2ec5b6', // Neon-teal
     borderRadius: 20,
     width: 40,
     height: 40,

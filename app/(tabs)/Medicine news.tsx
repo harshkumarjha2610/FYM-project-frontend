@@ -140,7 +140,7 @@ export default function MedicineNewsScreen() {
           style={styles.notificationButton}
           onPress={() => Alert.alert('Notifications', 'No new notifications')}
         >
-          <Ionicons name="notifications-outline" size={24} color="#FFFFFF" />
+          <Ionicons name="notifications-outline" size={24} color="#000000" />
           <View style={styles.notificationBadge}>
             <Text style={styles.notificationBadgeText}>3</Text>
           </View>
@@ -190,12 +190,12 @@ export default function MedicineNewsScreen() {
               <Ionicons
                 name={category.icon as any}
                 size={18}
-                color={selectedCategory === category.id ? '#FFFFFF' : '#475569'}
+                color={selectedCategory === category.id ? '#000000' : '#475569'}
               />
               <Text
                 style={[
                   styles.categoryText,
-                  selectedCategory === category.id && { color: '#FFFFFF' },
+                  selectedCategory === category.id && styles.categoryTextActive,
                 ]}
               >
                 {category.name}
@@ -292,10 +292,10 @@ export default function MedicineNewsScreen() {
 
                 <View style={styles.newsActions}>
                   <TouchableOpacity style={styles.newsActionButton}>
-                    <Ionicons name="bookmark-outline" size={18} color="#FFFFFF" />
+                    <Ionicons name="bookmark-outline" size={18} color="#000000" />
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.newsActionButton}>
-                    <Ionicons name="share-social-outline" size={18} color="#FFFFFF" />
+                    <Ionicons name="share-social-outline" size={18} color="#000000" />
                   </TouchableOpacity>
                 </View>
               </View>
@@ -304,7 +304,7 @@ export default function MedicineNewsScreen() {
 
           {filteredNews.length === 0 && (
             <View style={styles.emptyState}>
-              <Ionicons name="search-outline" size={64} color="#666666" />
+              <Ionicons name="search-outline" size={64} color="#2ec5b6" />
               <Text style={styles.emptyStateText}>No news found</Text>
               <Text style={styles.emptyStateSubText}>
                 {searchQuery ? 'Try different keywords' : 'Check back later for updates'}
@@ -331,7 +331,7 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
     backgroundColor: '#1E293B', // Slate 800
     borderBottomWidth: 1,
-    borderBottomColor: '#334155', // Slate 700
+    borderBottomColor: '#2ec5b6', // Neon-teal
   },
   headerTitle: {
     fontSize: 28,
@@ -346,7 +346,7 @@ const styles = StyleSheet.create({
   notificationButton: {
     width: 44,
     height: 44,
-    backgroundColor: '#334155', // Slate 700
+    backgroundColor: '#2ec5b6', // Neon-teal
     borderRadius: 22,
     justifyContent: 'center',
     alignItems: 'center',
@@ -388,7 +388,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 12,
     borderWidth: 1,
-    borderColor: '#334155', // Slate 700
+    borderColor: '#2ec5b6', // Neon-teal
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -417,7 +417,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginRight: 8,
     borderWidth: 1,
-    borderColor: '#334155', // Slate 700
+    borderColor: '#2ec5b6', // Neon-teal
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -471,7 +471,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginRight: 16,
     borderWidth: 1,
-    borderColor: '#334155', // Slate 700
+    borderColor: '#2ec5b6', // Neon-teal
     overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
@@ -521,7 +521,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: '#334155', // Slate 700
+    borderColor: '#2ec5b6', // Neon-teal
     overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -610,7 +610,7 @@ const styles = StyleSheet.create({
   newsActionButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#334155', // Slate 700
+    backgroundColor: '#2ec5b6', // Neon-teal
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
