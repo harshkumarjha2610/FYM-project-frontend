@@ -1037,10 +1037,10 @@ const HomeScreen: React.FC = () => {
                       <Ionicons name="document-attach" size={18} color="#2ec5b6" />
                       <Text style={styles.cartPrescriptionTitle}>{`Prescription${prescriptionImages.length > 1 ? 's' : ''} added`}</Text>
                     </View>
-                    <View style={styles.prescriptionImageList}>
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.prescriptionImageList}>
                       {prescriptionImages.map((uri, index) => (
                         <View key={`${uri}-${index}`} style={styles.prescriptionImageItem}>
-                          <Image source={{ uri }} style={styles.cartPrescriptionImage} resizeMode="contain" />
+                          <Image source={{ uri }} style={styles.cartPrescriptionImage} resizeMode="cover" />
                           <TouchableOpacity
                             style={styles.removePrescriptionButton}
                             onPress={() => setPrescriptionImages((prev) => prev.filter((_, i) => i !== index))}
@@ -1049,7 +1049,7 @@ const HomeScreen: React.FC = () => {
                           </TouchableOpacity>
                         </View>
                       ))}
-                    </View>
+                    </ScrollView>
                     <View style={styles.prescriptionActions}>
                       <TouchableOpacity onPress={handleUploadPrescription} style={styles.changePrescriptionButton}>
                         <Text style={styles.changePrescriptionText}>Add more</Text>

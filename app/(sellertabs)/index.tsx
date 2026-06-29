@@ -75,6 +75,7 @@ const SellerDashboard = () => {
   
   const previousOrderCountRef = useRef<number>(0);
   const notificationSound = useRef<Audio.Sound | null>(null);
+  const respondedOrdersRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     const loadSound = async () => {
@@ -126,6 +127,7 @@ const SellerDashboard = () => {
 
   const handleAccept = async (orderId: string) => {
     try {
+      respondedOrdersRef.current.add(orderId);
       const token = await AsyncStorage.getItem('sellerToken');
       if (!token) {
         Alert.alert('Authentication Required', 'Please login again');
@@ -150,6 +152,7 @@ const SellerDashboard = () => {
 
   const handleReject = async (orderId: string) => {
     try {
+      respondedOrdersRef.current.add(orderId);
       const token = await AsyncStorage.getItem('sellerToken');
       const res = await axios.patch(
         `${API_BASE_URL}/${orderId}/respond`,
@@ -212,7 +215,13 @@ const SellerDashboard = () => {
       headers: { Authorization: `Bearer ${token}` },
     });
 
-    const pending = (res.data || []).filter((o: any) => o.status === "pending");
+    const pending = (res.data || [])
+      .filter((o: any) => o.status === "pending")
+      .filter((o: any) => !respondedOrdersRef.current.has(o._id))
+      .filter((o: any) => {
+        const serverTimeout = typeof o.timeRemaining === 'number' ? o.timeRemaining : BUYER_TIMEOUT_MS;
+        return serverTimeout > 5000;
+      });
 
     // 🔔 New order detection
     if (
@@ -295,6 +304,15 @@ const SellerDashboard = () => {
         });
 
         socket.on("newOrder", (order: any) => {
+          if (respondedOrdersRef.current.has(order._id)) {
+            console.log("🚫 Ignoring newOrder socket event for already responded order:", order._id);
+            return;
+          }
+          const serverTimeout = typeof order.timeRemaining === 'number' ? order.timeRemaining : BUYER_TIMEOUT_MS;
+          if (serverTimeout <= 5000) {
+            console.log("🚫 Ignoring newOrder socket event: order is expired or close to expiry");
+            return;
+          }
           console.log("🔔 New order via Socket.IO:", order._id);
           LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
 
@@ -358,21 +376,21 @@ const SellerDashboard = () => {
   };
 
   // ✅ CRITICAL FIX: Properly construct image URL
-  const getPrescriptionImageUrl = (order: any): string | null => {
-    if (!order.prescriptionImage) return null;
+  const getPrescriptionImageUrl = (imagePath: string | null): string | null => {
+    if (!imagePath) return null;
     
     // If it's already a full URL, return as-is
-    if (order.prescriptionImage.startsWith('http')) {
-      return order.prescriptionImage;
+    if (imagePath.startsWith('http')) {
+      return imagePath;
     }
     
     // If it starts with /uploads/, prepend API_URL
-    if (order.prescriptionImage.startsWith('/uploads/')) {
-      return `${API_URL}${order.prescriptionImage}`;
+    if (imagePath.startsWith('/uploads/')) {
+      return `${API_URL}${imagePath}`;
     }
     
     // Otherwise, assume it's just a filename
-    return `${API_URL}/uploads/${order.prescriptionImage}`;
+    return `${API_URL}/uploads/${imagePath}`;
   };
 
   return (
@@ -403,7 +421,6 @@ const SellerDashboard = () => {
             ) : (
             pendingOrders.map((order) => {
               const isExpanded = expandedOrderId === order._id;
-              const prescriptionImageUrl = getPrescriptionImageUrl(order);
               const hasImageError = imageLoadError[order._id];
 
               return (
@@ -418,7 +435,7 @@ const SellerDashboard = () => {
                         {order.buyerId?.name || "Customer"}
                       </Text>
                       <Text style={styles.productName}>
-                        {order.items?.map((i: any) => i.name).join(", ")}
+                        {order.items?.map((i: any) => `${i.name} (Qty: ${i.quantity})`).join(", ")}
                       </Text>
                     </View>
                     <View style={styles.rightMeta}>
@@ -443,24 +460,50 @@ const SellerDashboard = () => {
                         )}
                       </View>
 
-                      {/* ✅ PRESCRIPTION IMAGE DISPLAY */}
-                      {prescriptionImageUrl && !hasImageError ? (
+                      {/* ✅ PRESCRIPTION IMAGES DISPLAY */}
+                      {((order.prescriptionImages && order.prescriptionImages.length > 0) || order.prescriptionImage) && (
                         <View style={styles.prescriptionContainer}>
-                          <Text style={styles.detailLabel}>Prescription:</Text>
-                          <TouchableOpacity 
-                            onPress={() => openImagePreview(prescriptionImageUrl)}
-                          >
-                            <Image
-                              source={{ uri: prescriptionImageUrl }}
-                              style={styles.prescriptionThumbnail}
-                              onError={() => handleImageError(order._id)}
-                              resizeMode="cover"
-                            />
-                          </TouchableOpacity>
+                          <Text style={styles.detailLabel}>Prescriptions:</Text>
+                          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 8 }}>
+                            {order.prescriptionImages && order.prescriptionImages.length > 0 ? (
+                              order.prescriptionImages.map((img: string, idx: number) => {
+                                const imgUrl = getPrescriptionImageUrl(img);
+                                if (!imgUrl) return null;
+                                return (
+                                  <TouchableOpacity 
+                                    key={idx}
+                                    onPress={() => openImagePreview(imgUrl)}
+                                    style={{ marginRight: 8 }}
+                                  >
+                                    <Image
+                                      source={{ uri: imgUrl }}
+                                      style={styles.prescriptionThumbnail}
+                                      resizeMode="cover"
+                                    />
+                                  </TouchableOpacity>
+                                );
+                              })
+                            ) : (
+                              (() => {
+                                const imgUrl = getPrescriptionImageUrl(order.prescriptionImage);
+                                if (!imgUrl || hasImageError) return null;
+                                return (
+                                  <TouchableOpacity 
+                                    onPress={() => openImagePreview(imgUrl)}
+                                  >
+                                    <Image
+                                      source={{ uri: imgUrl }}
+                                      style={styles.prescriptionThumbnail}
+                                      onError={() => handleImageError(order._id)}
+                                      resizeMode="cover"
+                                    />
+                                  </TouchableOpacity>
+                                );
+                              })()
+                            )}
+                          </ScrollView>
                         </View>
-                      ) : hasImageError ? (
-                        <Text style={styles.errorText}>Failed to load image</Text>
-                      ) : null}
+                      )}
 
                       <View style={styles.actionsRow}>
                         <TouchableOpacity
@@ -668,8 +711,8 @@ const styles = StyleSheet.create({
     marginTop: 12 
   },
   prescriptionThumbnail: { 
-    width: '100%', 
-    height: 200, 
+    width: 150, 
+    height: 150, 
     borderRadius: 12,
     backgroundColor: '#F1F5F9',
   },
