@@ -75,6 +75,7 @@ const SellerDashboard = () => {
   
   const previousOrderCountRef = useRef<number>(0);
   const notificationSound = useRef<Audio.Sound | null>(null);
+  const respondedOrdersRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     const loadSound = async () => {
@@ -126,6 +127,7 @@ const SellerDashboard = () => {
 
   const handleAccept = async (orderId: string) => {
     try {
+      respondedOrdersRef.current.add(orderId);
       const token = await AsyncStorage.getItem('sellerToken');
       if (!token) {
         Alert.alert('Authentication Required', 'Please login again');
@@ -150,6 +152,7 @@ const SellerDashboard = () => {
 
   const handleReject = async (orderId: string) => {
     try {
+      respondedOrdersRef.current.add(orderId);
       const token = await AsyncStorage.getItem('sellerToken');
       const res = await axios.patch(
         `${API_BASE_URL}/${orderId}/respond`,
@@ -212,7 +215,13 @@ const SellerDashboard = () => {
       headers: { Authorization: `Bearer ${token}` },
     });
 
-    const pending = (res.data || []).filter((o: any) => o.status === "pending");
+    const pending = (res.data || [])
+      .filter((o: any) => o.status === "pending")
+      .filter((o: any) => !respondedOrdersRef.current.has(o._id))
+      .filter((o: any) => {
+        const serverTimeout = typeof o.timeRemaining === 'number' ? o.timeRemaining : BUYER_TIMEOUT_MS;
+        return serverTimeout > 5000;
+      });
 
     // 🔔 New order detection
     if (
@@ -295,6 +304,15 @@ const SellerDashboard = () => {
         });
 
         socket.on("newOrder", (order: any) => {
+          if (respondedOrdersRef.current.has(order._id)) {
+            console.log("🚫 Ignoring newOrder socket event for already responded order:", order._id);
+            return;
+          }
+          const serverTimeout = typeof order.timeRemaining === 'number' ? order.timeRemaining : BUYER_TIMEOUT_MS;
+          if (serverTimeout <= 5000) {
+            console.log("🚫 Ignoring newOrder socket event: order is expired or close to expiry");
+            return;
+          }
           console.log("🔔 New order via Socket.IO:", order._id);
           LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
 
