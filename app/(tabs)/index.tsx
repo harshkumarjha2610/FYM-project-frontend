@@ -98,6 +98,7 @@ const HomeScreen: React.FC = () => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [matchingOptions, setMatchingOptions] = useState<Array<{ r: number; discount: number[] }>>([]);
   const [cancelModalVisible, setCancelModalVisible] = useState<boolean>(false);
+  const [acceptedPharmacyName, setAcceptedPharmacyName] = useState<string | null>(null);
 
   const DEFAULT_MATCHING_OPTIONS = [
     { r: 2000, discount: [15, 20] },
@@ -189,6 +190,9 @@ const HomeScreen: React.FC = () => {
           console.log('🔔 Order response received on home:', data);
           if (data.status === 'accepted') {
             setMatchingStatus('accepted');
+            if (data.pharmacyName) {
+              setAcceptedPharmacyName(data.pharmacyName);
+            }
             clearPlacedOrderDraft();
           }
         });
@@ -619,6 +623,7 @@ const HomeScreen: React.FC = () => {
   const startSellerMatching = (orderId: string) => {
     setActiveOrderId(orderId);
     setMatchingStatus('pending');
+    setAcceptedPharmacyName(null);
     setCanScheduleOrder(false);
     setMatchingStartedAt(Date.now());
     setShowCart(false);
@@ -1161,7 +1166,9 @@ const HomeScreen: React.FC = () => {
                 ? getMatchingStatusMessage()
                 : matchingStatus === 'scheduled'
                   ? 'Every seller can now see this order until the deadline.'
-                  : `Your order is ${matchingStatus.replace(/_/g, ' ')}. You can track it in Orders.`}
+                  : acceptedPharmacyName 
+                    ? `Your order has been accepted by ${acceptedPharmacyName}. You can track it in Orders.` 
+                    : `Your order is ${matchingStatus.replace(/_/g, ' ')}. You can track it in Orders.`}
             </Text>
 
             {/* {activeOrderId && (
