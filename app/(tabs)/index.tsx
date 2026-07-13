@@ -98,6 +98,7 @@ const HomeScreen: React.FC = () => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [matchingOptions, setMatchingOptions] = useState<Array<{ r: number; discount: number[] }>>([]);
   const [cancelModalVisible, setCancelModalVisible] = useState<boolean>(false);
+  const [acceptedPharmacyName, setAcceptedPharmacyName] = useState<string | null>(null);
 
   const DEFAULT_MATCHING_OPTIONS = [
     { r: 2000, discount: [15, 20] },
@@ -189,6 +190,9 @@ const HomeScreen: React.FC = () => {
           console.log('🔔 Order response received on home:', data);
           if (data.status === 'accepted') {
             setMatchingStatus('accepted');
+            if (data.pharmacyName) {
+              setAcceptedPharmacyName(data.pharmacyName);
+            }
             clearPlacedOrderDraft();
           }
         });
@@ -598,27 +602,29 @@ const HomeScreen: React.FC = () => {
   };
 
   const removeFromCart = (medicineId: string) => {
-    const item = cartItems.find((item) => item.id === medicineId);
+    const item = cartItems.find((item) => item._id === medicineId);
     if (!item) return;
     if (item.quantity > 1) {
       setCartItems((prev) =>
         prev.map((item) =>
-          item.id === medicineId ? { ...item, quantity: item.quantity - 1 } : item
+          item._id === medicineId ? { ...item, quantity: item.quantity - 1 } : item
         )
       );
       setCartCount((prev) => prev - 1);
     } else {
-      setCartItems((prev) => prev.filter((item) => item.id !== medicineId));
+      setCartItems((prev) => prev.filter((item) => item._id !== medicineId));
       setCartCount((prev) => prev - 1);
     }
   };
 
   const getTotalAmount = () => {
-    return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+    const total = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+    return Number(total.toFixed(2));
   };
   const startSellerMatching = (orderId: string) => {
     setActiveOrderId(orderId);
     setMatchingStatus('pending');
+    setAcceptedPharmacyName(null);
     setCanScheduleOrder(false);
     setMatchingStartedAt(Date.now());
     setShowCart(false);
@@ -747,7 +753,7 @@ const HomeScreen: React.FC = () => {
       const formData = new FormData();
       formData.append('buyerId', finalBuyerId);
       formData.append('items', JSON.stringify(cartItems.map((item) => ({
-        medicineId: item.id,
+        medicineId: item._id,
         name: item.name,
         manufacturer: item.manufacturer,
         price: item.price,
@@ -1037,10 +1043,10 @@ const HomeScreen: React.FC = () => {
                       <Ionicons name="document-attach" size={18} color="#2ec5b6" />
                       <Text style={styles.cartPrescriptionTitle}>{`Prescription${prescriptionImages.length > 1 ? 's' : ''} added`}</Text>
                     </View>
-                    <View style={styles.prescriptionImageList}>
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.prescriptionImageList}>
                       {prescriptionImages.map((uri, index) => (
                         <View key={`${uri}-${index}`} style={styles.prescriptionImageItem}>
-                          <Image source={{ uri }} style={styles.cartPrescriptionImage} resizeMode="contain" />
+                          <Image source={{ uri }} style={styles.cartPrescriptionImage} resizeMode="cover" />
                           <TouchableOpacity
                             style={styles.removePrescriptionButton}
                             onPress={() => setPrescriptionImages((prev) => prev.filter((_, i) => i !== index))}
@@ -1049,7 +1055,7 @@ const HomeScreen: React.FC = () => {
                           </TouchableOpacity>
                         </View>
                       ))}
-                    </View>
+                    </ScrollView>
                     <View style={styles.prescriptionActions}>
                       <TouchableOpacity onPress={handleUploadPrescription} style={styles.changePrescriptionButton}>
                         <Text style={styles.changePrescriptionText}>Add more</Text>
@@ -1059,7 +1065,7 @@ const HomeScreen: React.FC = () => {
                 )}
                 <ScrollView style={styles.cartItemsList}>
                   {cartItems.map((item) => (
-                    <View key={item.id} style={styles.cartItem}>
+                    <View key={item._id} style={styles.cartItem}>
                       <View style={styles.cartItemInfo}>
                         <Text style={styles.cartItemName}>{item.name}</Text>
                         <Text style={styles.cartItemManufacturer}>by {item.manufacturer}</Text>
@@ -1069,7 +1075,7 @@ const HomeScreen: React.FC = () => {
                       <View style={styles.quantityControls}>
                         <TouchableOpacity
                           style={styles.quantityButton}
-                          onPress={() => removeFromCart(item.id)}
+                          onPress={() => removeFromCart(item._id)}
                         >
                           <Ionicons name="remove" size={20} color="#2ec5b6" />
                         </TouchableOpacity>
@@ -1084,7 +1090,7 @@ const HomeScreen: React.FC = () => {
                         </TouchableOpacity>
                       </View>
 
-                      <Text style={styles.cartItemTotal}>₹{item.price * item.quantity}</Text>
+                      <Text style={styles.cartItemTotal}>₹{(item.price * item.quantity).toFixed(2)}</Text>
                     </View>
                   ))}
                 </ScrollView>
@@ -1161,7 +1167,9 @@ const HomeScreen: React.FC = () => {
                 ? getMatchingStatusMessage()
                 : matchingStatus === 'scheduled'
                   ? 'Every seller can now see this order until the deadline.'
-                  : `Your order is ${matchingStatus.replace(/_/g, ' ')}. You can track it in Orders.`}
+                  : acceptedPharmacyName 
+                    ? `Your order has been accepted by ${acceptedPharmacyName}. You can track it in Orders.` 
+                    : `Your order is ${matchingStatus.replace(/_/g, ' ')}. You can track it in Orders.`}
             </Text>
 
             {/* {activeOrderId && (

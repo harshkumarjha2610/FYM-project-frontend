@@ -310,9 +310,12 @@ export const styles = StyleSheet.create({
   },
   prescriptionImageList: {
     marginTop: 8,
+    flexDirection: 'row',
   },
   prescriptionImageItem: {
-    marginBottom: 12,
+    marginRight: 12,
+    alignItems: 'center',
+    width: 150,
   },
   cardAction: {
     flexDirection: 'row',
@@ -775,9 +778,8 @@ export const styles = StyleSheet.create({
     fontWeight: '700',
   },
   cartPrescriptionImage: {
-    width: '100%',
-    minHeight: 180,
-    maxHeight: 320,
+    width: 150,
+    height: 150,
     borderRadius: 8,
     backgroundColor: '#1E293B',
   },
@@ -797,7 +799,8 @@ export const styles = StyleSheet.create({
     marginTop: 10,
   },
   removePrescriptionButton: {
-    paddingVertical: 8,
+    paddingVertical: 4,
+    marginTop: 4,
   },
   removePrescriptionText: {
     color: '#EF4444',

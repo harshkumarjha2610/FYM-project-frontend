@@ -40,7 +40,7 @@ const AcceptedOrdersScreen = () => {
 
       setAcceptedOrders(res.data || []);
     } catch (err: any) {
-      console.error('âŒ Error:', err);
+      console.error('Error:', err);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -61,13 +61,14 @@ const AcceptedOrdersScreen = () => {
     setImageModalVisible(true);
   };
 
-  // âœ… Helper to construct image URL
+  // Helper to construct image URL
   const getImageUrl = (order: any): string | null => {
     if (!order.prescriptionImage) return null;
     if (order.prescriptionImage.startsWith('http')) return order.prescriptionImage;
     if (order.prescriptionImage.startsWith('/uploads/')) return `${API_URL}${order.prescriptionImage}`;
     return `${API_URL}/uploads/${order.prescriptionImage}`;
   };
+
   const getNextStatus = (status: string) => {
     const next: Record<string, string> = {
       accepted: 'packing',
@@ -95,6 +96,7 @@ const AcceptedOrdersScreen = () => {
       Alert.alert('Error', err.response?.data?.message || 'Failed to update order status');
     }
   };
+
   useEffect(() => {
     fetchAcceptedOrders();
     const interval = setInterval(fetchAcceptedOrders, 30000);
@@ -102,7 +104,7 @@ const AcceptedOrdersScreen = () => {
   }, []);
 
   return (
-    <ScrollView 
+    <ScrollView
       style={styles.container}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
     >
@@ -137,7 +139,7 @@ const AcceptedOrdersScreen = () => {
                     </Text>
                   </View>
                   <View style={styles.rightMeta}>
-                    <Text style={styles.amount}>â‚¹{order.totalAmount}</Text>
+                    <Text style={styles.amount}>Rs.{order.totalAmount}</Text>
                     <Text style={styles.statusBadge}>{String(order.status || 'accepted').replace(/_/g, ' ').toUpperCase()}</Text>
                   </View>
                 </View>
@@ -146,18 +148,18 @@ const AcceptedOrdersScreen = () => {
                   <View style={styles.expandedSection}>
                     <View style={styles.detailBox}>
                       <Text style={styles.detailText}>
-                        <Text style={styles.detailLabel}>ðŸ“ Delivery Address: </Text>
+                        <Text style={styles.detailLabel}>Delivery Address: </Text>
                         {order.deliveryAddress || "N/A"}
                       </Text>
                       {order.buyerId?.mobile && (
                         <Text style={styles.detailText}>
-                          <Text style={styles.detailLabel}>ðŸ“ž Contact: </Text>
+                          <Text style={styles.detailLabel}>Contact: </Text>
                           {order.buyerId.mobile}
                         </Text>
                       )}
                     </View>
-                    
-                    {/* âœ… Show prescription image in accepted orders too */}
+
+                    {/* Show prescription image in accepted orders too */}
                     {imageUrl && (
                       <View style={styles.imageContainer}>
                         <Text style={styles.label}>Prescription:</Text>
@@ -165,12 +167,14 @@ const AcceptedOrdersScreen = () => {
                           <Image source={{ uri: imageUrl }} style={styles.thumbnail} />
                         </TouchableOpacity>
                       </View>
-                    )}                    <View style={styles.itemsBox}>
+                    )}
+
+                    <View style={styles.itemsBox}>
                       <Text style={styles.label}>Order Items:</Text>
                       {order.items?.map((item: any, index: number) => (
                         <View key={`${order._id}-${index}`} style={styles.itemRow}>
                           <Text style={styles.itemName}>{item.name || item.medicine?.name || 'Medicine'}</Text>
-                          <Text style={styles.itemMeta}>Qty {item.quantity} • ?{item.price}</Text>
+                          <Text style={styles.itemMeta}>Qty {item.quantity} - Rs.{item.price}</Text>
                         </View>
                       ))}
                     </View>
@@ -196,11 +200,11 @@ const AcceptedOrdersScreen = () => {
       {/* Image Modal */}
       <Modal visible={imageModalVisible} transparent animationType="fade">
         <View style={styles.modalContainer}>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.closeButton}
             onPress={() => setImageModalVisible(false)}
           >
-            <Text>âœ• Close</Text>
+            <Text>Close</Text>
           </TouchableOpacity>
           {selectedImage && (
             <Image source={{ uri: selectedImage }} style={styles.fullImage} resizeMode="contain" />
@@ -212,31 +216,31 @@ const AcceptedOrdersScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: "#F8FAFC" 
+  container: {
+    flex: 1,
+    backgroundColor: "#F8FAFC"
   },
-  header: { 
-    paddingHorizontal: 20, 
+  header: {
+    paddingHorizontal: 20,
     paddingTop: Platform.OS === 'ios' ? 60 : 40,
     paddingBottom: 20,
     backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
     borderBottomColor: '#F1F5F9',
   },
-  headerTitle: { 
-    fontSize: 28, 
+  headerTitle: {
+    fontSize: 28,
     fontWeight: 'bold',
     color: '#0F172A',
   },
-  ordersContainer: { 
-    padding: 16 
+  ordersContainer: {
+    padding: 16
   },
-  orderCard: { 
-    backgroundColor: "#FFFFFF", 
-    borderRadius: 20, 
-    padding: 16, 
-    marginBottom: 16, 
+  orderCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    padding: 16,
+    marginBottom: 16,
     borderWidth: 1,
     borderColor: '#E2E8F0',
     shadowColor: '#000',
@@ -244,96 +248,96 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 10,
     elevation: 3,
-    borderLeftWidth: 6, 
-    borderLeftColor: '#14B8A6' 
+    borderLeftWidth: 6,
+    borderLeftColor: '#14B8A6'
   },
-  rowBetween: { 
-    flexDirection: "row", 
-    justifyContent: "space-between" 
+  rowBetween: {
+    flexDirection: "row",
+    justifyContent: "space-between"
   },
-  customerName: { 
-    fontSize: 17, 
+  customerName: {
+    fontSize: 17,
     fontWeight: "bold",
     color: '#0F172A',
   },
-  productName: { 
-    fontSize: 14, 
+  productName: {
+    fontSize: 14,
     color: "#64748B",
     marginTop: 4,
   },
-  rightMeta: { 
-    alignItems: "flex-end" 
+  rightMeta: {
+    alignItems: "flex-end"
   },
-  amount: { 
-    fontSize: 18, 
+  amount: {
+    fontSize: 18,
     fontWeight: "800",
     color: '#14B8A6',
   },
-  statusBadge: { 
-    marginTop: 8, 
-    fontSize: 11, 
-    fontWeight: "800", 
-    backgroundColor: "#14B8A6", 
-    color: "#FFFFFF", 
-    paddingHorizontal: 12, 
-    paddingVertical: 4, 
+  statusBadge: {
+    marginTop: 8,
+    fontSize: 11,
+    fontWeight: "800",
+    backgroundColor: "#14B8A6",
+    color: "#FFFFFF",
+    paddingHorizontal: 12,
+    paddingVertical: 4,
     borderRadius: 12,
     letterSpacing: 0.5,
   },
-  expandedSection: { 
-    marginTop: 16, 
-    borderTopWidth: 1, 
-    borderTopColor: "#F1F5F9", 
-    paddingTop: 16 
+  expandedSection: {
+    marginTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: "#F1F5F9",
+    paddingTop: 16
   },
-  detailLabel: { 
-    fontWeight: "700", 
-    color: "#0F172A" 
+  detailLabel: {
+    fontWeight: "700",
+    color: "#0F172A"
   },
-  detailBox: { 
-    backgroundColor: "#F8FAFC", 
-    padding: 14, 
-    borderRadius: 16, 
+  detailBox: {
+    backgroundColor: "#F8FAFC",
+    padding: 14,
+    borderRadius: 16,
     marginBottom: 16,
     borderWidth: 1,
     borderColor: '#F1F5F9',
   },
-  detailText: { 
-    fontSize: 14, 
-    color: "#475569", 
-    marginBottom: 6 
+  detailText: {
+    fontSize: 14,
+    color: "#475569",
+    marginBottom: 6
   },
-  imageContainer: { 
-    marginTop: 12 
+  imageContainer: {
+    marginTop: 12
   },
-  label: { 
-    fontWeight: "700", 
+  label: {
+    fontWeight: "700",
     color: '#0F172A',
-    marginBottom: 10 
+    marginBottom: 10
   },
-  thumbnail: { 
-    width: '100%', 
-    height: 200, 
+  thumbnail: {
+    width: '100%',
+    height: 200,
     borderRadius: 12,
     backgroundColor: '#F1F5F9',
   },
-  modalContainer: { 
-    flex: 1, 
-    backgroundColor: 'rgba(0,0,0,0.95)', 
-    justifyContent: 'center' 
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.95)',
+    justifyContent: 'center'
   },
-  closeButton: { 
-    position: 'absolute', 
-    top: 50, 
-    right: 20, 
-    backgroundColor: '#fff', 
-    padding: 12, 
+  closeButton: {
+    position: 'absolute',
+    top: 50,
+    right: 20,
+    backgroundColor: '#fff',
+    padding: 12,
     borderRadius: 24,
     zIndex: 10,
   },
-  fullImage: { 
-    width: Dimensions.get('window').width, 
-    height: Dimensions.get('window').height * 0.8 
+  fullImage: {
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height * 0.8
   },
   itemsBox: {
     backgroundColor: '#F8FAFC',
@@ -378,7 +382,3 @@ const styles = StyleSheet.create({
 });
 
 export default AcceptedOrdersScreen;
-
-
-
-
