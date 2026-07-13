@@ -602,23 +602,24 @@ const HomeScreen: React.FC = () => {
   };
 
   const removeFromCart = (medicineId: string) => {
-    const item = cartItems.find((item) => item.id === medicineId);
+    const item = cartItems.find((item) => item._id === medicineId);
     if (!item) return;
     if (item.quantity > 1) {
       setCartItems((prev) =>
         prev.map((item) =>
-          item.id === medicineId ? { ...item, quantity: item.quantity - 1 } : item
+          item._id === medicineId ? { ...item, quantity: item.quantity - 1 } : item
         )
       );
       setCartCount((prev) => prev - 1);
     } else {
-      setCartItems((prev) => prev.filter((item) => item.id !== medicineId));
+      setCartItems((prev) => prev.filter((item) => item._id !== medicineId));
       setCartCount((prev) => prev - 1);
     }
   };
 
   const getTotalAmount = () => {
-    return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+    const total = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+    return Number(total.toFixed(2));
   };
   const startSellerMatching = (orderId: string) => {
     setActiveOrderId(orderId);
@@ -752,7 +753,7 @@ const HomeScreen: React.FC = () => {
       const formData = new FormData();
       formData.append('buyerId', finalBuyerId);
       formData.append('items', JSON.stringify(cartItems.map((item) => ({
-        medicineId: item.id,
+        medicineId: item._id,
         name: item.name,
         manufacturer: item.manufacturer,
         price: item.price,
@@ -1064,7 +1065,7 @@ const HomeScreen: React.FC = () => {
                 )}
                 <ScrollView style={styles.cartItemsList}>
                   {cartItems.map((item) => (
-                    <View key={item.id} style={styles.cartItem}>
+                    <View key={item._id} style={styles.cartItem}>
                       <View style={styles.cartItemInfo}>
                         <Text style={styles.cartItemName}>{item.name}</Text>
                         <Text style={styles.cartItemManufacturer}>by {item.manufacturer}</Text>
@@ -1074,7 +1075,7 @@ const HomeScreen: React.FC = () => {
                       <View style={styles.quantityControls}>
                         <TouchableOpacity
                           style={styles.quantityButton}
-                          onPress={() => removeFromCart(item.id)}
+                          onPress={() => removeFromCart(item._id)}
                         >
                           <Ionicons name="remove" size={20} color="#2ec5b6" />
                         </TouchableOpacity>
@@ -1089,7 +1090,7 @@ const HomeScreen: React.FC = () => {
                         </TouchableOpacity>
                       </View>
 
-                      <Text style={styles.cartItemTotal}>₹{item.price * item.quantity}</Text>
+                      <Text style={styles.cartItemTotal}>₹{(item.price * item.quantity).toFixed(2)}</Text>
                     </View>
                   ))}
                 </ScrollView>
