@@ -309,6 +309,76 @@ export default function OrdersScreen() {
     }
   };
 
+  // Helper to render action buttons based on order status
+  const renderActionButtons = (order: Order) => {
+    const buttons = [];
+
+    if (order.status !== 'cancelled' && order.status !== 'delivered') {
+      buttons.push(
+        <TouchableOpacity
+          key="track"
+          style={styles.actionButton}
+          onPress={() => handleOrderAction(order, 'track')}
+        >
+          <Ionicons name="location-outline" size={16} color="#FFFFFF" />
+          <Text style={styles.actionButtonText}>Track</Text>
+        </TouchableOpacity>
+      );
+    }
+
+    if (order.status === 'delivered') {
+      buttons.push(
+        <TouchableOpacity
+          key="reorder"
+          style={styles.actionButton}
+          onPress={() => handleOrderAction(order, 'reorder')}
+        >
+          <Ionicons name="refresh-outline" size={16} color="#FFFFFF" />
+          <Text style={styles.actionButtonText}>Reorder</Text>
+        </TouchableOpacity>
+      );
+    }
+
+    if (order.status === 'pending') {
+      buttons.push(
+        <TouchableOpacity
+          key="schedule"
+          style={[styles.actionButton, { backgroundColor: '#AF52DE' }]}
+          onPress={() => handleOrderAction(order, 'schedule')}
+        >
+          <Ionicons name="calendar-outline" size={16} color="#FFFFFF" />
+          <Text style={styles.actionButtonText}>Schedule</Text>
+        </TouchableOpacity>
+      );
+    }
+
+    if (order.status === 'pending') {
+      buttons.push(
+        <TouchableOpacity
+          key="cancel"
+          style={[styles.actionButton, styles.actionButtonDanger]}
+          onPress={() => handleOrderAction(order, 'cancel')}
+        >
+          <Ionicons name="close-outline" size={16} color="#FFFFFF" />
+          <Text style={styles.actionButtonText}>Cancel</Text>
+        </TouchableOpacity>
+      );
+    }
+
+    buttons.push(
+      <TouchableOpacity
+        key="help"
+        style={styles.actionButton}
+        onPress={() => handleOrderAction(order, 'help')}
+      >
+        <Ionicons name="help-circle-outline" size={16} color="#FFFFFF" />
+        <Text style={styles.actionButtonText}>Help</Text>
+      </TouchableOpacity>
+    );
+
+    return <View style={styles.orderActions}>{buttons}</View>;
+  };
+
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -468,55 +538,7 @@ export default function OrdersScreen() {
                 </View>
 
                 {/* Order Actions */}
-                <View style={styles.orderActions}>
-                  {order.status !== 'cancelled' && order.status !== 'delivered' && (
-                    <TouchableOpacity
-                      style={styles.actionButton}
-                      onPress={() => handleOrderAction(order, 'track')}
-                    >
-                      <Ionicons name="location-outline" size={18} color="#FFFFFF" />
-                      <Text style={styles.actionButtonText}>Track</Text>
-                    </TouchableOpacity>
-                  )}
-
-                  {order.status === 'delivered' && (
-                    <TouchableOpacity
-                      style={styles.actionButton}
-                      onPress={() => handleOrderAction(order, 'reorder')}
-                    >
-                      <Ionicons name="refresh-outline" size={18} color="#FFFFFF" />
-                      <Text style={styles.actionButtonText}>Reorder</Text>
-                    </TouchableOpacity>
-                  )}
-
-                  {order.status === 'pending' && (
-                    <TouchableOpacity
-                      style={[styles.actionButton, { backgroundColor: '#AF52DE' }]}
-                      onPress={() => handleOrderAction(order, 'schedule')}
-                    >
-                      <Ionicons name="calendar-outline" size={18} color="#FFFFFF" />
-                      <Text style={styles.actionButtonText}>Schedule</Text>
-                    </TouchableOpacity>
-                  )}
-
-                  {order.status === 'pending' && (
-                    <TouchableOpacity
-                      style={[styles.actionButton, styles.actionButtonDanger]}
-                      onPress={() => handleOrderAction(order, 'cancel')}
-                    >
-                      <Ionicons name="close-outline" size={18} color="#FFFFFF" />
-                      <Text style={styles.actionButtonText}>Cancel</Text>
-                    </TouchableOpacity>
-                  )}
-
-                  <TouchableOpacity
-                    style={styles.actionButton}
-                    onPress={() => handleOrderAction(order, 'help')}
-                  >
-                    <Ionicons name="help-circle-outline" size={18} color="#FFFFFF" />
-                    <Text style={styles.actionButtonText}>Help</Text>
-                  </TouchableOpacity>
-                </View>
+                {renderActionButtons(order)}
               </View>
             ))
           )}
@@ -875,29 +897,31 @@ const styles = StyleSheet.create({
   },
   orderActions: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 8,
   },
   actionButton: {
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#2ec5b6',
-    paddingVertical: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
     borderRadius: 12,
-    gap: 6,
+    gap: 4,
+    minWidth: 70,
+    flex: 1,
     shadowColor: '#2ec5b6',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 8,
     elevation: 3,
-    marginBottom: Platform.OS === 'android' ? 12 : 0,
   },
   actionButtonDanger: {
     backgroundColor: '#EF4444',
   },
   actionButtonText: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: 'bold',
     color: '#FFFFFF',
   },
@@ -1198,5 +1222,3 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
-

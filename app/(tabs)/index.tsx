@@ -75,6 +75,7 @@ const HomeScreen: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [showCart, setShowCart] = useState<boolean>(false);
   const [prescriptionImages, setPrescriptionImages] = useState<string[]>([]);
+  const [showPrescriptionPreview, setShowPrescriptionPreview] = useState<boolean>(false);
   const [medicines, setMedicines] = useState<Medicine[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedLocation, setSelectedLocation] = useState<string>('Enable GPS to get location');
@@ -598,7 +599,7 @@ const HomeScreen: React.FC = () => {
     }
 
     setCartCount((prev) => prev + 1);
-    Alert.alert('Added to Cart', `${medicine.name} has been added to your cart.`);
+    // Alert.alert('Added to Cart', `${medicine.name} has been added to your cart.`);
   };
 
   const removeFromCart = (medicineId: string) => {
@@ -635,6 +636,7 @@ const HomeScreen: React.FC = () => {
     setCartItems([]);
     setCartCount(0);
     setPrescriptionImages([]);
+    setShowPrescriptionPreview(false);
   };
 
   const handleCancelActiveOrder = () => {
@@ -1039,28 +1041,46 @@ const HomeScreen: React.FC = () => {
               <>
                 {prescriptionImages.length > 0 && (
                   <View style={styles.cartPrescriptionBox}>
-                    <View style={styles.cartPrescriptionHeader}>
-                      <Ionicons name="document-attach" size={18} color="#2ec5b6" />
-                      <Text style={styles.cartPrescriptionTitle}>{`Prescription${prescriptionImages.length > 1 ? 's' : ''} added`}</Text>
-                    </View>
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.prescriptionImageList}>
-                      {prescriptionImages.map((uri, index) => (
-                        <View key={`${uri}-${index}`} style={styles.prescriptionImageItem}>
-                          <Image source={{ uri }} style={styles.cartPrescriptionImage} resizeMode="cover" />
-                          <TouchableOpacity
-                            style={styles.removePrescriptionButton}
-                            onPress={() => setPrescriptionImages((prev) => prev.filter((_, i) => i !== index))}
-                          >
-                            <Text style={styles.removePrescriptionText}>Remove</Text>
+                    <TouchableOpacity
+                      style={styles.cartPrescriptionHeader}
+                      onPress={() => setShowPrescriptionPreview(!showPrescriptionPreview)}
+                      activeOpacity={0.8}
+                    >
+                      <View style={styles.prescriptionHeaderLeft}>
+                        <Ionicons name="document-attach" size={18} color="#2ec5b6" />
+                        <Text style={styles.cartPrescriptionTitle}>
+                          {`Prescription${prescriptionImages.length > 1 ? 's' : ''} added`}
+                        </Text>
+                      </View>
+                      <Ionicons
+                        name={showPrescriptionPreview ? 'chevron-up' : 'chevron-down'}
+                        size={20}
+                        color="#2ec5b6"
+                      />
+                    </TouchableOpacity>
+
+                    {showPrescriptionPreview && (
+                      <>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.prescriptionImageList}>
+                          {prescriptionImages.map((uri, index) => (
+                            <View key={`${uri}-${index}`} style={styles.prescriptionImageItem}>
+                              <Image source={{ uri }} style={styles.cartPrescriptionImage} resizeMode="cover" />
+                              <TouchableOpacity
+                                style={styles.removePrescriptionButton}
+                                onPress={() => setPrescriptionImages((prev) => prev.filter((_, i) => i !== index))}
+                              >
+                                <Text style={styles.removePrescriptionText}>Remove</Text>
+                              </TouchableOpacity>
+                            </View>
+                          ))}
+                        </ScrollView>
+                        <View style={styles.prescriptionActions}>
+                          <TouchableOpacity onPress={handleUploadPrescription} style={styles.changePrescriptionButton}>
+                            <Text style={styles.changePrescriptionText}>Add more</Text>
                           </TouchableOpacity>
                         </View>
-                      ))}
-                    </ScrollView>
-                    <View style={styles.prescriptionActions}>
-                      <TouchableOpacity onPress={handleUploadPrescription} style={styles.changePrescriptionButton}>
-                        <Text style={styles.changePrescriptionText}>Add more</Text>
-                      </TouchableOpacity>
-                    </View>
+                      </>
+                    )}
                   </View>
                 )}
                 <ScrollView style={styles.cartItemsList}>
@@ -1167,8 +1187,8 @@ const HomeScreen: React.FC = () => {
                 ? getMatchingStatusMessage()
                 : matchingStatus === 'scheduled'
                   ? 'Every seller can now see this order until the deadline.'
-                  : acceptedPharmacyName 
-                    ? `Your order has been accepted by ${acceptedPharmacyName}. You can track it in Orders.` 
+                  : acceptedPharmacyName
+                    ? `Your order has been accepted by ${acceptedPharmacyName}. You can track it in Orders.`
                     : `Your order is ${matchingStatus.replace(/_/g, ' ')}. You can track it in Orders.`}
             </Text>
 
@@ -1569,13 +1589,3 @@ const HomeScreen: React.FC = () => {
 
 
 export default HomeScreen;
-
-
-
-
-
-
-
-
-
-
