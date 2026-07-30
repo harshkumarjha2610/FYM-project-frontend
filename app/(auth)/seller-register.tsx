@@ -109,7 +109,7 @@
 // //   const [selectedLocation, setSelectedLocation] = useState<string>('Enable GPS to get location');
 // //   const [userCoordinates, setUserCoordinates] = useState<Coordinates | null>(null);
 // //   const [mapRegion, setMapRegion] = useState<Region>(DEFAULT_REGION);
-  
+
 // //   useEffect(() => {
 // //     (async () => {
 // //       await getCurrentLocation();
@@ -134,21 +134,21 @@
 // //           );
 // //           return;
 // //         }
-  
+
 // //         const location = await Location.getCurrentPositionAsync({
 // //           accuracy: Location.Accuracy.High,
 // //         });
-  
+
 // //         const { latitude, longitude } = location.coords;
 // //         setUserCoordinates({ latitude, longitude });
-  
+
 // //         setMapRegion({
 // //           latitude,
 // //           longitude,
 // //           latitudeDelta: 0.0922,
 // //           longitudeDelta: 0.0421,
 // //         });
-  
+
 // //         const geocode = await Location.reverseGeocodeAsync({ latitude, longitude });
 // //         if (geocode.length > 0) {
 // //           const addressData = geocode[0];
@@ -163,7 +163,7 @@
 // //           ]
 // //             .filter(Boolean)
 // //             .join(', ');
-          
+
 // //           setSelectedLocation(completeAddress);
 // //         }
 // //       } catch (error: any) {
@@ -192,7 +192,7 @@
 
 // //   useEffect(() => {
 // //     addDebugLog('🎬 Seller registration screen mounted');
-    
+
 // //     (async () => {
 // //       addDebugLog('🔐 Requesting camera and media permissions...');
 // //       const { status: cameraStatus } = await ImagePicker.requestCameraPermissionsAsync();
@@ -222,7 +222,7 @@
 // //     addDebugLog('  Step 4: Admin receives notification for approval');
 // //     addDebugLog('  Step 5: Seller waits for admin approval');
 // //     addDebugLog('  Step 6: Seller receives approval/rejection email');
-    
+
 // //     const { 
 // //       name, 
 // //       email, 
@@ -235,7 +235,7 @@
 // //       password, 
 // //       confirmPassword
 // //     } = formData;
-    
+
 // //     // ✅ MINIMAL VALIDATIONS - Only email and password required
 // //     if (!email || !password) {
 // //       Alert.alert('Error', 'Email and password are required');
@@ -309,7 +309,7 @@
 // //       } else {
 // //         Alert.alert('Registration Failed', data.message || 'Registration failed');
 // //       }
-      
+
 // //     } catch (error: any) {
 // //       addDebugLog('❌ === REGISTRATION ERROR ===');
 // //       addDebugLog('💥 Error type:', error.name || 'Unknown');
@@ -332,7 +332,7 @@
 // //       length: value.length,
 // //       previousValue: formData[field as keyof typeof formData]
 // //     });
-    
+
 // //     setFormData(prev => ({ ...prev, [field]: value }));
 // //   };
 
@@ -397,12 +397,12 @@
 // //           name: `shop_photo_${Date.now()}.jpg`,
 // //           type: result.assets[0].type || 'image/jpeg',
 // //         };
-        
+
 // //         setFormData(prev => ({
 // //           ...prev,
 // //           shopPhotos: [...prev.shopPhotos, photo]
 // //         }));
-        
+
 // //         addDebugLog('✅ Photo added from camera', {
 // //           photoId: photo.id,
 // //           uriPreview: photo.uri.substring(0, 50) + '...',
@@ -437,12 +437,12 @@
 // //           name: `shop_photo_${Date.now()}.jpg`,
 // //           type: result.assets[0].type || 'image/jpeg',
 // //         };
-        
+
 // //         setFormData(prev => ({
 // //           ...prev,
 // //           shopPhotos: [...prev.shopPhotos, photo]
 // //         }));
-        
+
 // //         addDebugLog('✅ Photo added from library', {
 // //           photoId: photo.id,
 // //           uriPreview: photo.uri.substring(0, 50) + '...',
@@ -460,12 +460,12 @@
 // //       photoId: photoId,
 // //       totalPhotosBefore: formData.shopPhotos.length
 // //     });
-    
+
 // //     setFormData(prev => ({
 // //       ...prev,
 // //       shopPhotos: prev.shopPhotos.filter(photo => photo.id !== photoId)
 // //     }));
-    
+
 // //     addDebugLog('✅ Photo removed', {
 // //       photoId: photoId,
 // //       totalPhotosAfter: formData.shopPhotos.length - 1
@@ -613,7 +613,7 @@
 // //             <View style={styles.inputContainer}>
 // //               <Text style={styles.label}>Customer Discount Offer</Text>
 // //               <Text style={styles.helperText}>Select the discount percentage you want to offer to customers</Text>
-              
+
 // //               <View style={styles.discountGrid}>
 // //                 {DISCOUNT_OPTIONS.map((option) => (
 // //                   <TouchableOpacity
@@ -649,7 +649,7 @@
 // //                   </TouchableOpacity>
 // //                 ))}
 // //               </View>
-              
+
 // //               <View style={styles.discountInfo}>
 // //                 <Text style={styles.discountInfoTitle}>Benefits of offering discounts:</Text>
 // //                 <Text style={styles.discountInfoText}>• Attract more customers to your pharmacy</Text>
@@ -679,7 +679,7 @@
 // //             <View style={styles.inputContainer}>
 // //               <Text style={styles.label}>Shop Photos</Text>
 // //               <Text style={styles.helperText}>Add photos of your pharmacy/store (optional but recommended)</Text>
-              
+
 // //               <View style={styles.photoGrid}>
 // //                 {formData.shopPhotos.map((photo) => (
 // //                   <View key={photo.id} style={styles.photoItem}>
@@ -693,7 +693,7 @@
 // //                     </TouchableOpacity>
 // //                   </View>
 // //                 ))}
-                
+
 // //                 {formData.shopPhotos.length < 6 && (
 // //                   <TouchableOpacity
 // //                     style={styles.addPhotoButton}
@@ -705,7 +705,7 @@
 // //                   </TouchableOpacity>
 // //                 )}
 // //               </View>
-              
+
 // //               <View style={styles.photoGuidelines}>
 // //                 <Text style={styles.guidelinesTitle}>Photo Guidelines (Optional):</Text>
 // //                 <Text style={styles.guidelinesText}>• Take clear photos of your store front</Text>
@@ -1198,7 +1198,7 @@
 //   const [selectedLocation, setSelectedLocation] = useState<string>('Enable GPS to get location');
 //   const [userCoordinates, setUserCoordinates] = useState<Coordinates | null>(null);
 //   const [mapRegion, setMapRegion] = useState<Region>(DEFAULT_REGION);
-  
+
 //   useEffect(() => {
 //     (async () => {
 //       await getCurrentLocation();
@@ -1252,7 +1252,7 @@
 //         ]
 //           .filter(Boolean)
 //           .join(', ');
-        
+
 //         setSelectedLocation(completeAddress);
 //         // ✅ Update formData.location with the fetched address
 //         setFormData(prev => ({ ...prev, location: completeAddress }));
@@ -1283,7 +1283,7 @@
 
 //   useEffect(() => {
 //     addDebugLog('🎬 Seller registration screen mounted');
-    
+
 //     (async () => {
 //       addDebugLog('🔐 Requesting camera and media permissions...');
 //       const { status: cameraStatus } = await ImagePicker.requestCameraPermissionsAsync();
@@ -1313,7 +1313,7 @@
 //     addDebugLog('  Step 4: Admin receives notification for approval');
 //     addDebugLog('  Step 5: Seller waits for admin approval');
 //     addDebugLog('  Step 6: Seller receives approval/rejection email');
-    
+
 //     const { 
 //       name, 
 //       email, 
@@ -1326,7 +1326,7 @@
 //       password, 
 //       confirmPassword
 //     } = formData;
-    
+
 //     // ✅ MINIMAL VALIDATIONS - Only email and password required
 //     if (!email || !password) {
 //       Alert.alert('Error', 'Email and password are required');
@@ -1400,7 +1400,7 @@
 //       } else {
 //         Alert.alert('Registration Failed', data.message || 'Registration failed');
 //       }
-      
+
 //     } catch (error: any) {
 //       addDebugLog('❌ === REGISTRATION ERROR ===');
 //       addDebugLog('💥 Error type:', error.name || 'Unknown');
@@ -1423,7 +1423,7 @@
 //       length: value.length,
 //       previousValue: formData[field as keyof typeof formData]
 //     });
-    
+
 //     setFormData(prev => ({ ...prev, [field]: value }));
 //   };
 
@@ -1488,12 +1488,12 @@
 //           name: `shop_photo_${Date.now()}.jpg`,
 //           type: result.assets[0].type || 'image/jpeg',
 //         };
-        
+
 //         setFormData(prev => ({
 //           ...prev,
 //           shopPhotos: [...prev.shopPhotos, photo]
 //         }));
-        
+
 //         addDebugLog('✅ Photo added from camera', {
 //           photoId: photo.id,
 //           uriPreview: photo.uri.substring(0, 50) + '...',
@@ -1528,12 +1528,12 @@
 //           name: `shop_photo_${Date.now()}.jpg`,
 //           type: result.assets[0].type || 'image/jpeg',
 //         };
-        
+
 //         setFormData(prev => ({
 //           ...prev,
 //           shopPhotos: [...prev.shopPhotos, photo]
 //         }));
-        
+
 //         addDebugLog('✅ Photo added from library', {
 //           photoId: photo.id,
 //           uriPreview: photo.uri.substring(0, 50) + '...',
@@ -1551,12 +1551,12 @@
 //       photoId: photoId,
 //       totalPhotosBefore: formData.shopPhotos.length
 //     });
-    
+
 //     setFormData(prev => ({
 //       ...prev,
 //       shopPhotos: prev.shopPhotos.filter(photo => photo.id !== photoId)
 //     }));
-    
+
 //     addDebugLog('✅ Photo removed', {
 //       photoId: photoId,
 //       totalPhotosAfter: formData.shopPhotos.length - 1
@@ -1704,7 +1704,7 @@
 //             <View style={styles.inputContainer}>
 //               <Text style={styles.label}>Customer Discount Offer</Text>
 //               <Text style={styles.helperText}>Select the discount percentage you want to offer to customers</Text>
-              
+
 //               <View style={styles.discountGrid}>
 //                 {DISCOUNT_OPTIONS.map((option) => (
 //                   <TouchableOpacity
@@ -1740,7 +1740,7 @@
 //                   </TouchableOpacity>
 //                 ))}
 //               </View>
-              
+
 //               <View style={styles.discountInfo}>
 //                 <Text style={styles.discountInfoTitle}>Benefits of offering discounts:</Text>
 //                 <Text style={styles.discountInfoText}>• Attract more customers to your pharmacy</Text>
@@ -1772,7 +1772,7 @@
 //             <View style={styles.inputContainer}>
 //               <Text style={styles.label}>Shop Photos</Text>
 //               <Text style={styles.helperText}>Add photos of your pharmacy/store (optional but recommended)</Text>
-              
+
 //               <View style={styles.photoGrid}>
 //                 {formData.shopPhotos.map((photo) => (
 //                   <View key={photo.id} style={styles.photoItem}>
@@ -1786,7 +1786,7 @@
 //                     </TouchableOpacity>
 //                   </View>
 //                 ))}
-                
+
 //                 {formData.shopPhotos.length < 6 && (
 //                   <TouchableOpacity
 //                     style={styles.addPhotoButton}
@@ -1798,7 +1798,7 @@
 //                   </TouchableOpacity>
 //                 )}
 //               </View>
-              
+
 //               <View style={styles.photoGuidelines}>
 //                 <Text style={styles.guidelinesTitle}>Photo Guidelines (Optional):</Text>
 //                 <Text style={styles.guidelinesText}>• Take clear photos of your store front</Text>
@@ -2199,15 +2199,15 @@ import {
 import { router } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
-import { 
-  ArrowLeft, 
-  User, 
-  Mail, 
-  Lock, 
-  Eye, 
-  EyeOff, 
-  Phone, 
-  Store, 
+import {
+  ArrowLeft,
+  User,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  Phone,
+  Store,
   UserPlus,
   FileText,
   MapPin,
@@ -2318,7 +2318,7 @@ export default function SellerRegisterScreen() {
       });
 
       const { latitude, longitude } = location.coords;
-      
+
       const geocode = await Location.reverseGeocodeAsync({ latitude, longitude });
       if (geocode.length > 0) {
         const addressData = geocode[0];
@@ -2363,7 +2363,7 @@ export default function SellerRegisterScreen() {
         name: `shop_photo_${Date.now()}.jpg`,
         type: result.assets[0].type || 'image/jpeg',
       };
-      
+
       setFormData(prev => ({
         ...prev,
         shopPhotos: [...prev.shopPhotos, photo]
@@ -2397,7 +2397,7 @@ export default function SellerRegisterScreen() {
         return false;
       }
     }
-    
+
     if (step === 2) {
       if (!formData.storeName.trim()) {
         Alert.alert('Error', 'Please enter your pharmacy name');
@@ -2466,8 +2466,8 @@ export default function SellerRegisterScreen() {
 
       if (response.ok && data.success) {
         Alert.alert(
-          'Registration Submitted!', 
-          'Your pharmacy registration is under review. You will receive an email once approved.', 
+          'Registration Submitted!',
+          'Your pharmacy registration is under review. You will receive an email once approved.',
           [{ text: 'OK', onPress: () => router.push('/(auth)/seller-login') }]
         );
       } else {
@@ -2566,7 +2566,7 @@ export default function SellerRegisterScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#4F46E5" />
-      
+
       <LinearGradient
         colors={['#4F46E5', '#7C3AED', '#9333EA']}
         start={{ x: 0, y: 0 }}
@@ -2584,11 +2584,11 @@ export default function SellerRegisterScreen() {
           <Sparkles size={20} color="rgba(255,255,255,0.25)" />
         </View>
 
-        <KeyboardAvoidingView 
+        <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           style={styles.keyboardView}
         >
-          <ScrollView 
+          <ScrollView
             style={styles.scrollView}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.scrollContent}
@@ -2596,7 +2596,7 @@ export default function SellerRegisterScreen() {
           >
             {/* Header */}
             <View style={styles.header}>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.backButton}
                 onPress={handleBack}
                 disabled={loading}
@@ -2605,7 +2605,7 @@ export default function SellerRegisterScreen() {
                   <ChevronLeft size={24} color="#FFFFFF" />
                 </View>
               </TouchableOpacity>
-              
+
               <View style={styles.headerContent}>
                 <View style={styles.iconBadge}>
                   <Store size={28} color="#4F46E5" />
@@ -2619,7 +2619,7 @@ export default function SellerRegisterScreen() {
             {renderStepIndicator()}
 
             {/* Form Card */}
-            <Animated.View 
+            <Animated.View
               style={[
                 styles.card,
                 {
@@ -2685,7 +2685,7 @@ export default function SellerRegisterScreen() {
                     }
                   )}
 
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     style={styles.nextButton}
                     onPress={handleNext}
                   >
@@ -2739,16 +2739,16 @@ export default function SellerRegisterScreen() {
                   <View style={styles.discountSection}>
                     <Text style={styles.inputLabel}>Customer Discount Offer</Text>
                     <Text style={styles.discountSubtitle}>Select discount to attract more customers</Text>
-                    
+
                     <View style={styles.discountGrid}>
                       {DISCOUNT_OPTIONS.map((option) => (
                         <TouchableOpacity
                           key={option.value}
                           style={[
                             styles.discountOption,
-                            formData.discount === option.value && { 
+                            formData.discount === option.value && {
                               backgroundColor: option.bgColor,
-                              borderColor: option.color 
+                              borderColor: option.color
                             }
                           ]}
                           onPress={() => updateFormData('discount', option.value)}
@@ -2766,14 +2766,14 @@ export default function SellerRegisterScreen() {
                   </View>
 
                   <View style={styles.buttonRow}>
-                    <TouchableOpacity 
+                    <TouchableOpacity
                       style={styles.backStepButton}
                       onPress={() => setCurrentStep(1)}
                     >
                       <Text style={styles.backStepButtonText}>Back</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity 
+                    <TouchableOpacity
                       style={styles.nextButtonFlex}
                       onPress={handleNext}
                     >
@@ -2810,7 +2810,7 @@ export default function SellerRegisterScreen() {
                         <ActivityIndicator size="small" color="#4F46E5" style={styles.locationLoader} />
                       )}
                     </View>
-                    <TouchableOpacity 
+                    <TouchableOpacity
                       style={styles.refreshLocationButton}
                       onPress={getCurrentLocation}
                       disabled={isLocating}
@@ -2823,9 +2823,9 @@ export default function SellerRegisterScreen() {
                   <View style={styles.photosSection}>
                     <Text style={styles.inputLabel}>Shop Photos</Text>
                     <Text style={styles.photosSubtitle}>Add photos to build trust (optional)</Text>
-                    
-                    <ScrollView 
-                      horizontal 
+
+                    <ScrollView
+                      horizontal
                       showsHorizontalScrollIndicator={false}
                       style={styles.photosScroll}
                     >
@@ -2840,7 +2840,7 @@ export default function SellerRegisterScreen() {
                           </TouchableOpacity>
                         </View>
                       ))}
-                      
+
                       {formData.shopPhotos.length < 6 && (
                         <TouchableOpacity
                           style={styles.addPhotoButton}
@@ -2856,14 +2856,14 @@ export default function SellerRegisterScreen() {
                   </View>
 
                   <View style={styles.buttonRow}>
-                    <TouchableOpacity 
+                    <TouchableOpacity
                       style={styles.backStepButton}
                       onPress={() => setCurrentStep(2)}
                     >
                       <Text style={styles.backStepButtonText}>Back</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity 
+                    <TouchableOpacity
                       style={[styles.registerButton, loading && styles.registerButtonDisabled]}
                       onPress={handleRegister}
                       disabled={loading}

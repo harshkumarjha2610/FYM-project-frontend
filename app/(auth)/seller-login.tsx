@@ -44,16 +44,16 @@
 //       console.log('🏥 TESTING BACKEND CONNECTION');
 //       console.log('🏥 ========================================');
 //       addDebugLog('🏥 Testing backend connectivity...');
-      
+
 //       const response = await fetch(`${API_URL}/api/test`, {
 //         method: 'GET',
 //         headers: { 'Content-Type': 'application/json' }
 //       });
-      
+
 //       console.log('🏥 Response status:', response.status);
 //       console.log('🏥 Response OK:', response.ok);
 //       addDebugLog(`🏥 Backend test response: ${response.status}`);
-      
+
 //       if (response.ok) {
 //         console.log('✅ Backend is reachable');
 //         addDebugLog('✅ Backend is reachable');
@@ -106,15 +106,15 @@
 //       console.log('💾 ========================================');
 //       console.log('💾 CHECKING EXISTING TOKENS');
 //       console.log('💾 ========================================');
-      
+
 //       const existingSellerToken = await AsyncStorage.getItem('sellerToken');
 //       const existingBuyerToken = await AsyncStorage.getItem('token');
 //       const existingGenericToken = await AsyncStorage.getItem('userToken');
-      
+
 //       console.log('💾 Existing seller token:', existingSellerToken ? 'EXISTS' : 'NONE');
 //       console.log('💾 Existing buyer token:', existingBuyerToken ? 'EXISTS' : 'NONE');
 //       console.log('💾 Existing generic token:', existingGenericToken ? 'EXISTS' : 'NONE');
-      
+
 //       addDebugLog('💾 Existing tokens check:', {
 //         sellerToken: existingSellerToken ? `${existingSellerToken.substring(0, 20)}...` : 'None',
 //         buyerToken: existingBuyerToken ? `${existingBuyerToken.substring(0, 20)}...` : 'None',
@@ -139,10 +139,10 @@
 //     console.log('🚀 SELLER LOGIN PROCESS STARTED');
 //     console.log('🚀 ========================================');
 //     console.log('⏰ Login initiated at:', new Date().toISOString());
-    
+
 //     addDebugLog('🚀 === SELLER LOGIN PROCESS STARTED ===');
 //     setDebugInfo([]);
-    
+
 //     // Pre-flight checks
 //     await checkExistingTokens();
 //     await testBackendConnection();
@@ -169,7 +169,7 @@
 //     console.log('✅ All validations passed');
 //     console.log('🔄 Setting loading state to TRUE');
 //     setLoading(true);
-    
+
 //     try {
 //       const requestPayload = {
 //         email: email.trim().toLowerCase(),
@@ -208,7 +208,7 @@
 
 //       console.log('🌐 Sending HTTP request...');
 //       addDebugLog('🌐 Sending HTTP request...');
-      
+
 //       const startTime = Date.now();
 //       const response = await fetch(`${API_URL}/api/seller/login`, {
 //         method: 'POST',
@@ -217,7 +217,7 @@
 //       });
 
 //       const responseTime = Date.now() - startTime;
-      
+
 //       console.log('📦 ========================================');
 //       console.log('📦 API RESPONSE RECEIVED');
 //       console.log('📦 ========================================');
@@ -249,10 +249,10 @@
 //         const responseText = await response.text();
 //         console.log('📦 Raw response (first 500 chars):', responseText.substring(0, 500));
 //         addDebugLog('📦 Raw response text:', responseText.substring(0, 500));
-        
+
 //         data = JSON.parse(responseText);
 //         console.log('📦 Parsed response:', JSON.stringify(data, null, 2));
-        
+
 //         addDebugLog('📦 Parsed response data:', {
 //           success: data.success,
 //           message: data.message,
@@ -278,9 +278,9 @@
 //         console.log('✅ LOGIN SUCCESSFUL');
 //         console.log('✅ ========================================');
 //         console.log('✅ Token received:', data.token.substring(0, 30) + '...');
-        
+
 //         addDebugLog('✅ Login successful - processing token...');
-        
+
 //         // Enhanced token validation
 //         try {
 //           const tokenParts = data.token.split('.');
@@ -305,7 +305,7 @@
 
 //           const payload = JSON.parse(atob(tokenParts[1]));
 //           console.log('🔍 Token payload:', payload);
-          
+
 //           addDebugLog('🔍 Token payload decoded:', {
 //             type: payload.type,
 //             sellerId: payload.sellerId,
@@ -314,7 +314,7 @@
 //             exp: payload.exp ? new Date(payload.exp * 1000).toISOString() : 'None',
 //             isExpired: payload.exp ? Date.now() > payload.exp * 1000 : 'Unknown'
 //           });
-          
+
 //           if (payload.type !== 'seller') {
 //             console.error('❌ Token type mismatch:', payload.type);
 //             addDebugLog(`❌ Token type mismatch: expected 'seller', got '${payload.type}'`);
@@ -344,11 +344,11 @@
 //           console.log('💾 STORING TOKEN');
 //           console.log('💾 ========================================');
 //           console.log('💾 Storing seller token...');
-          
+
 //           await AsyncStorage.setItem('sellerToken', data.token);
 //           console.log('✅ Token stored successfully');
 //           addDebugLog('💾 Seller token stored successfully');
-          
+
 //           // Verify storage
 //           const storedToken = await AsyncStorage.getItem('sellerToken');
 //           const matches = storedToken === data.token;
@@ -357,26 +357,26 @@
 //             matches: matches,
 //             tokenLength: storedToken?.length || 0
 //           });
-          
+
 //           addDebugLog('💾 Token storage verification:', {
 //             stored: !!storedToken,
 //             matches: matches,
 //             preview: storedToken ? `${storedToken.substring(0, 30)}...` : 'None'
 //           });
-          
+
 //           if (!matches) {
 //             console.error('❌ Token storage verification failed!');
 //             Alert.alert('Error', 'Failed to store authentication token properly');
 //             return;
 //           }
-          
+
 //         } catch (storageError: any) {
 //           console.error('❌ Token storage error:', storageError.message);
 //           addDebugLog('❌ Token storage failed:', storageError.message);
 //           Alert.alert('Error', `Failed to store authentication token: ${storageError.message}`);
 //           return;
 //         }
-        
+
 //         // Store seller info
 //         if (data.seller) {
 //           try {
@@ -388,7 +388,7 @@
 //               verificationStatus: data.seller.verificationStatus,
 //               loginTime: new Date().toISOString()
 //             };
-            
+
 //             console.log('💾 Storing seller info:', sellerInfo);
 //             await AsyncStorage.setItem('sellerInfo', JSON.stringify(sellerInfo));
 //             console.log('✅ Seller info stored');
@@ -398,13 +398,13 @@
 //             addDebugLog('⚠️ Seller info storage failed:', infoStorageError.message);
 //           }
 //         }
-        
+
 //         console.log('✅ ========================================');
 //         console.log('✅ LOGIN PROCESS COMPLETED SUCCESSFULLY');
 //         console.log('✅ ========================================');
-        
+
 //         addDebugLog('✅ Login process completed successfully');
-        
+
 //         // ✅ DIRECT NAVIGATION WITHOUT ALERT
 //         console.log('🚀 ========================================');
 //         console.log('🚀 INITIATING DIRECT NAVIGATION');
@@ -412,32 +412,32 @@
 //         console.log('📍 Target route: (sellertabs)');
 //         console.log('📍 Navigation method: router.replace');
 //         console.log('⏰ Navigation time:', new Date().toISOString());
-        
+
 //         addDebugLog('🚀 Starting direct navigation to sellertabs');
 //         addDebugLog('📍 Using router.replace("/(sellertabs)")');
-        
+
 //         try {
 //           console.log('🔄 Executing router.replace("/(sellertabs)")...');
-          
+
 //           // Direct navigation
 //           router.replace('/(sellertabs)');
-          
+
 //           console.log('✅ router.replace command executed');
 //           console.log('⏳ Navigation command sent to router');
 //           console.log('⏳ Waiting for route change...');
 //           addDebugLog('✅ Navigation command executed successfully');
-          
+
 //           // Verify navigation after delays
 //           setTimeout(() => {
 //             console.log('🔍 Navigation check (500ms): Checking if route changed...');
 //             addDebugLog('🔍 Navigation check after 500ms');
 //           }, 500);
-          
+
 //           setTimeout(() => {
 //             console.log('🔍 Final navigation check (1000ms): Verifying route change...');
 //             addDebugLog('🔍 Final navigation check after 1000ms');
 //           }, 1000);
-          
+
 //         } catch (navError: any) {
 //           console.error('❌ ========================================');
 //           console.error('❌ NAVIGATION ERROR');
@@ -445,13 +445,13 @@
 //           console.error('❌ Error name:', navError.name);
 //           console.error('❌ Error message:', navError.message);
 //           console.error('❌ Error stack:', navError.stack);
-          
+
 //           addDebugLog('❌ Navigation failed:', {
 //             error: navError.message,
 //             stack: navError.stack,
 //             name: navError.name
 //           });
-          
+
 //           Alert.alert(
 //             'Navigation Failed',
 //             `Could not navigate to seller tabs.\n\nError: ${navError.message}\n\nThe route might not exist.`,
@@ -474,19 +474,19 @@
 //             ]
 //           );
 //         }
-        
+
 //       } else {
 //         console.log('❌ ========================================');
 //         console.log('❌ LOGIN FAILED');
 //         console.log('❌ ========================================');
 //         console.log('❌ Response status:', response.status);
 //         console.log('❌ Response data:', data);
-        
+
 //         addDebugLog('❌ Login failed - analyzing error...');
-        
+
 //         let errorMessage = data.message || 'Login failed';
 //         let errorDetails = '';
-        
+
 //         if (response.status === 401) {
 //           errorMessage = 'Invalid email or password. Please check your credentials.';
 //           errorDetails = 'This usually means:\n• Email not found in database\n• Password doesn\'t match\n• Account doesn\'t exist';
@@ -516,9 +516,9 @@
 //           console.log('❌ Server error (5xx)');
 //           addDebugLog('❌ Server error (5xx)', { status: response.status, data });
 //         }
-        
+
 //         addDebugLog('❌ Final error details:', { errorMessage, errorDetails });
-        
+
 //         if (__DEV__) {
 //           Alert.alert('Login Failed', `${errorMessage}\n\nDebug Info:\n${errorDetails}`, [
 //             { text: 'Show Logs', onPress: () => showDebugLogs() },
@@ -528,7 +528,7 @@
 //           Alert.alert('Login Failed', errorMessage);
 //         }
 //       }
-      
+
 //     } catch (error: any) {
 //       console.error('❌ ========================================');
 //       console.error('❌ NETWORK/REQUEST ERROR');
@@ -536,17 +536,17 @@
 //       console.error('❌ Error name:', error.name);
 //       console.error('❌ Error message:', error.message);
 //       console.error('❌ Error stack:', error.stack);
-      
+
 //       addDebugLog('❌ Network/Request error:', {
 //         name: error.name,
 //         message: error.message,
 //         stack: error.stack?.substring(0, 200) || 'No stack trace',
 //         code: error.code
 //       });
-      
+
 //       let errorMessage = 'Network error. Please check your connection and try again.';
 //       let technicalDetails = '';
-      
+
 //       if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
 //         errorMessage = 'Cannot connect to server.';
 //         technicalDetails = `Server might be down or unreachable at ${API_URL}`;
@@ -559,7 +559,7 @@
 //       } else {
 //         technicalDetails = error.message;
 //       }
-      
+
 //       if (__DEV__) {
 //         Alert.alert('Connection Error', `${errorMessage}\n\nTechnical Details:\n${technicalDetails}`, [
 //           { text: 'Show Logs', onPress: () => showDebugLogs() },
@@ -568,7 +568,7 @@
 //       } else {
 //         Alert.alert('Connection Error', errorMessage);
 //       }
-      
+
 //     } finally {
 //       console.log('🔄 Setting loading state to FALSE');
 //       console.log('🏁 Login process finished');
@@ -635,9 +635,9 @@
 //     console.log('🎬 API URL:', API_URL);
 //     console.log('🎬 Platform:', Platform.OS);
 //     console.log('🎬 Dev mode:', __DEV__);
-    
+
 //     addDebugLog('🎬 Seller login screen mounted');
-    
+
 //     return () => {
 //       console.log('🎬 Seller login screen unmounted');
 //     };
@@ -1064,37 +1064,35 @@
 //   },
 // });
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TextInput,
   TouchableOpacity,
-  SafeAreaView,
+  ImageBackground,
+  Dimensions,
   ScrollView,
   Alert,
-  KeyboardAvoidingView,
-  Platform,
   ActivityIndicator,
-  Animated,
-  Dimensions,
+  Platform,
   StatusBar,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { router } from 'expo-router';
-import { 
-  ArrowLeft, 
-  Mail, 
-  Lock, 
-  Eye, 
-  EyeOff, 
+import {
+  ArrowLeft,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
   LogIn,
   Store,
-  Shield,
-  Sparkles
 } from 'lucide-react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { LinearGradient } from 'expo-linear-gradient';
+import * as Animatable from 'react-native-animatable';
 
 const API_URL = process.env.EXPO_PUBLIC_BACKEND_API;
 const { width, height } = Dimensions.get('window');
@@ -1104,31 +1102,10 @@ export default function SellerLoginScreen() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
 
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const slideAnim = useRef(new Animated.Value(40)).current;
-  const scaleAnim = useRef(new Animated.Value(0.9)).current;
-
-  useEffect(() => {
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 800,
-        useNativeDriver: true,
-      }),
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: 800,
-        useNativeDriver: true,
-      }),
-      Animated.spring(scaleAnim, {
-        toValue: 1,
-        friction: 8,
-        tension: 40,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  }, []);
+  const emailInputRef = useRef<TextInput>(null);
+  const passwordInputRef = useRef<TextInput>(null);
 
   const handleLogin = async () => {
     if (!email.trim() || !password.trim()) {
@@ -1144,7 +1121,7 @@ export default function SellerLoginScreen() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: email.trim().toLowerCase(),
-          password: password
+          password: password,
         }),
       });
 
@@ -1155,7 +1132,7 @@ export default function SellerLoginScreen() {
         if (data.seller) {
           await AsyncStorage.setItem('sellerInfo', JSON.stringify(data.seller));
         }
-        
+
         router.replace('/(sellertabs)');
       } else {
         Alert.alert('Login Failed', data.message || 'Invalid credentials');
@@ -1168,386 +1145,331 @@ export default function SellerLoginScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#4F46E5" />
-      
-      {/* Premium Background */}
-      <LinearGradient
-        colors={['#4F46E5', '#7C3AED', '#9333EA']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.gradientBackground}
-        pointerEvents="none"
+    <>
+      <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
+      <ImageBackground
+        source={{
+          uri: 'https://images.pexels.com/photos/4167541/pexels-photo-4167541.jpeg?auto=compress&cs=tinysrgb&w=1600',
+        }}
+        style={styles.background}
       >
-        {/* Animated Elements */}
-        <Animated.View style={[styles.floatingIcon1, { opacity: fadeAnim }]}>
-          <Store size={28} color="rgba(255,255,255,0.2)" />
-        </Animated.View>
-        <Animated.View style={[styles.floatingIcon2, { opacity: fadeAnim }]}>
-          <Shield size={36} color="rgba(255,255,255,0.15)" />
-        </Animated.View>
-        <Animated.View style={[styles.floatingIcon3, { opacity: fadeAnim }]}>
-          <Sparkles size={24} color="rgba(255,255,255,0.25)" />
-        </Animated.View>
-
-        {/* Decorative Shapes */}
-        <View style={styles.glassOrb1} />
-        <View style={styles.glassOrb2} />
-        <View style={styles.glassOrb3} />
-      </LinearGradient>
-
-      <KeyboardAvoidingView 
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.keyboardView}
-      >
-        <ScrollView 
-          style={styles.scrollView}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="always"
+        <LinearGradient
+          colors={['rgba(20,184,166,0.92)', 'rgba(59,130,246,0.92)']}
+          style={styles.overlay}
         >
-          {/* Header */}
-          <Animated.View style={[styles.header, { opacity: fadeAnim }]}>
-            <TouchableOpacity 
-              style={styles.backButton}
-              onPress={() => router.push('/(auth)/seller-choice')}
-            >
-              <View style={styles.backButtonInner}>
-                <ArrowLeft size={22} color="#FFFFFF" strokeWidth={2.5} />
-              </View>
-            </TouchableOpacity>
-            
-            <View style={styles.headerTextContainer}>
-              <Text style={styles.welcomeText}>Seller Portal</Text>
-              <Text style={styles.headerSubtitle}>Manage your pharmacy business</Text>
-            </View>
-          </Animated.View>
-
-          {/* Main Card */}
-          <Animated.View 
-            style={[
-              styles.cardContainer,
-              {
-                opacity: fadeAnim,
-                transform: [
-                  { translateY: slideAnim },
-                  { scale: scaleAnim }
-                ]
-              }
-            ]}
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={styles.keyboardView}
           >
-            <LinearGradient
-              colors={['rgba(255,255,255,0.95)', '#FFFFFF']}
-              style={styles.cardGradient}
+            <ScrollView
+              contentContainerStyle={styles.scrollContent}
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="always"
             >
-              {/* Logo Section */}
-              <View style={styles.logoSection}>
-                <View style={styles.logoContainer}>
-                  <LinearGradient
-                    colors={['#4F46E5', '#7C3AED']}
-                    style={styles.logoGradient}
-                  >
-                    <Store size={32} color="#FFFFFF" strokeWidth={2} />
-                  </LinearGradient>
-                  <View style={styles.statusBadge}>
-                    <Text style={styles.statusText}>PRO</Text>
-                  </View>
+              {/* Header */}
+              <Animatable.View animation="fadeInDown" duration={800} style={styles.header}>
+                <TouchableOpacity
+                  style={styles.backButton}
+                  onPress={() => router.back()}
+                  activeOpacity={0.8}
+                  disabled={loading}
+                >
+                  <ArrowLeft color="#FFFFFF" size={22} strokeWidth={2.5} />
+                </TouchableOpacity>
+                <View style={styles.headerTextContainer}>
+                  <Text style={styles.headerTitle}>Seller Portal</Text>
+                  <Text style={styles.headerSubtitle}>Sign in to continue</Text>
                 </View>
-                <Text style={styles.cardTitle}>Welcome Back</Text>
-                <Text style={styles.cardSubtitle}>Sign in to your seller dashboard</Text>
-              </View>
+              </Animatable.View>
 
-              {/* Form */}
-              <View style={styles.form}>
-                {/* Email Input */}
-                <View style={styles.inputGroup}>
-                  <Text style={styles.inputLabel}>Business Email</Text>
-                  <View style={styles.inputContainer}>
-                    <View style={styles.inputIconContainer}>
-                      <Mail size={20} color="#94A3B8" />
-                    </View>
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Enter your business email"
-                      placeholderTextColor="#94A3B8"
-                      value={email}
-                      onChangeText={setEmail}
-                      keyboardType="email-address"
-                      autoCapitalize="none"
-                      editable={!loading}
-                    />
-                  </View>
+              {/* Welcome Section */}
+              <Animatable.View animation="fadeIn" delay={200} duration={800} style={styles.welcomeSection}>
+                <View style={styles.iconCircle}>
+                  <Store size={36} color="#FFFFFF" strokeWidth={2.5} />
+                  <View style={styles.iconGlow} />
                 </View>
+                <Text style={styles.title}>Welcome Back!</Text>
+                <Text style={styles.subtitle}>
+                  Access your seller dashboard
+                </Text>
+              </Animatable.View>
 
-                {/* Password Input */}
-                <View style={styles.inputGroup}>
-                  <Text style={styles.inputLabel}>Password</Text>
-                  <View style={styles.inputContainer}>
-                    <View style={styles.inputIconContainer}>
-                      <Lock size={20} color="#94A3B8" />
-                    </View>
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Enter your password"
-                      placeholderTextColor="#94A3B8"
-                      value={password}
-                      onChangeText={setPassword}
-                      secureTextEntry={!showPassword}
-                      editable={!loading}
-                    />
-                    <TouchableOpacity
-                      onPress={() => setShowPassword(!showPassword)}
-                      style={styles.eyeButton}
-                    >
-                      {showPassword ? (
-                        <EyeOff size={20} color="#4F46E5" />
-                      ) : (
-                        <Eye size={20} color="#94A3B8" />
+              {/* Login Card */}
+              <Animatable.View animation="fadeInUp" delay={300} style={styles.cardContainer}>
+                <View style={styles.card}>
+                  {/* Email Input */}
+                  <View style={styles.inputGroup}>
+                    <Text style={styles.inputLabel}>Business Email</Text>
+                    <View style={[
+                      styles.inputContainer,
+                      email.length > 0 && email.includes('@') && styles.inputContainerValid
+                    ]}>
+                      <View style={styles.inputIconContainer}>
+                        <Mail size={20} color="#3B82F6" strokeWidth={2} />
+                      </View>
+                      <TextInput
+                        ref={emailInputRef}
+                        style={styles.input}
+                        placeholder="Enter your business email"
+                        placeholderTextColor="#9CA3AF"
+                        value={email}
+                        onChangeText={setEmail}
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        editable={!loading}
+                        returnKeyType="next"
+                        blurOnSubmit={false}
+                        onSubmitEditing={() => passwordInputRef.current?.focus()}
+                      />
+                      {email.includes('@') && (
+                        <View style={styles.validationBadge}>
+                          <Text style={styles.validationText}>✓</Text>
+                        </View>
                       )}
+                    </View>
+                  </View>
+
+                  {/* Password Input */}
+                  <View style={styles.inputGroup}>
+                    <Text style={styles.inputLabel}>Password</Text>
+                    <View style={styles.inputContainer}>
+                      <View style={styles.inputIconContainer}>
+                        <Lock size={20} color="#3B82F6" strokeWidth={2} />
+                      </View>
+                      <TextInput
+                        ref={passwordInputRef}
+                        style={styles.input}
+                        placeholder="Enter your password"
+                        placeholderTextColor="#9CA3AF"
+                        value={password}
+                        onChangeText={setPassword}
+                        secureTextEntry={!showPassword}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        editable={!loading}
+                        returnKeyType="done"
+                        blurOnSubmit={false}
+                        onSubmitEditing={handleLogin}
+                      />
+                      <TouchableOpacity
+                        onPress={() => setShowPassword(!showPassword)}
+                        style={styles.eyeButton}
+                        disabled={loading}
+                      >
+                        {showPassword
+                          ? <EyeOff size={20} color="#3B82F6" />
+                          : <Eye size={20} color="#9CA3AF" />}
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+
+                  {/* Options Row */}
+                  <View style={styles.optionsRow}>
+                    <TouchableOpacity
+                      style={styles.rememberMeButton}
+                      onPress={() => setRememberMe(!rememberMe)}
+                    >
+                      <View style={[
+                        styles.checkbox,
+                        rememberMe && styles.checkboxChecked
+                      ]}>
+                        {rememberMe && <Text style={styles.checkmark}>✓</Text>}
+                      </View>
+                      <Text style={styles.rememberMeText}>Remember me</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.forgotButton}>
+                      <Text style={styles.forgotText}>Forgot?</Text>
+                    </TouchableOpacity>
+                  </View>
+
+                  {/* Login Button */}
+                  <TouchableOpacity
+                    style={[styles.loginButton, loading && styles.loginButtonDisabled]}
+                    onPress={handleLogin}
+                    disabled={loading}
+                    activeOpacity={0.9}
+                  >
+                    <LinearGradient
+                      colors={loading ? ['#93C5FD', '#60A5FA'] : ['#3B82F6', '#2563EB']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      style={styles.loginButtonGradient}
+                    >
+                      {loading ? (
+                        <ActivityIndicator size="small" color="#FFFFFF" />
+                      ) : (
+                        <>
+                          <Text style={styles.loginButtonText}>Sign In to Dashboard</Text>
+                          <ArrowLeft
+                            size={20}
+                            color="#FFFFFF"
+                            strokeWidth={2.5}
+                            style={{ transform: [{ rotate: '180deg' }] }}
+                          />
+                        </>
+                      )}
+                    </LinearGradient>
+                  </TouchableOpacity>
+
+                  {/* Register Link */}
+                  <View style={styles.registerRow}>
+                    <Text style={styles.registerText}>New seller? </Text>
+                    <TouchableOpacity
+                      onPress={() => router.push('/(auth)/seller-register')}
+                      disabled={loading}
+                    >
+                      <Text style={styles.registerLink}>Get Started</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
+              </Animatable.View>
 
-                {/* Forgot Password */}
-                <TouchableOpacity style={styles.forgotButton}>
-                  <Text style={styles.forgotText}>Forgot Password?</Text>
-                </TouchableOpacity>
-
-                {/* Login Button */}
-                <TouchableOpacity 
-                  style={[styles.loginButton, loading && styles.loginButtonDisabled]}
-                  onPress={handleLogin}
-                  disabled={loading}
-                  activeOpacity={0.85}
-                >
-                  <LinearGradient
-                    colors={loading ? ['#A5B4FC', '#C4B5FD'] : ['#4F46E5', '#7C3AED']}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
-                    style={styles.loginButtonGradient}
-                  >
-                    {loading ? (
-                      <ActivityIndicator size="small" color="#FFFFFF" />
-                    ) : (
-                      <>
-                        <Text style={styles.loginButtonText}>Sign In to Dashboard</Text>
-                        <LogIn size={20} color="#FFFFFF" />
-                      </>
-                    )}
-                  </LinearGradient>
-                </TouchableOpacity>
-
-                {/* Divider */}
-                <View style={styles.divider}>
-                  <View style={styles.dividerLine} />
-                  <View style={styles.dividerBadge}>
-                    <Text style={styles.dividerText}>OR</Text>
+              {/* Footer */}
+              <Animatable.View animation="fadeIn" delay={500} style={styles.footer}>
+                <View style={styles.statsContainer}>
+                  <View style={styles.statItem}>
+                    <Text style={styles.statNumber}>10,000+</Text>
+                    <Text style={styles.statLabel}>Trusted Pharmacies</Text>
                   </View>
-                  <View style={styles.dividerLine} />
+                  <View style={styles.statDivider} />
+                  <View style={styles.statItem}>
+                    <Text style={styles.statNumber}>50K+</Text>
+                    <Text style={styles.statLabel}>Orders Delivered</Text>
+                  </View>
                 </View>
-
-                {/* Register Link */}
-                <View style={styles.footer}>
-                  <Text style={styles.footerText}>New seller? </Text>
-                  <TouchableOpacity onPress={() => router.push('/(auth)/seller-register')}>
-                    <Text style={styles.footerLink}>Register your pharmacy</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </LinearGradient>
-          </Animated.View>
-
-          {/* Trust Badges */}
-          <View style={styles.trustBadges}>
-            <View style={styles.trustBadge}>
-              <Shield size={16} color="#4F46E5" />
-              <Text style={styles.trustText}>Secure Login</Text>
-            </View>
-            <View style={styles.trustBadge}>
-              <Sparkles size={16} color="#7C3AED" />
-              <Text style={styles.trustText}>Verified Pharmacies</Text>
-            </View>
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+                <Text style={styles.footerText}>
+                  Trusted healthcare marketplace nationwide
+                </Text>
+              </Animatable.View>
+            </ScrollView>
+          </KeyboardAvoidingView>
+        </LinearGradient>
+      </ImageBackground>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  background: {
     flex: 1,
-    backgroundColor: '#4F46E5',
+    width: '100%',
+    height: '100%',
   },
-  gradientBackground: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    height: height * 0.6,
-  },
-  floatingIcon1: {
-    position: 'absolute',
-    top: height * 0.1,
-    right: width * 0.1,
-    transform: [{ rotate: '12deg' }],
-  },
-  floatingIcon2: {
-    position: 'absolute',
-    top: height * 0.2,
-    left: width * 0.05,
-    transform: [{ rotate: '-15deg' }],
-  },
-  floatingIcon3: {
-    position: 'absolute',
-    top: height * 0.15,
-    right: width * 0.3,
-    transform: [{ rotate: '20deg' }],
-  },
-  glassOrb1: {
-    position: 'absolute',
-    width: 250,
-    height: 250,
-    borderRadius: 125,
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
-    top: -50,
-    right: -50,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
-  },
-  glassOrb2: {
-    position: 'absolute',
-    width: 180,
-    height: 180,
-    borderRadius: 90,
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    top: 100,
-    left: -40,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
-  },
-  glassOrb3: {
-    position: 'absolute',
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    bottom: 80,
-    right: 60,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.15)',
+  overlay: {
+    flex: 1,
   },
   keyboardView: {
     flex: 1,
   },
-  scrollView: {
-    flex: 1,
-  },
   scrollContent: {
     flexGrow: 1,
-    paddingBottom: 30,
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingVertical: 20,
   },
+
+  // Header
   header: {
-    paddingHorizontal: 24,
-    paddingTop: Platform.OS === 'ios' ? 20 : 40,
-    paddingBottom: 30,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: Platform.OS === 'ios' ? 50 : (StatusBar.currentHeight || 40) + 8,
+    marginBottom: 10,
   },
   backButton: {
-    marginBottom: 20,
-  },
-  backButtonInner: {
     width: 44,
     height: 44,
     borderRadius: 22,
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     justifyContent: 'center',
     alignItems: 'center',
+    marginRight: 14,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
-    backdropFilter: 'blur(10px)',
+    borderColor: 'rgba(255, 255, 255, 0.25)',
   },
   headerTextContainer: {
-    marginTop: 10,
+    flex: 1,
   },
-  welcomeText: {
-    fontSize: 32,
-    fontWeight: '800',
+  headerTitle: {
+    fontSize: 19,
+    fontWeight: '700',
     color: '#FFFFFF',
-    letterSpacing: -0.5,
-    marginBottom: 8,
+    letterSpacing: 0.3,
   },
   headerSubtitle: {
-    fontSize: 16,
+    fontSize: 14,
     color: 'rgba(255, 255, 255, 0.85)',
     fontWeight: '500',
+    marginTop: 2,
   },
-  cardContainer: {
-    flex: 1,
-    marginHorizontal: 20,
-    marginTop: 10,
-  },
-  cardGradient: {
-    borderRadius: 28,
-    padding: 28,
-    shadowColor: '#4F46E5',
-    shadowOffset: { width: 0, height: 20 },
-    shadowOpacity: 0.3,
-    shadowRadius: 40,
-    elevation: 20,
-  },
-  logoSection: {
+
+  // Welcome Section
+  welcomeSection: {
     alignItems: 'center',
-    marginBottom: 32,
+    marginVertical: 24,
   },
-  logoContainer: {
-    position: 'relative',
-    marginBottom: 20,
-  },
-  logoGradient: {
+  iconCircle: {
     width: 80,
     height: 80,
-    borderRadius: 24,
+    borderRadius: 40,
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
     justifyContent: 'center',
     alignItems: 'center',
-    transform: [{ rotate: '-5deg' }],
-    shadowColor: '#4F46E5',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.4,
-    shadowRadius: 20,
-    elevation: 15,
-  },
-  statusBadge: {
-    position: 'absolute',
-    bottom: -5,
-    right: -10,
-    backgroundColor: '#F59E0B',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
+    marginBottom: 16,
+    position: 'relative',
     borderWidth: 2,
-    borderColor: '#FFFFFF',
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
-  statusText: {
+  iconGlow: {
+    position: 'absolute',
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    top: -10,
+    left: -10,
+    zIndex: -1,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: '900',
     color: '#FFFFFF',
-    fontSize: 10,
-    fontWeight: '800',
+    marginBottom: 8,
+    textAlign: 'center',
     letterSpacing: 0.5,
   },
-  cardTitle: {
-    fontSize: 26,
-    fontWeight: '800',
-    color: '#1E1B4B',
-    marginBottom: 8,
-    letterSpacing: -0.5,
+  subtitle: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.95)',
+    fontWeight: '400',
+    textAlign: 'center',
+    lineHeight: 24,
+    paddingHorizontal: 20,
   },
-  cardSubtitle: {
-    fontSize: 15,
-    color: '#64748B',
-    fontWeight: '500',
+
+  // Card
+  cardContainer: {
+    marginVertical: 8,
+    borderRadius: 16,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    elevation: 8,
   },
-  form: {
+  card: {
+    borderRadius: 16,
+    padding: 20,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: 'rgba(0, 0, 0, 0.05)',
+    borderLeftWidth: 3,
+    borderLeftColor: '#3B82F6',
     gap: 20,
   },
+
+  // Inputs
   inputGroup: {
     gap: 8,
   },
@@ -1560,13 +1482,16 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F8FAFC',
+    backgroundColor: '#F1F5F9',
     borderWidth: 1.5,
     borderColor: '#E2E8F0',
     borderRadius: 16,
     paddingHorizontal: 16,
-    paddingVertical: 4,
     minHeight: 56,
+  },
+  inputContainerValid: {
+    borderColor: '#10B981',
+    backgroundColor: '#F0FDF4',
   },
   inputIconContainer: {
     width: 36,
@@ -1580,7 +1505,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 2,
-    elevation: 1,
+    elevation: 2,
   },
   input: {
     flex: 1,
@@ -1589,27 +1514,78 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     paddingVertical: 12,
   },
+  validationBadge: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#10B981',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 8,
+  },
+  validationText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '700',
+  },
   eyeButton: {
     padding: 8,
+    marginLeft: 4,
+  },
+
+  // Options Row
+  optionsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  rememberMeButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  checkbox: {
+    width: 22,
+    height: 22,
+    borderRadius: 6,
+    borderWidth: 2,
+    borderColor: '#CBD5E1',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+  },
+  checkboxChecked: {
+    backgroundColor: '#3B82F6',
+    borderColor: '#3B82F6',
+  },
+  checkmark: {
+    color: '#FFFFFF',
+    fontWeight: '800',
+    fontSize: 12,
+  },
+  rememberMeText: {
+    fontSize: 14,
+    color: '#475569',
+    fontWeight: '600',
   },
   forgotButton: {
-    alignSelf: 'flex-end',
-    paddingVertical: 4,
+    padding: 6,
   },
   forgotText: {
     fontSize: 14,
-    color: '#4F46E5',
-    fontWeight: '600',
+    color: '#3B82F6',
+    fontWeight: '700',
   },
+
+  // Login Button
   loginButton: {
     borderRadius: 16,
     overflow: 'hidden',
-    marginTop: 8,
-    shadowColor: '#4F46E5',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.4,
-    shadowRadius: 16,
-    elevation: 10,
+    shadowColor: '#3B82F6',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+    elevation: 6,
   },
   loginButtonDisabled: {
     opacity: 0.7,
@@ -1625,69 +1601,65 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: '700',
     color: '#FFFFFF',
-    letterSpacing: 0.5,
   },
-  divider: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 8,
-  },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: '#E2E8F0',
-  },
-  dividerBadge: {
-    paddingHorizontal: 16,
-    paddingVertical: 6,
-    backgroundColor: '#F1F5F9',
-    borderRadius: 20,
-    marginHorizontal: 12,
-  },
-  dividerText: {
-    fontSize: 12,
-    color: '#64748B',
-    fontWeight: '700',
-    letterSpacing: 1,
-  },
-  footer: {
+
+  // Register Link
+  registerRow: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 8,
-    paddingVertical: 12,
   },
-  footerText: {
-    fontSize: 15,
-    color: '#64748B',
+  registerText: {
+    fontSize: 14,
+    color: '#6B7280',
     fontWeight: '500',
   },
-  footerLink: {
-    fontSize: 15,
-    color: '#4F46E5',
+  registerLink: {
+    fontSize: 14,
+    color: '#3B82F6',
     fontWeight: '700',
   },
-  trustBadges: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 16,
-    marginTop: 24,
-    marginHorizontal: 20,
+
+  // Footer
+  footer: {
+    alignItems: 'center',
+    marginTop: 20,
+    marginBottom: 10,
   },
-  trustBadge: {
+  statsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
     borderRadius: 20,
-    gap: 6,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    marginBottom: 10,
   },
-  trustText: {
-    fontSize: 12,
+  statItem: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  statNumber: {
+    fontSize: 16,
+    fontWeight: '800',
     color: '#FFFFFF',
-    fontWeight: '600',
+    marginBottom: 2,
+  },
+  statLabel: {
+    fontSize: 10,
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontWeight: '500',
+  },
+  statDivider: {
+    width: 1,
+    height: 24,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    marginHorizontal: 16,
+  },
+  footerText: {
+    fontSize: 11,
+    color: 'rgba(255, 255, 255, 0.9)',
+    textAlign: 'center',
+    fontWeight: '400',
   },
 });
